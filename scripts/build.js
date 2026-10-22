@@ -132,7 +132,7 @@ function layout({ title, description, urlPath, body, nav, scripts = [], jsonld =
   const sos = `<a href="/mene-zupynyly/" class="nav-sos${nav === 'stop' ? ' on' : ''}" aria-label="Мене зупинили — що робити">${ICON.sos}<span>Мене зупинили</span></a>`;
   const bottom = [navHtml[0], navHtml[1], sos, navHtml[2], navHtml[3]].join('');
   return `<!doctype html>
-<html lang="uk">
+<html lang="uk" data-v="%%BUILD%%">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -213,7 +213,7 @@ for (const p of pages) {
   const body = `<article class="page">
 <h1>${esc(p.h1)}</h1>
 <p class="lead">${esc(p.lead)}</p>
-${p.slug === 'mene-zupynyly' ? '<p class="timer muted">Читається за 1 хвилину.</p>' : ''}
+${p.slug === 'mene-zupynyly' ? '<p class="timer muted">Оберіть ситуацію вище. Загальні правила нижче читаються за 1–2 хвилини.</p>' : ''}
 ${renderBlocks(p.blocks)}
 </article>`;
   const scripts = [];
@@ -260,7 +260,7 @@ for (const [id, st] of Object.entries(situations.situations)) {
 <h2>Що варто знати</h2>
 <ul>${st.know.map((i) => `<li>${inline(i)}</li>`).join('')}</ul>
 ${st.lawyer ? `<aside class="callout lawyer" role="note"><strong class="ct">Потребує перевірки юристом</strong><p>${inline(st.lawyer)}</p></aside>` : ''}
-<aside class="callout warn" role="note"><strong class="ct">Дії здаються незаконними?</strong><p>Не чиніть опір. Зафіксуйте факти й передайте їх юристу — навіть якщо людину вже забрали до ТЦК, юрист може діяти одразу.</p></aside>
+${st.plain ? '' : `<aside class="callout warn" role="note"><strong class="ct">Дії здаються незаконними?</strong><p>Не чиніть опір. Зафіксуйте факти й передайте їх юристу — навіть якщо людину вже забрали до ТЦК, юрист може діяти одразу.</p></aside>`}
 <p><a class="btn big sos" href="/terminovo/">Передати справу юристу</a></p>
 <ul class="linklist"><li><a class="btn secondary" href="/skarha/">Скласти скаргу</a></li><li><a class="btn secondary" href="/vidstrochka/">Перевірити підстави відстрочки</a></li><li><a class="btn secondary" href="/mene-zupynyly/">Інші ситуації</a></li></ul>
 </article>`;

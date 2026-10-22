@@ -6,18 +6,18 @@
 }
 :root[data-theme=dark]{
   --bg:#0b1220;--fg:#f3f4f6;--muted:#b4bcc9;--card:#17213a;--line:#34415f;
-  --brand:#0e1730;--accent:#7ab8ff;--sos:#e5383b;
+  --brand:#0e1730;--accent:#7ab8ff;--sos:#c1121f;
   --warn-bg:#3a2d0a;--warn-line:#f4b942;--info-bg:#10294a;--info-line:#7ab8ff;--law-bg:#2a1b4a;--law-line:#c4a4ff;
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme=light]){
     --bg:#0b1220;--fg:#f3f4f6;--muted:#b4bcc9;--card:#17213a;--line:#34415f;
-    --brand:#0e1730;--accent:#7ab8ff;--sos:#e5383b;
+    --brand:#0e1730;--accent:#7ab8ff;--sos:#c1121f;
     --warn-bg:#3a2d0a;--warn-line:#f4b942;--info-bg:#10294a;--info-line:#7ab8ff;--law-bg:#2a1b4a;--law-line:#c4a4ff;
   }
 }
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%;font-size:112.5%}
+html{-webkit-text-size-adjust:100%;font-size:112.5%;scroll-padding-bottom:110px}
 body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.55;padding-bottom:calc(88px + env(safe-area-inset-bottom));overflow-wrap:anywhere}
 a{color:var(--accent);text-underline-offset:3px}
 :focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:6px}
@@ -50,7 +50,9 @@ li{margin:.45rem 0}
 .ct{display:block;font-size:.95rem}
 .callout.lawyer .ct::before{content:"⚖ "}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:.6rem;min-height:52px;padding:.75rem 1.25rem;border-radius:var(--r);border:2px solid var(--brand);background:var(--brand);color:#fff;font:inherit;font-weight:700;text-decoration:none;cursor:pointer;text-align:center}
-:root[data-theme=dark] .btn{border-color:var(--accent);background:#1d3a66}
+:root[data-theme=dark] .btn{border-color:var(--accent);background:#2a5aa6}
+:root[data-theme=dark] .btn.secondary{background:transparent}
+:root[data-theme=dark] .btn.sos{background:var(--sos);border-color:#ff8a8f}
 .btn.secondary{background:transparent;color:var(--fg);border-color:var(--line)}
 .btn.big{width:100%;min-height:64px;font-size:1.15rem}
 .btn.sos{background:var(--sos);border-color:var(--sos);color:var(--sos-fg)}
@@ -109,3 +111,6 @@ body.no-sos .nav-sos{outline:0}
 .grp{font-size:1.05rem;margin:1.1rem 0 .4rem;color:var(--muted)}
 .crumb{margin:.2rem 0}
 .btn.sos.big{text-align:center}
+
+.foot-links a,.crumb a{display:inline-block;padding:.65rem .3rem;min-height:44px}
+.foot-links a{margin-right:.3rem}

@@ -5,8 +5,8 @@
   if (!form) return;
   var $ = function (id) { return document.getElementById(id); };
   var out = $('u-out'), tg = $('u-tg'), base = tg.getAttribute('href'), say = function (m) { $('u-status').textContent = m; };
-  var noLawyer = /#no-lawyer$/.test(base);
-  if (noLawyer) { tg.textContent = 'Telegram недоступний — зателефонуйте 0 800 213 103'; tg.setAttribute('href', 'tel:0800213103'); tg.removeAttribute('target'); }
+  var noLawyer = /^tel:/.test(base);
+  if (noLawyer) { tg.textContent = 'Telegram недоступний — зателефонуйте 0 800 213 103'; tg.removeAttribute('target'); tg.removeAttribute('rel'); }
 
   function v(n) { return (form.elements[n].value || '').trim(); }
   function fmt(d) { if (!d) return ''; var p = d.split('-'); return p.length === 3 ? p[2] + '.' + p[1] + '.' + p[0] : d; }

@@ -17,7 +17,7 @@ const PORT = process.env.PORT || 3000;
 const SITE_URL = (process.env.SITE_URL || '').replace(/\/+$/, '');
 const lawyerRaw = (process.env.LAWYER_TELEGRAM_URL || '').trim();
 // приймаємо лише https://t.me/… або tg://…
-const LAWYER_URL = /^(https:\/\/(t\.me|telegram\.me)\/|tg:\/\/)[^\s"'<>]+$/.test(lawyerRaw) ? lawyerRaw : '/dopomoha/#no-lawyer';
+const LAWYER_URL = /^(https:\/\/(t\.me|telegram\.me)\/|tg:\/\/)[^\s"'<>]+$/.test(lawyerRaw) ? lawyerRaw : 'tel:0800213103';
 
 // HTML завантажуємо в пам'ять; SITE_URL підставляємо під час відповіді
 const htmlCache = new Map();
@@ -98,14 +98,17 @@ app.get(/^\/[a-z0-9-]+$/, (req, res, next) => {
   next();
 });
 
-// Ресурси: файли з ?v=… кешуємо надовго
+// Ресурси: URL з ?v=… — надовго; без версії — на годину
+app.use('/assets', (req, res, next) => {
+  res.set('Cache-Control', req.query.v ? 'public, max-age=31536000, immutable' : 'public, max-age=3600');
+  next();
+});
 app.use(
   express.static(DIST, {
     index: false,
     setHeaders(res, file) {
       if (file.endsWith('.webmanifest')) res.type('application/manifest+json');
-      if (/[\\/]assets[\\/]/.test(file)) res.set('Cache-Control', 'public, max-age=31536000, immutable');
-      else res.set('Cache-Control', 'no-cache');
+      if (!/[\\/]assets[\\/]/.test(file)) res.set('Cache-Control', 'no-cache');
     },
   })
 );

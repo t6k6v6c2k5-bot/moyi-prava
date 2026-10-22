@@ -27,7 +27,7 @@ self.addEventListener('fetch', (e) => {
           if (res.ok) caches.open(VERSION).then((c) => c.put(req, copy));
           return res;
         })
-        .catch(() => caches.match(req).then((r) => r || caches.match('/offline/')))
+        .catch(() => caches.match(req, { ignoreSearch: true }).then((r) => r || caches.match('/offline/')))
     );
     return;
   }

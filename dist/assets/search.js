@@ -7,7 +7,7 @@
   function stem(w) { return w.length > 5 ? w.slice(0, w.length - 2) : w; }
   function load() {
     if (index) return Promise.resolve(index);
-    return fetch('/assets/search-index.json').then(function (r) { return r.json(); }).then(function (j) { return (index = j); });
+    return fetch('/assets/search-index.json?v=' + (document.documentElement.dataset.v || '1')).then(function (r) { return r.json(); }).then(function (j) { return (index = j); });
   }
   function run() {
     var words = q.value.toLowerCase().split(/[^\p{L}\p{N}-]+/u).filter(function (w) { return w.length > 1; }).map(stem);
@@ -32,5 +32,5 @@
   form.addEventListener('submit', function (e) { e.preventDefault(); history.replaceState(null, '', '?q=' + encodeURIComponent(q.value)); run(); });
   q.addEventListener('input', run);
   var m = /[?&]q=([^&]*)/.exec(location.search);
-  if (m) { q.value = decodeURIComponent(m[1].replace(/\+/g, ' ')); run(); }
+  if (m) { try { q.value = decodeURIComponent(m[1].replace(/\+/g, ' ')); run(); } catch (e) {} }
 })();
