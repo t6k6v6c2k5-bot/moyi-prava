@@ -1,6 +1,6 @@
 'use strict';
-const VERSION = 'moyi-prava-d8497c0a';
-const PRECACHE = ["/","/offline/","/mene-zupynyly/","/blokpost/","/povistka/","/perevirka-povistky/","/skarha/","/vidstrochka/","/zabraly/","/dopomoha/","/faq/","/poshuk/","/pryvatnist/","/shtraf/","/assets/style.css?v=d8497c0a","/assets/app.js?v=d8497c0a","/assets/generator.js?v=d8497c0a","/assets/vnav.js?v=d8497c0a","/assets/search.js?v=d8497c0a","/assets/search-index.json","/assets/icon.svg","/assets/icon-192.png","/manifest.webmanifest"];
+const VERSION = 'moyi-prava-e964c73d';
+const PRECACHE = ["/","/offline/","/mene-zupynyly/","/blokpost/","/povistka/","/perevirka-povistky/","/skarha/","/vidstrochka/","/zabraly/","/dopomoha/","/faq/","/poshuk/","/pryvatnist/","/shtraf/","/terminovo/","/sytuatsiyi/politsiya-pdr/","/sytuatsiyi/politsiya-viiskovyi-dokument/","/sytuatsiyi/politsiya-rezerv/","/sytuatsiyi/politsiya-szch/","/sytuatsiyi/politsiya-povistka/","/sytuatsiyi/politsiya-zatrymannia/","/sytuatsiyi/tck-perevirka/","/sytuatsiyi/tck-ne-predstavylys/","/sytuatsiyi/tck-vidstrochka/","/sytuatsiyi/tck-syla/","/sytuatsiyi/tck-vlk/","/sytuatsiyi/blokpost-viiskovi/","/sytuatsiyi/blokpost-ne-propuskaiut/","/sytuatsiyi/vtratyv-dokument/","/assets/style.css?v=e964c73d","/assets/app.js?v=e964c73d","/assets/generator.js?v=e964c73d","/assets/vnav.js?v=e964c73d","/assets/search.js?v=e964c73d","/assets/urgent.js?v=e964c73d","/assets/search-index.json","/assets/icon.svg","/assets/icon-192.png","/manifest.webmanifest"];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(VERSION).then((c) => c.addAll(PRECACHE)).then(() => self.skipWaiting()));

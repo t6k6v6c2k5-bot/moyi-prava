@@ -31,11 +31,13 @@ scripts/build.js          генератор: content/*.json + src/ → dist/ (�
 scripts/make-images.js    разовая генерация PNG-иконок и og.png (нужен Playwright)
 content/
   sources.json            список официальных источников (id → название, ссылка) и дата «Перевірено»
+  situations.json         ситуации «Мене зупинили» (поліція/ТЦК/блокпост): по одной странице /sytuatsiyi/<id>/ на каждую
   faq.json                вопросы и ответы (FAQ + разметка schema.org FAQPage)
   vidstrochka-data.json   вопросы и основания навигатора отсрочек
   pages/*.json            по одному файлу на страницу (тексты)
 src/
   generator.html          форма генератора жалоб (вставляется на /skarha/)
+  urgent.html             форма «Терміново: передати справу юристу» (/terminovo/)
   assets/                 style.css, app.js, generator.js, vnav.js, search.js, иконки
   sw.js, manifest.webmanifest
 dist/                     собранный сайт (коммитится)
@@ -56,6 +58,14 @@ tests/e2e.js              проверка страниц, ширины 360px, �
 5. Основания отсрочки и документы — в `content/vidstrochka-data.json` (`grounds` — основания, `questions` — вопросы и связи с основаниями).
 6. Когда меняется закон: обновите текст, добавьте/поправьте источник в `sources.json` и **дату `verified`** (она выводится внизу каждой страницы как «Перевірено»).
 7. Выполните `npm run build`, проверьте локально (`npm start`), затем `git add -A && git commit && git push` — Railway задеплоит сам.
+
+### Ситуации («Меня остановили»)
+
+Файл `content/situations.json`: `groups` — группы и порядок кнопок на `/mene-zupynyly/`; `situations` — страницы. Поля ситуации: `label` (текст кнопки), `h1`, `description`, `lead`, `do` (что делать), `dont` (чего не делать), `know` (что важно знать, с ссылками на пункты норм), `lawyer` (необязательно — плашка «Потребує перевірки юристом»), `sources` (id из `sources.json`). Чтобы добавить ситуацию — добавьте объект и его id в нужную группу, затем `npm run build`.
+
+### Быстрая заявка юристу (/terminovo/)
+
+Короткая форма собирает ключевые факты в сообщение (на устройстве). Кнопка Telegram открывает `LAWYER_TELEGRAM_URL`; если это ссылка вида `https://t.me/<ник>`, текст подставляется автоматически (`?text=`), иначе текст копируется — его нужно вставить в чат.
 
 Шаблоны текстов жалоб (генератор) находятся в `src/assets/generator.js`, поля формы — в `src/generator.html`.
 

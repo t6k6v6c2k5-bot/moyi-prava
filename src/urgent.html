@@ -1,0 +1,70 @@
+<form id="urg" class="gen" autocomplete="off" novalidate>
+<noscript><p class="callout warn">Для форми потрібен JavaScript. Телефонуйте: 0 800 213 103.</p></noscript>
+<fieldset>
+<legend>1. Про кого йдеться</legend>
+<div class="radios" role="radiogroup" aria-label="Про кого йдеться">
+<label class="opt"><input type="radio" name="who" value="me" checked> <span>Про мене</span></label>
+<label class="opt"><input type="radio" name="who" value="rel"> <span>Про рідну людину</span></label>
+</div>
+<label for="u-name">ПІБ людини (і дата народження, якщо знаєте)</label>
+<input id="u-name" name="name" type="text" placeholder="Прізвище Ім’я По батькові, дд.мм.рррр">
+</fieldset>
+
+<fieldset>
+<legend>2. Що сталося (оберіть головне)</legend>
+<div class="radios" role="radiogroup" aria-label="Що сталося">
+<label class="opt"><input type="radio" name="what" value="Зупинили й перевіряють документи" checked> <span>Зупинили, перевіряють</span></label>
+<label class="opt"><input type="radio" name="what" value="Затримали / складають протокол"> <span>Затримали, складають протокол</span></label>
+<label class="opt"><input type="radio" name="what" value="Забрали / доставили до ТЦК"> <span>Забрали до ТЦК</span></label>
+<label class="opt"><input type="radio" name="what" value="Немає зв’язку, невідомо де людина"> <span>Немає зв’язку, невідомо де</span></label>
+<label class="opt"><input type="radio" name="what" value="Застосували силу"> <span>Застосували силу</span></label>
+<label class="opt"><input type="radio" name="what" value="Не представилися / не показали посвідчення"> <span>Не представилися, без посвідчення</span></label>
+<label class="opt"><input type="radio" name="what" value="Не враховують відстрочку / відмовили"> <span>Не враховують відстрочку</span></label>
+<label class="opt"><input type="radio" name="what" value="Вручили повістку або постанову"> <span>Вручили повістку / постанову</span></label>
+</div>
+<label for="u-by">Хто діяв</label>
+<select id="u-by" name="by"><option value="">не знаю</option><option>ТЦК</option><option>Поліція</option><option>Військові (блокпост)</option><option>Невідомі особи</option></select>
+<div class="row">
+<div><label for="u-date">Дата</label><input id="u-date" name="date" type="date"></div>
+<div><label for="u-time">Приблизний час</label><input id="u-time" name="time" type="time"></div>
+</div>
+<label for="u-place">Область / місто (без розташування постів)</label>
+<input id="u-place" name="place" type="text" placeholder="Напр.: м. …, … область">
+</fieldset>
+
+<fieldset>
+<legend>3. Важливі деталі</legend>
+<div class="checks" role="group" aria-label="Відстрочка">
+<label class="opt"><input type="checkbox" name="d" value="має відстрочку"> <span>Є оформлена відстрочка</span></label>
+<label class="opt"><input type="checkbox" name="d" value="є підстава для відстрочки, але вона не оформлена"> <span>Є підстава, але не оформлена</span></label>
+<label class="opt"><input type="checkbox" name="d" value="потрібні ліки / хронічна хвороба"> <span>Хвороба, потрібні ліки</span></label>
+<label class="opt"><input type="checkbox" name="d" value="є відео / аудіо"> <span>Є відео чи аудіо</span></label>
+<label class="opt"><input type="checkbox" name="d" value="є свідки"> <span>Є свідки</span></label>
+</div>
+<label for="u-base">Підстава відстрочки (діти, інвалідність, догляд, навчання, бронювання…)</label>
+<input id="u-base" name="base" type="text">
+<label for="u-done">Що вже зроблено (дзвінки, заяви)</label>
+<input id="u-done" name="done" type="text">
+<label for="u-more">Коротко своїми словами</label>
+<textarea id="u-more" name="more" rows="4" maxlength="700" placeholder="2–5 речень, без образ і оцінок."></textarea>
+</fieldset>
+
+<fieldset>
+<legend>4. Як з вами зв’язатися</legend>
+<label for="u-contact">Ваш телефон / Telegram та ім’я</label>
+<input id="u-contact" name="contact" type="text" placeholder="+380…, @нік, Ім’я">
+</fieldset>
+
+<div class="actions"><button class="btn big sos" type="submit">Скласти повідомлення юристу</button></div>
+</form>
+
+<section id="u-out-wrap" hidden aria-live="polite">
+<h2>Повідомлення юристу</h2>
+<textarea id="u-out" rows="14" class="out" aria-label="Повідомлення юристу"></textarea>
+<div class="actions">
+<a class="btn big" id="u-tg" href="%%LAWYER_URL%%" target="_blank" rel="sponsored noopener noreferrer">Надіслати в Telegram</a>
+<button class="btn secondary" type="button" id="u-copy">Копіювати</button>
+<a class="btn secondary" href="tel:0800213103">Подзвонити 0 800 213 103</a>
+</div>
+<p class="muted" id="u-status" role="status"></p>
+</section>

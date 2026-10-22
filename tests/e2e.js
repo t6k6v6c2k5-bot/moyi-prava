@@ -3,7 +3,7 @@
 const { chromium } = require('playwright');
 const BASE = process.env.BASE || 'http://localhost:3000';
 const SHOTS = process.env.SHOTS || '';
-const PAGES = ['/', '/mene-zupynyly/', '/blokpost/', '/povistka/', '/perevirka-povistky/', '/vidstrochka/', '/skarha/', '/shtraf/', '/zabraly/', '/dopomoha/', '/faq/', '/poshuk/', '/pryvatnist/'];
+const PAGES = ['/', '/mene-zupynyly/', '/blokpost/', '/povistka/', '/perevirka-povistky/', '/vidstrochka/', '/skarha/', '/shtraf/', '/zabraly/', '/dopomoha/', '/faq/', '/poshuk/', '/pryvatnist/', '/terminovo/', '/sytuatsiyi/politsiya-pdr/', '/sytuatsiyi/politsiya-szch/', '/sytuatsiyi/tck-vidstrochka/'];
 let fail = 0;
 const ok = (c, m) => { if (!c) { fail++; console.log('FAIL', m); } else console.log('ok  ', m); };
 
@@ -66,6 +66,25 @@ const ok = (c, m) => { if (!c) { fail++; console.log('FAIL', m); } else console.
   const ls = await page.evaluate(() => Object.keys(localStorage).concat(Object.keys(sessionStorage)));
   ok(ls.every((k) => k === 'theme'), 'генератор: у сховищі тільки тема: ' + JSON.stringify(ls));
 
+  // 3b. швидка заявка юристу
+  await page.goto(BASE + '/terminovo/');
+  await page.check('input[name=who][value=rel]');
+  await page.fill('#u-name', 'Петренко Петро, 01.01.1990');
+  await page.check('input[name=what][value="Забрали / доставили до ТЦК"]');
+  await page.selectOption('#u-by', 'ТЦК');
+  await page.fill('#u-place', 'м. Львів');
+  await page.check('input[name=d][value="є підстава для відстрочки, але вона не оформлена"]');
+  await page.fill('#u-base', 'троє дітей');
+  await page.fill('#u-contact', '+380000000000');
+  await page.click('#urg button[type=submit]');
+  const um = await page.inputValue('#u-out');
+  ok(um.includes('рідну людину') && um.includes('Петренко') && um.includes('Забрали / доставили до ТЦК') && um.includes('троє дітей') && um.includes('м. Львів'), 'терміново: повідомлення коректне');
+  ok((await page.getAttribute('#u-tg', 'href')).startsWith('https://t.me/example_lawyer?text='), 'терміново: Telegram з готовим текстом');
+  ok(await page.locator('#u-tg[rel~=sponsored]').count() === 1, 'терміново: rel=sponsored');
+  // каталог ситуацій
+  await page.goto(BASE + '/mene-zupynyly/');
+  ok((await page.locator('a[href^="/sytuatsiyi/"]').count()) >= 14, 'мене зупинили: показано всі ситуації');
+
   // 4. навігатор відстрочок
   await page.goto(BASE + '/vidstrochka/');
   await page.check('input[name=q0][value="0"]');
@@ -93,7 +112,7 @@ const ok = (c, m) => { if (!c) { fail++; console.log('FAIL', m); } else console.
   await page.evaluate(() => navigator.serviceWorker.ready);
   await page.waitForTimeout(1500);
   await ctx.setOffline(true);
-  for (const u of ['/', '/mene-zupynyly/', '/skarha/', '/vidstrochka/', '/faq/']) {
+  for (const u of ['/', '/mene-zupynyly/', '/skarha/', '/vidstrochka/', '/faq/', '/terminovo/', '/sytuatsiyi/politsiya-pdr/']) {
     try { const r = await page.goto(BASE + u); ok(r && r.ok() && (await page.locator('h1').count()) === 1, `офлайн: ${u}`); } catch (e) { ok(false, `офлайн: ${u} ${e.message}`); }
   }
   await page.goto(BASE + '/skarha/');

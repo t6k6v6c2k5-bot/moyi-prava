@@ -13,6 +13,7 @@ const DIST = path.join(ROOT, 'dist');
 const sources = JSON.parse(fs.readFileSync(path.join(CONTENT, 'sources.json'), 'utf8'));
 const faq = JSON.parse(fs.readFileSync(path.join(CONTENT, 'faq.json'), 'utf8'));
 const vdata = JSON.parse(fs.readFileSync(path.join(CONTENT, 'vidstrochka-data.json'), 'utf8'));
+const situations = JSON.parse(fs.readFileSync(path.join(CONTENT, 'situations.json'), 'utf8'));
 const pages = fs
   .readdirSync(path.join(CONTENT, 'pages'))
   .filter((f) => f.endsWith('.json'))
@@ -85,6 +86,23 @@ function renderBlocks(blocks) {
               )
               .join('')
           );
+        case 'situations':
+          return (
+            '<h2>Що сталося?</h2>' +
+            situations.groups
+              .map(
+                (g) =>
+                  `<h3 class="grp">${esc(g.title)}</h3><ul class="linklist">${g.items
+                    .map((id) => `<li><a class="btn secondary" href="/sytuatsiyi/${id}/">${esc(situations.situations[id].label)}</a></li>`)
+                    .join('')}</ul>`
+              )
+              .join('') +
+            '<h3 class="grp">Рідну людину забрали</h3><ul class="linklist"><li><a class="btn secondary" href="/zabraly/">Рідну людину забрали — що робити</a></li></ul>'
+          );
+        case 'urgent_cta':
+          return '<p><a class="btn big sos" href="/terminovo/">Терміново: передати справу юристу</a></p><p class="muted">Коротка форма: що сталося → готове повідомлення для адвоката в Telegram. Навіть якщо людину вже забрали в ТЦК.</p>';
+        case 'urgent':
+          return fs.readFileSync(path.join(SRC, 'urgent.html'), 'utf8');
         case 'generator':
           return fs.readFileSync(path.join(SRC, 'generator.html'), 'utf8');
         default:
@@ -200,6 +218,7 @@ ${renderBlocks(p.blocks)}
 </article>`;
   const scripts = [];
   if (p.slug === 'skarha') scripts.push('generator.js');
+  if (p.slug === 'terminovo') scripts.push('urgent.js');
   if (p.slug === 'vidstrochka') scripts.push('vnav.js');
   const jsonld = [
     {
@@ -225,6 +244,36 @@ ${renderBlocks(p.blocks)}
   if (p.slug === 'vidstrochka') text += ' ' + Object.values(vdata.grounds).map((g) => g.t + ' ' + g.ref + ' ' + g.docs.map(plain).join(' ')).join(' ');
   searchIndex.push({ u: urlPath, t: p.h1, d: p.description, x: text });
   out.push({ u: urlPath, p: 0.8 });
+}
+
+// --- Ситуації
+for (const [id, st] of Object.entries(situations.situations)) {
+  const urlPath = `/sytuatsiyi/${id}/`;
+  const body = `<article class="page">
+<p class="crumb"><a href="/mene-zupynyly/">← Усі ситуації</a></p>
+<h1>${esc(st.h1)}</h1>
+<p class="lead">${esc(st.lead)}</p>
+<h2>Що робити</h2>
+<ul class="check">${st.do.map((i) => `<li>${inline(i)}</li>`).join('')}</ul>
+<h2>Чого не робити</h2>
+<ul>${st.dont.map((i) => `<li>${inline(i)}</li>`).join('')}</ul>
+<h2>Що варто знати</h2>
+<ul>${st.know.map((i) => `<li>${inline(i)}</li>`).join('')}</ul>
+${st.lawyer ? `<aside class="callout lawyer" role="note"><strong class="ct">Потребує перевірки юристом</strong><p>${inline(st.lawyer)}</p></aside>` : ''}
+<aside class="callout warn" role="note"><strong class="ct">Дії здаються незаконними?</strong><p>Не чиніть опір. Зафіксуйте факти й передайте їх юристу — навіть якщо людину вже забрали до ТЦК, юрист може діяти одразу.</p></aside>
+<p><a class="btn big sos" href="/terminovo/">Передати справу юристу</a></p>
+<ul class="linklist"><li><a class="btn secondary" href="/skarha/">Скласти скаргу</a></li><li><a class="btn secondary" href="/vidstrochka/">Перевірити підстави відстрочки</a></li><li><a class="btn secondary" href="/mene-zupynyly/">Інші ситуації</a></li></ul>
+</article>`;
+  const jsonld = [
+    { '@context': 'https://schema.org', '@type': 'WebPage', name: st.h1, description: st.description, url: SITE + urlPath, inLanguage: 'uk', dateModified: '2026-10-22' },
+    { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Головна', item: SITE + '/' },
+      { '@type': 'ListItem', position: 2, name: 'Мене зупинили', item: SITE + '/mene-zupynyly/' },
+      { '@type': 'ListItem', position: 3, name: st.h1, item: SITE + urlPath } ] },
+  ];
+  write(urlPath, layout({ title: st.h1 + ' | Мої права', description: st.description, urlPath, body, nav: 'stop', jsonld, ogType: 'article', sourceIds: st.sources }));
+  searchIndex.push({ u: urlPath, t: st.h1, d: st.description, x: [st.label, st.lead, ...st.do, ...st.dont, ...st.know].map(plain).join(' ') });
+  out.push({ u: urlPath, p: 0.7 });
 }
 
 // --- FAQ
@@ -266,6 +315,7 @@ ${faq.items.map((i) => `<details class="faq"><summary>${esc(i.q)}</summary><p>${
     { u: '/vidstrochka/', t: 'Відстрочка', d: 'Навігатор: які підстави мені підходять', i: 'clock' },
     { u: '/skarha/', t: 'Скласти скаргу', d: 'Омбудсман, поліція, прокуратура, штраф', i: 'edit' },
     { u: '/zabraly/', t: 'Рідну людину забрали', d: 'Що робити в перші години', i: 'sos' },
+    { u: '/terminovo/', t: 'Передати справу юристу', d: 'Швидка заявка: людину зупинили чи забрали', i: 'sos' },
     { u: '/dopomoha/', t: 'Юридична допомога', d: '0 800 213 103 та заявка адвокату', i: 'more' },
     { u: '/faq/', t: 'Часті запитання', d: 'Короткі відповіді з джерелами', i: 'search' },
   ];
@@ -273,6 +323,7 @@ ${faq.items.map((i) => `<details class="faq"><summary>${esc(i.q)}</summary><p>${
 <h1>Мої права</h1>
 <p class="lead">Навігатор для військовозобов’язаних та їхніх родин. Знай свої права й обов’язки. Дій за законом. Фіксуй порушення.</p>
 <a class="btn sos big" href="/mene-zupynyly/">${ICON.sos}<span>Мене зупинили — що робити</span></a>
+<p><a class="btn big" href="/terminovo/">Терміново: передати справу юристу</a></p>
 </section>
 <ul class="tiles">${tiles.map((t) => `<li><a class="tile" href="${t.u}">${ICON[t.i]}<span class="tt">${esc(t.t)}</span><span class="td">${esc(t.d)}</span></a></li>`).join('')}</ul>
 <aside class="callout info"><p><strong>Принципи сайту.</strong> Нейтральний тон; кожне твердження спирається на офіційне джерело; жодних карт чи стрічок про ТЦК, блокпости й поліцію; жодних порад щодо ухилення чи підробок; усі дані залишаються на вашому пристрої. <a href="/pryvatnist/">Докладніше</a></p></aside>`;
@@ -307,7 +358,7 @@ const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).forEach((e) => (e
 walk(DIST);
 const build = hash.digest('hex').slice(0, 8);
 
-const precache = ['/', '/offline/', '/mene-zupynyly/', '/blokpost/', '/povistka/', '/perevirka-povistky/', '/skarha/', '/vidstrochka/', '/zabraly/', '/dopomoha/', '/faq/', '/poshuk/', '/pryvatnist/', '/shtraf/', '/assets/style.css', '/assets/app.js', '/assets/generator.js', '/assets/vnav.js', '/assets/search.js', '/assets/search-index.json', '/assets/icon.svg', '/assets/icon-192.png', '/manifest.webmanifest'];
+const precache = ['/', '/offline/', '/mene-zupynyly/', '/blokpost/', '/povistka/', '/perevirka-povistky/', '/skarha/', '/vidstrochka/', '/zabraly/', '/dopomoha/', '/faq/', '/poshuk/', '/pryvatnist/', '/shtraf/', '/terminovo/', ...Object.keys(situations.situations).map((i) => `/sytuatsiyi/${i}/`), '/assets/style.css', '/assets/app.js', '/assets/generator.js', '/assets/vnav.js', '/assets/search.js', '/assets/urgent.js', '/assets/search-index.json', '/assets/icon.svg', '/assets/icon-192.png', '/manifest.webmanifest'];
 for (const u of precache) {
   const f = u.endsWith('/') ? path.join(DIST, u, 'index.html') : path.join(DIST, u);
   if (!fs.existsSync(f)) throw new Error('Немає файлу для precache: ' + u);
