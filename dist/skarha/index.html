@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Скласти скаргу: генератор документів | Мої права</title>
+<meta name="description" content="Безкоштовний генератор скарги до омбудсмана, поліції, прокуратури та заяви про оскарження постанови. Працює на вашому пристрої, без сервера. Копіювання, .txt, друк, Telegram.">
+<link rel="canonical" href="%%SITE_URL%%/skarha/">
+<meta name="theme-color" content="#14213d">
+<meta name="color-scheme" content="light dark">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/icon-192.png">
+<meta property="og:site_name" content="Мої права">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="uk_UA">
+<meta property="og:title" content="Скласти скаргу: генератор документів | Мої права">
+<meta property="og:description" content="Безкоштовний генератор скарги до омбудсмана, поліції, прокуратури та заяви про оскарження постанови. Працює на вашому пристрої, без сервера. Копіювання, .txt, друк, Telegram.">
+<meta property="og:url" content="%%SITE_URL%%/skarha/">
+<meta property="og:image" content="%%SITE_URL%%/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Скласти скаргу: генератор документів | Мої права">
+<meta name="twitter:description" content="Безкоштовний генератор скарги до омбудсмана, поліції, прокуратури та заяви про оскарження постанови. Працює на вашому пристрої, без сервера. Копіювання, .txt, друк, Telegram.">
+<meta name="twitter:image" content="%%SITE_URL%%/assets/og.png">
+<script>try{var t=localStorage.getItem('theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="stylesheet" href="/assets/style.css?v=d8497c0a">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Скласти скаргу","description":"Безкоштовний генератор скарги до омбудсмана, поліції, прокуратури та заяви про оскарження постанови. Працює на вашому пристрої, без сервера. Копіювання, .txt, друк, Telegram.","url":"%%SITE_URL%%/skarha/","inLanguage":"uk","dateModified":"2026-10-22"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Головна","item":"%%SITE_URL%%/"},{"@type":"ListItem","position":2,"name":"Скласти скаргу","item":"%%SITE_URL%%/skarha/"}]}</script>
+</head>
+<body class="">
+<a class="skip" href="#main">Перейти до змісту</a>
+<header class="top">
+  <a class="brand" href="/" aria-label="Мої права — на головну"><span class="logo" aria-hidden="true">§</span> Мої права</a>
+  <div class="top-act">
+    <a class="icon-btn" href="/poshuk/" aria-label="Пошук по сайту"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 2a8 8 0 1 0 4.9 14.3l5.4 5.4 1.4-1.4-5.4-5.4A8 8 0 0 0 10 2zm0 2a6 6 0 1 1 0 12 6 6 0 0 1 0-12z"/></svg></a>
+    <button class="icon-btn" id="theme-btn" type="button" aria-label="Перемкнути світлу/темну тему"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9c0-.5 0-.9-.1-1.4A5.5 5.5 0 0 1 12.4 3.1 9 9 0 0 0 12 3z"/></svg></button>
+  </div>
+</header>
+<main id="main" tabindex="-1">
+<article class="page">
+<h1>Скласти скаргу</h1>
+<p class="lead">Заповніть форму — отримаєте готовий текст. Усе обробляється лише у вашому браузері: нічого не надсилається й не зберігається.</p>
+
+<form id="gen" class="gen" autocomplete="off" novalidate>
+<noscript><p class="callout warn">Для генератора потрібен JavaScript. Він працює лише на вашому пристрої й нічого не надсилає.</p></noscript>
+<fieldset>
+<legend>1. Тип документа</legend>
+<div class="radios" role="radiogroup" aria-label="Тип документа">
+<label class="opt"><input type="radio" name="kind" value="ombudsman" checked> <span>Скарга Уповноваженому з прав людини (омбудсману)</span></label>
+<label class="opt"><input type="radio" name="kind" value="police"> <span>Заява до поліції (було насильство, погрози)</span></label>
+<label class="opt"><input type="radio" name="kind" value="prosecutor"> <span>Скарга до прокуратури</span></label>
+<label class="opt"><input type="radio" name="kind" value="appeal"> <span>Заява про оскарження постанови про штраф</span></label>
+</div>
+</fieldset>
+
+<fieldset>
+<legend>2. Про вас</legend>
+<label for="f-name">ПІБ</label>
+<input id="f-name" name="name" type="text" autocomplete="name" placeholder="Прізвище Ім’я По батькові">
+<label for="f-contact">Адреса та контакти для відповіді</label>
+<input id="f-contact" name="contact" type="text" placeholder="Адреса, телефон, e-mail">
+<label for="f-to">Кому (адресат, за потреби уточніть)</label>
+<input id="f-to" name="to" type="text" placeholder="Підставляється автоматично; змініть, якщо знаєте точного адресата">
+</fieldset>
+
+<fieldset>
+<legend>3. Що сталося</legend>
+<div class="row">
+<div><label for="f-date">Дата</label><input id="f-date" name="date" type="date"></div>
+<div><label for="f-time">Приблизний час</label><input id="f-time" name="time" type="time"></div>
+</div>
+<label for="f-place">Місце (населений пункт, область; без вказівки розташування постів у відкритих публікаціях)</label>
+<input id="f-place" name="place" type="text" placeholder="Напр.: м. …, … область">
+<label for="f-who">Хто діяв (ТЦК, поліція, військові, невстановлені особи)</label>
+<input id="f-who" name="who" type="text" placeholder="Підрозділ, якщо відомо">
+<label for="f-desc">Опис подій (по порядку: що сталося, що сказали, що зробили)</label>
+<textarea id="f-desc" name="desc" rows="7" placeholder="Коротко й по фактах. Без оцінок і образ."></textarea>
+</fieldset>
+
+<fieldset>
+<legend>4. Ознаки та докази</legend>
+<div class="row">
+<div><label for="f-mask">Балаклави / обличчя закриті?</label>
+<select id="f-mask" name="mask"><option value="">не вказувати</option><option value="так">так</option><option value="ні">ні</option><option value="частково">частково</option></select></div>
+<div><label for="f-id">Розпізнавальні знаки / нашивки були?</label>
+<select id="f-id" name="ids"><option value="">не вказувати</option><option value="так">так</option><option value="ні">ні</option><option value="частково">частково</option></select></div>
+</div>
+<div class="row">
+<div><label for="f-intro">Назвалися, показали посвідчення?</label>
+<select id="f-intro" name="intro"><option value="">не вказувати</option><option value="так">так</option><option value="ні">ні</option><option value="частково">частково</option></select></div>
+<div><label for="f-viol">Було насильство / погрози?</label>
+<select id="f-viol" name="viol"><option value="">не вказувати</option><option value="так">так</option><option value="ні">ні</option></select></div>
+</div>
+<label for="f-ids2">Прикмети, форма, номери автомобілів (за наявності)</label>
+<input id="f-ids2" name="marks" type="text" placeholder="Колір форми, шеврони, номерний знак…">
+<label for="f-wit">Свідки (ПІБ, контакти — лише з їх згоди)</label>
+<input id="f-wit" name="wit" type="text">
+<div class="checks" role="group" aria-label="Наявні докази">
+<label class="opt"><input type="checkbox" name="ev" value="відеозапис"> <span>Є відео / аудіо</span></label>
+<label class="opt"><input type="checkbox" name="ev" value="фотографії"> <span>Є фото</span></label>
+<label class="opt"><input type="checkbox" name="ev" value="медична довідка про травми"> <span>Є медична довідка</span></label>
+<label class="opt"><input type="checkbox" name="ev" value="копії документів, які мені вручили"> <span>Є копії документів</span></label>
+</div>
+</fieldset>
+
+<fieldset id="appeal-box" hidden>
+<legend>5. Постанова про штраф</legend>
+<label for="f-pnum">Номер постанови (якщо є)</label>
+<input id="f-pnum" name="pnum" type="text">
+<label for="f-pdate">Дата постанови</label>
+<input id="f-pdate" name="pdate" type="date">
+<label for="f-porg">Хто виніс постанову (орган / посадова особа)</label>
+<input id="f-porg" name="porg" type="text">
+<label for="f-pgr">Чому не погоджуєтесь (по пунктах)</label>
+<textarea id="f-pgr" name="pgr" rows="5" placeholder="Напр.: повістку не вручали; не було поважності…"></textarea>
+</fieldset>
+
+<div class="actions">
+<button class="btn big" type="submit" id="make">Скласти текст</button>
+<button class="btn secondary" type="reset" id="clear">Очистити</button>
+</div>
+</form>
+
+<section id="out-wrap" hidden aria-live="polite">
+<h2>Готовий текст</h2>
+<p class="muted">Перевірте й відредагуйте текст нижче. Потім скопіюйте, завантажте, роздрукуйте (збереження в PDF — через друк у браузері) або поділіться.</p>
+<textarea id="out" rows="18" class="out" aria-label="Готовий текст скарги"></textarea>
+<div class="actions">
+<button class="btn" type="button" id="copy">Копіювати</button>
+<button class="btn secondary" type="button" id="dl">Завантажити .txt</button>
+<button class="btn secondary" type="button" id="print">Друк / PDF</button>
+<a class="btn secondary" id="tg" href="#" target="_blank" rel="noopener noreferrer">Поділитись у Telegram</a>
+</div>
+<p class="muted" id="status" role="status"></p>
+</section>
+
+<h2>Чек-ліст доказів</h2>
+<ul class="check"><li>Відео/аудіо (оригінал, не пересилання) — збережіть файл і резервну копію.</li><li>Фото документів, повістки, посвідчень, номерів авто (лише ваші свої ракурси, без вказівки місць роботи ТЦК/блокпостів у публічних постах).</li><li>Контакти свідків (за їх згодою).</li><li>Медична довідка / висновок (якщо були травми): обстеження одразу.</li><li>Копії будь-яких документів, що вам вручили чи які ви підписали.</li><li>Хронологія: ваші нотатки, зроблені одразу після події.</li><li>Підтвердження поданих скарг (номери, дата, скани листів).</li></ul>
+<aside class="callout lawyer" role="note"><strong class="ct">Потребує перевірки юристом</strong><p>Шаблони скарг складено за загальною практикою, без посилань на конкретні статті КПК/КУпАП, окрім 287–288 КУпАП щодо оскарження постанови (строк 10 днів). Юристу — перевірити форму звернення до поліції (заява про вчинення кримінального правопорушення), належний адресат та формулювання прохальної частини.</p></aside>
+</article>
+</main>
+<footer class="foot">
+  <p class="disclaimer"><strong>Це довідкова інформація, а не юридична консультація.</strong> Закони змінюються: перевіряйте актуальні редакції та за потреби звертайтесь до юриста.</p>
+  <section class="sources" aria-labelledby="src-h"><h2 id="src-h">Джерела</h2><ul><li><a href="https://ombudsman.gov.ua/" target="_blank" rel="noopener noreferrer">Уповноважений Верховної Ради України з прав людини (Офіс омбудсмана)</a></li><li><a href="https://www.npu.gov.ua/" target="_blank" rel="noopener noreferrer">Національна поліція України</a></li><li><a href="https://gp.gov.ua/" target="_blank" rel="noopener noreferrer">Офіс Генерального прокурора</a></li><li><a href="https://zakon.rada.gov.ua/laws/show/80731-10" target="_blank" rel="noopener noreferrer">Кодекс України про адміністративні правопорушення (ст. 210, 210-1, 287, 288)</a></li><li><a href="https://legalaid.gov.ua/" target="_blank" rel="noopener noreferrer">Система безоплатної правової допомоги: 0 800 213 103 (безкоштовно)</a></li></ul><p class="muted">Перевірено: <time datetime="2026-10-22">22.10.2026</time></p></section>
+  <p class="foot-links"><a href="/faq/">Часті запитання</a> · <a href="/pryvatnist/">Політика конфіденційності</a> · <a href="/poshuk/">Пошук</a></p>
+  <p class="muted">Сайт не збирає ваших даних і не містить даних про місця й час роботи ТЦК, блокпостів чи поліції.</p>
+</footer>
+<nav class="bottom" aria-label="Основна навігація"><a href="/perevirka-povistky/" class="nav-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h8l6 6v14H6V2zm7 1.5V9h5.5L13 3.5zM8 13h8v1.6H8V13zm0 3.4h8V18H8v-1.6z"/></svg><span>Повістка</span></a><a href="/vidstrochka/" class="nav-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 5v5.2l4 2.4-.8 1.3L11 13V7h2z"/></svg><span>Відстрочка</span></a><a href="/mene-zupynyly/" class="nav-sos" aria-label="Мене зупинили — що робити"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 3 6v6c0 5 3.8 9.3 9 10 5.2-.7 9-5 9-10V6l-9-4zm-1 5h2v6h-2V7zm0 8h2v2h-2v-2z"/></svg><span>Мене зупинили</span></a><a href="/skarha/" class="nav-i on" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17.3V21h3.7L17.8 9.9l-3.7-3.7L3 17.3zM20.7 7a1 1 0 0 0 0-1.4l-2.3-2.3a1 1 0 0 0-1.4 0l-1.8 1.8 3.7 3.7L20.7 7z"/></svg><span>Скарга</span></a><a href="/dopomoha/" class="nav-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v2.2H4V6zm0 5h16v2.2H4V11zm0 5h16v2.2H4V16z"/></svg><span>Ще</span></a></nav>
+<script src="/assets/app.js?v=d8497c0a" defer></script>
+<script src="/assets/generator.js?v=d8497c0a" defer></script>
+</body>
+</html>

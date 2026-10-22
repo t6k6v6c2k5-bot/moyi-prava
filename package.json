@@ -1,0 +1,27 @@
+{
+  "name": "moyi-prava",
+  "version": "1.0.0",
+  "description": "Навігатор \"Мої права\" для військовозобов’язаних та їхніх родин",
+  "main": "server.js",
+  "scripts": {
+    "build": "node scripts/build.js",
+    "start": "node server.js",
+    "test": "node tests/e2e.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/t6k6v6c2k5-bot/moyi-prava.git"
+  },
+  "bugs": {
+    "url": "https://github.com/t6k6v6c2k5-bot/moyi-prava/issues"
+  },
+  "homepage": "https://github.com/t6k6v6c2k5-bot/moyi-prava#readme",
+  "dependencies": {
+    "compression": "^1.8.2",
+    "express": "^4.22.3"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  }
+}

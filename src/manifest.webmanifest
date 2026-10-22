@@ -1,0 +1,16 @@
+{
+  "name": "Мої права — навігатор для військовозобов’язаних",
+  "short_name": "Мої права",
+  "description": "Що робити, якщо зупинили, як перевірити повістку, відстрочка й скарги. Працює офлайн.",
+  "lang": "uk",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#14213d",
+  "theme_color": "#14213d",
+  "icons": [
+    { "src": "/assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/assets/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
