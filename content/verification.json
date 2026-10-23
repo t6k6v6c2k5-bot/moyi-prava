@@ -15,7 +15,7 @@
       "edition": "31.07.2026",
       "expected": "31.07.2026",
       "changed": false,
-      "cached": true
+      "cached": false
     },
     "pkmu560": {
       "title": "ПКМУ № 560 від 16.05.2024 (призов під час мобілізації)",
@@ -69,7 +69,7 @@
       "url": "https://zakon.rada.gov.ua/laws/show/8073-10",
       "edition": null,
       "changed": false,
-      "cached": false
+      "cached": true
     },
     "kk": {
       "title": "Кримінальний кодекс України",
