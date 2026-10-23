@@ -158,12 +158,12 @@
     var when = [fmt(val('date')), val('time') ? 'приблизно о ' + val('time') : ''].filter(Boolean).join(' ');
     var L = [];
     flaggedCount = 0;
-    L.push('До: ' + addressee(K));
+    L.push('Кому: ' + addressee(K));
     if (k === 'claim') {
       L.push('Позивач: ' + blank(val('name'), 'ПІБ') + ', адреса та контакти: ' + blank(val('contact')));
       L.push('Відповідач: ' + blank(val('porg'), 'найменування ТЦК чи органу') + ', місцезнаходження: ________');
     } else {
-      L.push('Від: ' + blank(val('name'), 'ПІБ'));
+      L.push('Заявник: ' + blank(val('name'), 'ПІБ'));
       L.push('Адреса та контакти: ' + blank(val('contact')));
     }
     L.push('');
@@ -174,13 +174,13 @@
     else L.push('Я, ' + blank(val('name'), 'ПІБ') + ', звертаюсь до Вас з цією ' + (k === 'police' ? 'заявою' : 'скаргою') + ' з метою захисту своїх прав і законних інтересів та перевірки законності дій, описаних нижче.');
     if (k === 'higher') {
       L.push('');
-      L.push('Раніше я звертався(лась) із скаргою' + (val('porg') ? ' до: ' + val('porg') : '') + '. Відповіддю' + (val('pnum') ? ' № ' + val('pnum') : '') + (val('pdate') ? ' від ' + fmt(val('pdate')) : '') + ' мені повідомлено, що порушень не виявлено. З цим не погоджуюсь, оскільки:');
+      L.push('Раніше я звертався(лась) зі скаргою' + (val('porg') ? ' до: ' + val('porg') : '') + '. Відповіддю' + (val('pnum') ? ' № ' + val('pnum') : '') + (val('pdate') ? ' від ' + fmt(val('pdate')) : '') + ' мені повідомлено, що порушень не виявлено. З цим не погоджуюсь, оскільки:');
       cleanFacts(val('pgr')).forEach(function (t, i) { L.push((i + 1) + ') ' + t); });
       if (!val('pgr')) L.push('________ [У чому відповідь неправильна]');
     }
     L.push('');
     L.push('I. ЩОДО ОБСТАВИН');
-    if (k === 'claim' && ct === 'post') L.push('Постановою' + (val('pnum') ? ' № ' + val('pnum') : '') + (val('pdate') ? ' від ' + fmt(val('pdate')) : '') + (val('porg') ? ', винесеною: ' + val('porg') : '') + ', мене притягнуто до адміністративної відповідальності. Дату отримання копії постанови: ________.');
+    if (k === 'claim' && ct === 'post') L.push('Постановою' + (val('pnum') ? ' № ' + val('pnum') : '') + (val('pdate') ? ' від ' + fmt(val('pdate')) : '') + (val('porg') ? ', винесеною: ' + val('porg') : '') + ', мене притягнуто до адміністративної відповідальності. Дата отримання копії постанови: ________.');
     if (k === 'claim' && ct === 'komisia') L.push('Рішенням комісії' + (val('porg') ? ' (' + val('porg') + ')' : '') + (val('pnum') ? ' № ' + val('pnum') : '') + (val('pdate') ? ' від ' + fmt(val('pdate')) : '') + ' мені відмовлено у наданні (переоформленні) відстрочки або її не враховано.');
     var how = HOW[val('how')] || '';
     var who = WHO[wt] + (val('who') ? ' (' + val('who') + ')' : '');
@@ -264,15 +264,15 @@
     var ev = Array.prototype.filter.call(form.querySelectorAll('input[name=ev]:checked'), Boolean).map(function (c) { return c.value; });
     var when = [fmt(val('date')), val('time') ? 'о ' + val('time') : ''].filter(Boolean).join(' ');
     var L = [];
-    L.push('До: ' + addressee(K));
-    L.push('Від: ' + blank(val('name'), 'ПІБ'));
+    L.push('Кому: ' + addressee(K));
+    L.push('Заявник: ' + blank(val('name'), 'ПІБ'));
     L.push('Адреса та контакти: ' + blank(val('contact')));
     L.push('');
     L.push(K.title);
     L.push(K.sub);
     L.push('');
     if (k === 'higher') {
-      L.push('Я, ' + blank(val('name'), 'ПІБ') + ', раніше звертався(лась) із скаргою' + (val('porg') ? ' до: ' + val('porg') : '') + '. Відповіддю' + (val('pnum') ? ' № ' + val('pnum') : '') + (val('pdate') ? ' від ' + fmt(val('pdate')) : '') + ' мені повідомлено, що порушень не виявлено. З цим не погоджуюсь.');
+      L.push('Я, ' + blank(val('name'), 'ПІБ') + ', раніше звертався(лась) зі скаргою' + (val('porg') ? ' до: ' + val('porg') : '') + '. Відповіддю' + (val('pnum') ? ' № ' + val('pnum') : '') + (val('pdate') ? ' від ' + fmt(val('pdate')) : '') + ' мені повідомлено, що порушень не виявлено. З цим не погоджуюсь.');
       L.push('');
       L.push('У чому відповідь неправильна:');
       L.push(blank(val('pgr'), 'що не перевірено / які докази проігноровано'));

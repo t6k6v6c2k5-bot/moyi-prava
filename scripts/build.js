@@ -112,11 +112,11 @@ function renderBlocks(blocks) {
         }
         case 'sos':
           return `<div class="sosbox">
-<p class="sos-big">Спокійно.<br>Не чиніть опір.<br>Не тікайте.</p>
+<p class="sos-big">Спокійно.<br>Руки на видноті.<br>Незгоду — письмово, потім.</p>
 <p><a class="btn sos big" href="tel:0800213103">Безоплатна правова допомога: 0&nbsp;800&nbsp;213&nbsp;103</a></p>
 <p><a class="btn big amber" href="sms:?&body=%D0%9C%D0%B5%D0%BD%D0%B5%20%D0%B7%D1%83%D0%BF%D0%B8%D0%BD%D0%B8%D0%BB%D0%B8.%20%D0%97%D0%B2%27%D1%8F%D0%B6%D1%96%D1%82%D1%8C%D1%81%D1%8F%20%D0%B7%20%D1%8E%D1%80%D0%B8%D1%81%D1%82%D0%BE%D0%BC%3A%200%20800%20213%20103">Написати рідним</a></p>
 <ol class="sos-steps">
-<li><strong>Запитайте:</strong> «Хто ви? Назвіть П.І.Б., посаду й причину».</li>
+<li><strong>Запитайте:</strong> «Назвіть, будь ласка, прізвище, посаду й причину зупинки».</li>
 <li><strong>Покажіть</strong> паспорт і військово-обліковий документ.</li>
 <li><strong>Не підписуйте</strong> нічого, чого не прочитали.</li>
 <li><strong>Запам’ятайте</strong> час, П.І.Б., номери авто. Запишіть потім.</li>
@@ -124,7 +124,7 @@ function renderBlocks(blocks) {
 <p><a class="btn big secondary" href="/terminovo/">Передати справу юристу</a></p>
 <p class="quick2"><a class="btn secondary" href="tel:102">102 Поліція</a><a class="btn secondary" href="tel:112">112 Екстрена</a></p>
 <details class="fold"><summary>Якщо вже забрали силою</summary>
-<p>У такий момент розмови немає — і це нормально. Головне: <strong>не чиніть опір</strong>, берегти себе. Усе інше — після, і це можна зробити з телефона або руками рідних:</p>
+<p>У такий момент не до розмов — це нормально. Головне — <strong>не чиніть опір</strong> і бережіть себе. Усе інше — після, і це можна зробити з телефона або руками рідних:</p>
 <ol class="sos-steps"><li><strong>Рідні:</strong> дзвінок юристу <a href="tel:0800213103">0 800 213 103</a> і сторінка <a href="/zabraly/">«Рідну людину забрали»</a>.</li><li><strong>Якщо була сила:</strong> лікар і довідка про травми одразу, фото травм, <a href="/mene-zupynyly/#tck-syla">що робити далі</a>.</li><li><strong>Скарга й заява</strong> — <a href="/skarha/">генератор</a>, юрист допоможе подати.</li></ol>
 </details>
 <details class="fold"><summary>Підготуйтесь заздалегідь</summary>
@@ -396,10 +396,9 @@ ${faq.items.map((i) => `<details class="faq"><summary>${esc(i.q)}</summary><p>${
       url: SITE + '/',
       inLanguage: 'uk',
       publisher: { '@type': 'Organization', name: 'Мої права', url: SITE + '/', logo: { '@type': 'ImageObject', url: SITE + '/assets/icon-512.png' } },
-      potentialAction: { '@type': 'SearchAction', target: SITE + '/poshuk/?q={search_term_string}', 'query-input': 'required name=search_term_string' },
     },
   ];
-  write('/', layout({ title: 'Мої права — навігатор для військовозобов’язаних та їхніх родин', description: 'Що робити, якщо зупинили, як перевірити повістку, оформити відстрочку й подати скаргу. Довідник за офіційними джерелами; працює офлайн.', urlPath: '/', body, noSos: true, nav: 'home', jsonld, sourceIds: ['law3543', 'pkmu560', 'pkmu1455', 'bpd'] }));
+  write('/', layout({ title: 'Мої права: ТЦК, повістка, відстрочка, скарга — довідник за законом', description: 'Що робити, якщо зупинили, як перевірити повістку, оформити відстрочку й подати скаргу. Довідник за офіційними джерелами; працює офлайн.', urlPath: '/', body, noSos: true, nav: 'home', jsonld, sourceIds: ['law3543', 'pkmu560', 'pkmu1455', 'bpd'] }));
   searchIndex.push({ u: '/', t: 'Головна', d: 'Мої права: навігатор', x: tiles.map((t) => t.t + ' ' + t.d).join(' ') });
   out.push({ u: '/', p: 1.0 });
 }

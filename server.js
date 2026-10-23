@@ -100,7 +100,7 @@ function sendHtml(req, res, key, status = 200) {
 
 app.get('/robots.txt', (req, res) => {
   if (!INDEXING) return res.type('text/plain').send('User-agent: *\nDisallow: /\n');
-  res.type('text/plain').send(`User-agent: *\nAllow: /\nDisallow: /poshuk/\nDisallow: /offline/\n\nSitemap: ${origin(req)}/sitemap.xml\n`);
+  res.type('text/plain').send(`User-agent: *\nAllow: /\n\nSitemap: ${origin(req)}/sitemap.xml\n`);
 });
 
 app.get('/favicon.ico', (req, res) => res.set('Cache-Control', 'public, max-age=86400').type('image/png').sendFile(path.join(DIST, 'assets', 'favicon-48.png')));
@@ -109,7 +109,7 @@ app.get('/sitemap.xml', (req, res) => {
   const o = origin(req);
   const today = pagesInfo.built;
   const urls = pagesMeta
-    .map((p) => `  <url><loc>${o}${p.u}</loc><lastmod>${today}</lastmod><priority>${p.p}</priority></url>`)
+    .map((p) => `  <url><loc>${o}${p.u}</loc><lastmod>${today}</lastmod></url>`)
     .join('\n');
   res.type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`);
 });
@@ -124,6 +124,7 @@ app.get(/^\/(?:[a-z0-9-]+\/)*$/, (req, res, next) => {
   next();
 });
 app.get('/pages.json', (req, res) => res.status(404).end());
+app.use((req, res, next) => (/\/index\.html$/.test(req.path) ? res.redirect(301, req.path.replace(/index\.html$/, '')) : next()));
 // старі адреси (до об’єднання сторінок) → нові розділи
 let OLD_URLS = {};
 try { OLD_URLS = JSON.parse(fs.readFileSync(path.join(__dirname, 'content', 'redirects.json'), 'utf8')); } catch (e) { /* без перенаправлень */ }
