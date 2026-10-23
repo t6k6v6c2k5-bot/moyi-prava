@@ -286,7 +286,6 @@ for (const p of pages) {
   const body = `<article class="page">
 <h1>${esc(p.h1)}</h1>
 <p class="lead">${esc(p.lead)}</p>
-${p.slug === 'mene-zupynyly' ? '<p class="timer muted">Оберіть свою ситуацію у списку нижче. Загальні правила під списком читаються за 1–2 хвилини.</p>' : ''}
 ${renderBlocks(p.blocks)}
 ${badge(p.sources)}
 </article>`;
@@ -373,15 +372,16 @@ ${faq.items.map((i) => `<details class="faq"><summary>${esc(i.q)}</summary><p>${
   ];
   const body = `<section class="hero">
 <h1>Що сталося?</h1>
-<ul class="big6">
-<li class="full"><a class="btn sos big" href="/sos/">${ICON.sos}<span>Мене зупинили</span></a></li>
-<li><a class="btn big" href="/zabraly/"><span>Рідну людину забрали</span></a></li>
-<li><a class="btn big" href="/povistka/"><span>Мені прийшла повістка</span></a></li>
-<li><a class="btn big" href="/vidstrochka/"><span>Хочу відстрочку</span></a></li>
-<li><a class="btn big" href="/statusy-rezerv/#blokpost-rozshuk"><span>Кажуть, що я в розшуку</span></a></li>
-<li class="full"><a class="btn big" href="/skarha/#vidpyska-tck"><span>ТЦК відписало «все законно» / штраф</span></a></li>
-<li class="full"><a class="btn big callb" href="tel:0800213103"><span>Юрист безкоштовно · 0&nbsp;800&nbsp;213&nbsp;103</span></a></li>
+<p class="lead">Оберіть ситуацію — відкриється короткий план дій.</p>
+<a class="sos-card" href="/sos/"><span class="sos-ico">${ICON.sos}</span><span class="sos-txt"><strong>Мене зупинили</strong><span>Що казати й робити просто зараз</span></span><i class="chev"></i></a>
+<ul class="rows">
+<li><a class="row-link" href="/zabraly/"><span class="ri c-red">${ICON.family}</span><span class="rt"><strong>Рідну людину забрали</strong><span>Перші години: що зробити</span></span><i class="chev"></i></a></li>
+<li><a class="row-link" href="/povistka/"><span class="ri c-blue">${ICON.doc}</span><span class="rt"><strong>Мені прийшла повістка</strong><span>Перевірити, що робити, якщо не встигаю</span></span><i class="chev"></i></a></li>
+<li><a class="row-link" href="/vidstrochka/"><span class="ri c-green">${ICON.clock}</span><span class="rt"><strong>Хочу відстрочку</strong><span>Які підстави мені підходять і що подати</span></span><i class="chev"></i></a></li>
+<li><a class="row-link" href="/statusy-rezerv/"><span class="ri c-amber">${ICON.search}</span><span class="rt"><strong>Кажуть, що я в розшуку</strong><span>Статуси в Резерв+: як уточнити й оскаржити</span></span><i class="chev"></i></a></li>
+<li><a class="row-link" href="/skarha/"><span class="ri c-violet">${ICON.scale}</span><span class="rt"><strong>Скарга, відписка, штраф, суд</strong><span>Готові тексти й строки</span></span><i class="chev"></i></a></li>
 </ul>
+<a class="call-card" href="tel:0800213103">${ICON.phone}<span>Юрист безкоштовно · 0&nbsp;800&nbsp;213&nbsp;103<small>Безоплатна правова допомога, щодня</small></span></a>
 </section>
 <details class="fold"><summary>Усе інше (повістка, скарга, суд, Резерв+, словник…)</summary>
 <ul class="tiles">${tiles.map((t) => `<li><a class="tile c-${t.c || 'blue'}" href="${t.u}">${ICON[t.i]}<span class="tt">${esc(t.t)}</span><span class="td">${esc(t.d)}</span></a></li>`).join('')}</ul>
