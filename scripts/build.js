@@ -161,6 +161,8 @@ function renderBlocks(blocks) {
               .join('') +
             '<h3 class="grp">Рідну людину забрали</h3><ul class="linklist"><li><a class="btn secondary" href="/zabraly/">Рідну людину забрали — що робити</a></li></ul>'
           );
+        case 'call':
+          return `<p><a class="btn sos big" href="tel:0800213103">Подзвонити юристу безкоштовно 0&nbsp;800&nbsp;213&nbsp;103</a></p><p><a class="btn big secondary" href="sms:?&body=%D0%A0%D1%96%D0%B4%D0%BD%D1%83%20%D0%BB%D1%8E%D0%B4%D0%B8%D0%BD%D1%83%20%D0%B7%D0%B0%D0%B1%D1%80%D0%B0%D0%BB%D0%B8.%20%D0%AE%D1%80%D0%B8%D1%81%D1%82%20%D0%B1%D0%B5%D0%B7%D0%BE%D0%BF%D0%BB%D0%B0%D1%82%D0%BD%D0%BE%3A%200%20800%20213%20103">Надіслати номер юриста рідним (SMS)</a></p>`;
         case 'urgent_cta':
           return '<p><a class="btn big sos" href="/terminovo/">Терміново: передати справу юристу</a></p><p class="muted">Коротка форма: що сталося → готове повідомлення для адвоката в Telegram. Навіть якщо людину вже забрали в ТЦК.</p>';
         case 'urgent':
@@ -196,7 +198,7 @@ function sourcesBlock(ids) {
     .join('')}</ul><p class="muted">Перевірено: <time datetime="${VERIFIED_ISO}">${VERIFIED}</time></p></section>`;
 }
 
-function layout({ title, description, urlPath, body, nav, scripts = [], jsonld = [], noSos = false, ogType = 'website', sourceIds = [], robots = 'index' }) {
+function layout({ title, description, urlPath, body, nav, scripts = [], jsonld = [], noSos = false, callbar = false, ogType = 'website', sourceIds = [], robots = 'index' }) {
   const canonical = `${SITE}${urlPath}`;
   const navHtml = NAV.map(
     (n) => `<a href="${n.href}" class="nav-i${n.id === nav ? ' on' : ''}"${n.id === nav ? ' aria-current="page"' : ''}>${ICON[n.icon]}<span>${n.label}</span></a>`
@@ -242,7 +244,7 @@ function layout({ title, description, urlPath, body, nav, scripts = [], jsonld =
 <link rel="stylesheet" href="/assets/style.css?v=%%BUILD%%">
 ${jsonld.map((j) => `<script type="application/ld+json">${JSON.stringify(j).replace(/</g, '\\u003c')}</script>`).join('\n')}
 </head>
-<body class="${noSos ? 'no-sos' : ''}">
+<body class="${[noSos ? 'no-sos' : '', callbar ? 'has-callbar' : ''].filter(Boolean).join(' ')}">
 <a class="skip" href="#main">Перейти до змісту</a>
 <header class="top">
   <a class="brand" href="/" aria-label="Мої права — на головну"><span class="logo" aria-hidden="true">§</span> Мої права</a>
@@ -261,6 +263,7 @@ ${body}
   <!--donate--><p class="support"><a class="btn secondary" href="%%DONATE_URL%%" target="_blank" rel="noopener noreferrer">Підтримати проєкт</a> <span class="muted">Сайт безкоштовний, без реклами й трекерів.</span></p><!--/donate-->
   <p class="muted">Сайт не збирає ваших даних і не містить даних про місця й час роботи ТЦК, блокпостів чи поліції.</p>
 </footer>
+${callbar ? '<a class="callbar" href="tel:0800213103">Юрист безкоштовно · 0&nbsp;800&nbsp;213&nbsp;103</a>' : ''}
 <nav class="bottom" aria-label="Основна навігація">${bottom}</nav>
 <script src="/assets/app.js?v=%%BUILD%%" defer></script>
 ${scripts.map((s) => `<script src="/assets/${s}?v=%%BUILD%%" defer></script>`).join('\n')}
@@ -324,7 +327,7 @@ ${badge(p.sources)}
       ],
     },
   ];
-  write(urlPath, layout({ title: p.title, description: p.description, urlPath, body, nav: p.nav, scripts, jsonld, noSos: p.slug === 'mene-zupynyly' || p.slug === 'sos', ogType: 'article', sourceIds: p.sources }));
+  write(urlPath, layout({ title: p.title, description: p.description, urlPath, body, nav: p.nav, scripts, jsonld, noSos: p.slug === 'mene-zupynyly' || p.slug === 'sos', callbar: !!p.callbar, ogType: 'article', sourceIds: p.sources }));
   let text = strings(p.blocks);
   if (p.slug === 'vidstrochka') text += ' ' + Object.values(vdata.grounds).map((g) => g.t + ' ' + g.ref + ' ' + g.docs.map(plain).join(' ')).join(' ');
   searchIndex.push({ u: urlPath, t: p.h1, d: p.description, x: text });
@@ -358,7 +361,7 @@ ${st.plain ? '' : `<aside class="callout warn" role="note"><strong class="ct">Д
       { '@type': 'ListItem', position: 2, name: 'Мене зупинили', item: SITE + '/mene-zupynyly/' },
       { '@type': 'ListItem', position: 3, name: st.h1, item: SITE + urlPath } ] },
   ];
-  write(urlPath, layout({ title: st.h1 + ' | Мої права', description: st.description, urlPath, body, nav: 'stop', jsonld, ogType: 'article', sourceIds: st.sources }));
+  write(urlPath, layout({ title: st.h1 + ' | Мої права', description: st.description, urlPath, body, callbar: true, nav: 'stop', jsonld, ogType: 'article', sourceIds: st.sources }));
   searchIndex.push({ u: urlPath, t: st.h1, d: st.description, x: [st.label, st.lead, ...st.do, ...st.dont, ...st.know].map(plain).join(' ') });
   out.push({ u: urlPath, p: 0.7 });
 }
@@ -418,12 +421,13 @@ ${faq.items.map((i) => `<details class="faq"><summary>${esc(i.q)}</summary><p>${
   const body = `<section class="hero">
 <h1>Що сталося?</h1>
 <ul class="big6">
-<li><a class="btn sos big" href="/sos/">${ICON.sos}<span>Мене зупинили</span></a></li>
-<li><a class="btn big red2" href="/zabraly/"><span>Рідну людину забрали</span></a></li>
-<li><a class="btn big amber" href="/sytuatsiyi/blokpost-rozshuk/"><span>Кажуть, що я в розшуку</span></a></li>
+<li class="full"><a class="btn sos big" href="/sos/">${ICON.sos}<span>Мене зупинили</span></a></li>
+<li><a class="btn big" href="/zabraly/"><span>Рідну людину забрали</span></a></li>
+<li><a class="btn big" href="/povistka/"><span>Мені прийшла повістка</span></a></li>
 <li><a class="btn big" href="/vidstrochka/"><span>Хочу відстрочку</span></a></li>
-<li><a class="btn big" href="/vidpyska-tck/"><span>ТЦК відписало «все законно»</span></a></li>
-<li><a class="btn big amber" href="/terminovo/"><span>Потрібен юрист зараз</span></a></li>
+<li><a class="btn big" href="/sytuatsiyi/blokpost-rozshuk/"><span>Кажуть, що я в розшуку</span></a></li>
+<li class="full"><a class="btn big" href="/vidpyska-tck/"><span>ТЦК відписало «все законно» / штраф</span></a></li>
+<li class="full"><a class="btn big callb" href="tel:0800213103"><span>Юрист безкоштовно · 0&nbsp;800&nbsp;213&nbsp;103</span></a></li>
 </ul>
 </section>
 <details class="fold"><summary>Усе інше (повістка, скарга, суд, Резерв+, словник…)</summary>

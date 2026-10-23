@@ -86,7 +86,7 @@ function sendHtml(req, res, key, status = 200) {
     .replace(/<p class="muted" data-disc><\/p>/g, '')
     .replace(/%%ROBOTS_INDEX%%/g, ROBOTS_INDEX);
   html = DONATE_URL ? html.replace(/%%DONATE_URL%%/g, DONATE_URL) : html.replace(/<!--donate-->[\s\S]*?<!--\/donate-->/g, '');
-  if (LAWYER_URL.startsWith('tel:')) html = html.replace('Написати адвокату в Telegram', 'Заявка адвокату недоступна — зателефонуйте 0 800 213 103').replace('Надіслати в Telegram', 'Зателефонувати 0 800 213 103').replace(/ target="_blank" rel="noopener noreferrer">(Заявка адвокату недоступна|Зателефонувати)/g, '>$1');
+  if (LAWYER_URL.startsWith('tel:')) html = html.replace('Написати адвокату в Telegram', 'Подзвонити юристу безкоштовно 0 800 213 103').replace('Надіслати в Telegram', 'Зателефонувати 0 800 213 103').replace(/ target="_blank" rel="noopener noreferrer">(Подзвонити юристу безкоштовно|Зателефонувати)/g, '>$1');
   res.status(status).type('html').set('Cache-Control', 'no-cache').send(html);
 }
 

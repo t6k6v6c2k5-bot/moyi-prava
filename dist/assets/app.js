@@ -28,6 +28,7 @@
   if (lb && /^tel:/.test(lb.getAttribute('href'))) {
     lb.removeAttribute('target');
     lb.removeAttribute('rel');
-    lb.textContent = 'Заявка адвокату тимчасово недоступна — зателефонуйте 0 800 213 103';
+    lb.textContent = 'Подзвонити юристу безкоштовно 0 800 213 103';
+    lb.classList.add('sos');
   }
 })();

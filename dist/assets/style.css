@@ -173,3 +173,26 @@ details.fold{margin:.8rem 0;border-top:1px solid var(--line)}details.fold>summar
 details.q{border:1px solid var(--line);border-radius:var(--r);margin:.6rem 0;background:var(--card)}details.q>summary{cursor:pointer;font-weight:700;font-size:1.05rem;padding:.9rem 1rem;min-height:52px;list-style:none;display:flex;justify-content:space-between;gap:.5rem}details.q>summary::after{content:"▾"}details.q[open]>summary::after{content:"▴"}details.q>summary .cnt{color:var(--accent,#b00020);font-weight:700}details.q .hint,details.q label{margin-left:1rem;margin-right:1rem}details.q label:last-child{margin-bottom:.8rem}
 .sosbox .sos-big{font-size:2rem;line-height:1.15;font-weight:800;margin:.4rem 0 1rem}.sos-steps{font-size:1.25rem;line-height:1.35;padding-left:1.4rem}.sos-steps li{margin:.7rem 0}.sosbox .btn.big{width:100%;min-height:64px;font-size:1.2rem;text-align:center}
 .big6{list-style:none;padding:0;margin:.6rem 0;display:grid;gap:.7rem}.big6 .btn{width:100%;min-height:64px;font-size:1.2rem;text-align:center;justify-content:center}.btn.red2{background:#8b1a1a;color:#fff}
+/* аудит дизайнера: темна тема за системною настройкою, видимість вторинних кнопок, тапи */
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme=light]) .btn{border-color:var(--accent);background:#2a5aa6;color:#fff}
+  :root:not([data-theme=light]) .btn.secondary{background:transparent;border-color:#6b7fa8;color:var(--fg)}
+  :root:not([data-theme=light]) .btn.sos{background:var(--sos);border-color:#ff8a8f}
+  :root:not([data-theme=light]) .btn.amber{background:var(--amber);border-color:var(--amber);color:#1b1200}
+}
+.hero .btn.big:not(.sos):not(.amber){background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.5);color:#fff}
+.hero .btn.big:active{background:rgba(255,255,255,.22)}
+.hero .btn.big,.hero .btn.sos{box-shadow:none}
+.btn.red2{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.5);color:#fff}
+.hero h1{font-size:clamp(1.6rem,7vw,2rem)}
+a[href^="tel:"]:not(.btn){white-space:nowrap}
+.callout a[href^="tel:"],.sos-steps a[href^="tel:"],p a[href^="tel:"]{display:inline-block;padding:.5rem .3rem;margin:-.5rem -.1rem;min-height:44px;line-height:1.5;font-weight:700}
+.nav-i,.nav-sos{font-size:.75rem;letter-spacing:0;line-height:1.15}
+.nav-i.on{box-shadow:inset 0 3px 0 var(--amber);font-weight:700}
+summary{min-height:44px}
+.callbar{position:fixed;left:0;right:0;bottom:calc(72px + env(safe-area-inset-bottom));z-index:29;min-height:44px;display:flex;align-items:center;justify-content:center;background:#0b3d7a;color:#fff;font-weight:700;text-decoration:none}
+body.has-callbar{padding-bottom:calc(130px + env(safe-area-inset-bottom))}
+.big6{grid-template-columns:1fr 1fr}.big6 .full{grid-column:1/-1}.big6 .btn.big{min-height:72px;font-size:1.05rem;line-height:1.2}.hero .btn.callb{background:#2a5aa6;border-color:#2a5aa6;min-height:56px}
+.big6 .btn.big{font-size:.98rem;padding:.6rem .5rem;overflow-wrap:normal;word-break:normal;hyphens:none}
+.nav-i span,.nav-sos span{white-space:nowrap;font-size:.68rem}
+.nav-sos span{white-space:normal}
