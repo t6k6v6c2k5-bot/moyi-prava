@@ -103,6 +103,10 @@ function renderBlocks(blocks) {
           return '<p><a class="btn big sos" href="/terminovo/">Терміново: передати справу юристу</a></p><p class="muted">Коротка форма: що сталося → готове повідомлення для адвоката в Telegram. Навіть якщо людину вже забрали в ТЦК.</p>';
         case 'urgent':
           return fs.readFileSync(path.join(SRC, 'urgent.html'), 'utf8');
+        case 'zaiava':
+          return fs
+            .readFileSync(path.join(SRC, 'zaiava.html'), 'utf8')
+            .replace('%%ZDATA%%', JSON.stringify(Object.fromEntries(Object.entries(vdata.grounds).map(([k, g]) => [k, { t: g.t, ref: g.ref, docs: g.docs }]))).replace(/</g, '\\u003c'));
         case 'generator':
           return fs.readFileSync(path.join(SRC, 'generator.html'), 'utf8');
         default:
@@ -219,6 +223,7 @@ ${renderBlocks(p.blocks)}
   const scripts = [];
   if (p.slug === 'skarha') scripts.push('generator.js');
   if (p.slug === 'terminovo') scripts.push('urgent.js');
+  if (p.slug === 'zaiava-vidstrochka') scripts.push('zaiava.js');
   if (p.slug === 'vidstrochka') scripts.push('vnav.js');
   const jsonld = [
     {
@@ -358,7 +363,7 @@ const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).forEach((e) => (e
 walk(DIST);
 const build = hash.digest('hex').slice(0, 8);
 
-const precache = ['/', '/offline/', '/mene-zupynyly/', '/blokpost/', '/povistka/', '/perevirka-povistky/', '/skarha/', '/vidstrochka/', '/zabraly/', '/dopomoha/', '/faq/', '/poshuk/', '/pryvatnist/', '/shtraf/', '/terminovo/', ...Object.keys(situations.situations).map((i) => `/sytuatsiyi/${i}/`), '/assets/style.css', '/assets/app.js', '/assets/generator.js', '/assets/vnav.js', '/assets/search.js', '/assets/urgent.js', '/assets/search-index.json', '/assets/icon.svg', '/assets/icon-192.png', '/manifest.webmanifest'];
+const precache = ['/', '/offline/', '/mene-zupynyly/', '/blokpost/', '/povistka/', '/perevirka-povistky/', '/skarha/', '/vidstrochka/', '/zabraly/', '/dopomoha/', '/faq/', '/poshuk/', '/pryvatnist/', '/shtraf/', '/terminovo/', '/zaiava-vidstrochka/', ...Object.keys(situations.situations).map((i) => `/sytuatsiyi/${i}/`), '/assets/style.css', '/assets/app.js', '/assets/generator.js', '/assets/vnav.js', '/assets/search.js', '/assets/urgent.js', '/assets/zaiava.js', '/assets/search-index.json', '/assets/icon.svg', '/assets/icon-192.png', '/manifest.webmanifest'];
 for (const u of precache) {
   const f = u.endsWith('/') ? path.join(DIST, u, 'index.html') : path.join(DIST, u);
   if (!fs.existsSync(f)) throw new Error('Немає файлу для precache: ' + u);

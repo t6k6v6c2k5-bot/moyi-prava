@@ -3,7 +3,7 @@
 const { chromium } = require('playwright');
 const BASE = process.env.BASE || 'http://localhost:3000';
 const SHOTS = process.env.SHOTS || '';
-const PAGES = ['/', '/mene-zupynyly/', '/blokpost/', '/povistka/', '/perevirka-povistky/', '/vidstrochka/', '/skarha/', '/shtraf/', '/zabraly/', '/dopomoha/', '/faq/', '/poshuk/', '/pryvatnist/', '/terminovo/', '/sytuatsiyi/politsiya-pdr/', '/sytuatsiyi/politsiya-szch/', '/sytuatsiyi/tck-vidstrochka/'];
+const PAGES = ['/', '/mene-zupynyly/', '/blokpost/', '/povistka/', '/perevirka-povistky/', '/vidstrochka/', '/skarha/', '/shtraf/', '/zabraly/', '/dopomoha/', '/faq/', '/poshuk/', '/pryvatnist/', '/terminovo/', '/sytuatsiyi/politsiya-pdr/', '/sytuatsiyi/politsiya-szch/', '/sytuatsiyi/tck-vidstrochka/', '/zaiava-vidstrochka/', '/sytuatsiyi/povistka-poshtoiu/', '/sytuatsiyi/ne-prybuv-u-strok/'];
 let fail = 0;
 const ok = (c, m) => { if (!c) { fail++; console.log('FAIL', m); } else console.log('ok  ', m); };
 
@@ -84,6 +84,19 @@ const ok = (c, m) => { if (!c) { fail++; console.log('FAIL', m); } else console.
   // каталог ситуацій
   await page.goto(BASE + '/mene-zupynyly/');
   ok((await page.locator('a[href^="/sytuatsiyi/"]').count()) >= 14, 'мене зупинили: показано всі ситуації');
+
+  // 3c. заява про відстрочку
+  await page.goto(BASE + '/zaiava-vidstrochka/');
+  await page.fill('#z-name', 'Сидоренко Сидір Сидорович'); await page.fill('#z-id', '1234567890');
+  await page.fill('#z-birth', '1990-05-17'); await page.fill('#z-addr', 'м. Київ, вул. Тестова, 1');
+  await page.fill('#z-mail', 'a@b.ua'); await page.fill('#z-tel', '+380000000000'); await page.fill('#z-tck', 'Тестовий РТЦК та СП');
+  await page.selectOption('#z-ground', 'g_3kids');
+  ok((await page.innerText('#z-docs')).includes('Свідоцтво про народження'), 'заява: перелік документів за підставою');
+  await page.click('#zv button[type=submit]');
+  const zt = await page.inputValue('#z-out');
+  ok(zt.includes('Сидоренко Сидір') && zt.includes('17.05.1990') && zt.includes('ст. 23, ч. 1, п. 3') && zt.includes('про надання відстрочки') && zt.includes('Тестовий РТЦК'), 'заява: текст коректний');
+  await page.check('input[name=renew]'); await page.fill('#z-old', 'п. 2, до 01.2027'); await page.click('#zv button[type=submit]');
+  ok((await page.inputValue('#z-out')).includes('про переоформлення відстрочки') && (await page.inputValue('#z-out')).includes('п. 2, до 01.2027'), 'заява: переоформлення');
 
   // 4. навігатор відстрочок
   await page.goto(BASE + '/vidstrochka/');

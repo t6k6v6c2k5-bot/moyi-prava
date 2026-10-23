@@ -1,0 +1,41 @@
+<form id="zv" class="gen" autocomplete="off" novalidate>
+<noscript><p class="callout warn">Для генератора потрібен JavaScript. Він працює лише на вашому пристрої.</p></noscript>
+<fieldset>
+<legend>1. Обов’язкові відомості (ПКМУ № 560, п. 58)</legend>
+<label for="z-name">Прізвище, ім’я, по батькові</label>
+<input id="z-name" name="name" type="text" autocomplete="name">
+<label for="z-id">РНОКПП або серія й номер паспорта</label>
+<input id="z-id" name="id" type="text" autocomplete="off">
+<label for="z-birth">Дата народження</label>
+<input id="z-birth" name="birth" type="date">
+<label for="z-addr">Адреса задекларованого/зареєстрованого місця проживання (перебування)</label>
+<input id="z-addr" name="addr" type="text" autocomplete="street-address">
+<label for="z-mail">Адреса електронної пошти</label>
+<input id="z-mail" name="mail" type="text" inputmode="email" autocomplete="email">
+<label for="z-tel">Контактний номер телефону</label>
+<input id="z-tel" name="tel" type="text" inputmode="tel" autocomplete="tel">
+</fieldset>
+<fieldset>
+<legend>2. Підстава відстрочки</legend>
+<label for="z-ground">Оберіть підставу (ст. 23 Закону про мобілізацію)</label>
+<select id="z-ground" name="ground"></select>
+<label class="opt"><input type="checkbox" name="renew"> <span>У мене вже є відстрочка, прошу її переоформити за новою підставою</span></label>
+<label for="z-old" id="z-old-l" hidden>Яка відстрочка є зараз (підстава, строк)</label>
+<input id="z-old" name="old" type="text" hidden>
+<label for="z-tck">Назва ТЦК, при якому створена комісія (за місцем військового обліку)</label>
+<input id="z-tck" name="tck" type="text" placeholder="Напр.: … районний ТЦК та СП">
+</fieldset>
+<div id="z-docs" class="callout info" aria-live="polite"></div>
+<div class="actions"><button class="btn big" type="submit">Скласти заяву</button><button class="btn secondary" type="reset">Очистити</button></div>
+</form>
+<section id="z-out-wrap" hidden aria-live="polite">
+<h2>Готовий текст</h2>
+<textarea id="z-out" rows="18" class="out" aria-label="Текст заяви"></textarea>
+<div class="actions">
+<button class="btn" type="button" id="z-copy">Копіювати</button>
+<button class="btn secondary" type="button" id="z-dl">Завантажити .txt</button>
+<button class="btn secondary" type="button" id="z-print">Друк / PDF</button>
+</div>
+<p class="muted" id="z-status" role="status"></p>
+</section>
+<script type="application/json" id="zdata">%%ZDATA%%</script>
