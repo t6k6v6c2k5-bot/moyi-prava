@@ -19,6 +19,12 @@ const SITE_URL = (process.env.SITE_URL || '').replace(/\/+$/, '');
 const INDEXING = String(process.env.INDEXING || '').toLowerCase() === 'on';
 const REDIRECT_TO_SITE_URL = process.env.REDIRECT_TO_SITE_URL === '1';
 const ROBOTS_INDEX = INDEXING ? 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1' : 'noindex,nofollow';
+// Монетизація (необов’язково): DONATE_URL — кнопка «Підтримати проєкт»; LAWYER_PARTNER=on — позначає кнопки адвоката як партнерські (rel=sponsored + розкриття).
+const donateRaw = (process.env.DONATE_URL || '').trim();
+const DONATE_URL = /^https:\/\/[^\s"'<>]+$/.test(donateRaw) ? donateRaw : '';
+const LAWYER_PARTNER = String(process.env.LAWYER_PARTNER || '').toLowerCase() === 'on';
+const LAWYER_REL = LAWYER_PARTNER ? 'sponsored noopener noreferrer' : 'noopener noreferrer';
+const LAWYER_DISCLOSURE = LAWYER_PARTNER ? 'Партнерське посилання: сайт може отримувати винагороду від адвоката за звернення. Це не впливає на зміст інформації на сайті. Умови роботи адвоката ви узгоджуєте з ним самостійно.' : '';
 const lawyerRaw = (process.env.LAWYER_TELEGRAM_URL || '').trim();
 // приймаємо лише https://t.me/… або tg://…
 const LAWYER_URL = /^(https:\/\/(t\.me|telegram\.me)\/|tg:\/\/)[^\s"'<>]+$/.test(lawyerRaw) ? lawyerRaw : 'tel:0800213103';
@@ -75,7 +81,11 @@ function sendHtml(req, res, key, status = 200) {
   let html = htmlCache.get(key)
     .replace(/%%SITE_URL%%/g, origin(req))
     .replace(/%%LAWYER_URL%%/g, LAWYER_URL)
+    .replace(/%%LAWYER_REL%%/g, LAWYER_REL)
+    .replace(/%%LAWYER_DISCLOSURE%%/g, LAWYER_DISCLOSURE)
+    .replace(/<p class="muted" data-disc><\/p>/g, '')
     .replace(/%%ROBOTS_INDEX%%/g, ROBOTS_INDEX);
+  html = DONATE_URL ? html.replace(/%%DONATE_URL%%/g, DONATE_URL) : html.replace(/<!--donate-->[\s\S]*?<!--\/donate-->/g, '');
   if (LAWYER_URL.startsWith('tel:')) html = html.replace('Написати адвокату в Telegram', 'Заявка адвокату недоступна — зателефонуйте 0 800 213 103').replace('Надіслати в Telegram', 'Зателефонувати 0 800 213 103').replace(/ target="_blank" rel="noopener noreferrer">(Заявка адвокату недоступна|Зателефонувати)/g, '>$1');
   res.status(status).type('html').set('Cache-Control', 'no-cache').send(html);
 }

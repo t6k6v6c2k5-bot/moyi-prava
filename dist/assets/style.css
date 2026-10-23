@@ -165,3 +165,5 @@ blockquote{margin:.4rem 0 .2rem;padding:.4rem .75rem;border-left:3px solid var(-
 @media print{.verified,.trust{display:none}}
 .tiles li{margin:0}
 .verified{border-radius:14px}
+
+.support{display:flex;flex-wrap:wrap;gap:.5rem .8rem;align-items:center;margin:.8rem 0}.support .btn{min-height:44px;padding:.5rem 1rem}

@@ -97,7 +97,7 @@ function renderBlocks(blocks) {
         case 'links':
           return `<ul class="linklist">${b.items.map((i) => `<li><a class="btn secondary" href="${i.u}">${esc(i.t)}</a></li>`).join('')}</ul>`;
         case 'lawyer':
-          return `<p><a class="btn big" id="lawyer-btn" href="%%LAWYER_URL%%" target="_blank" rel="noopener noreferrer">Написати адвокату в Telegram</a></p><p class="muted" id="bpd">Безкоштовна лінія: <a href="tel:0800213103">0 800 213 103</a></p>`;
+          return `<p><a class="btn big" id="lawyer-btn" href="%%LAWYER_URL%%" target="_blank" rel="%%LAWYER_REL%%">Написати адвокату в Telegram</a></p><p class="muted" data-disc>%%LAWYER_DISCLOSURE%%</p><p class="muted" id="bpd">Безкоштовна лінія: <a href="tel:0800213103">0 800 213 103</a></p>`;
         case 'vnav':
           return `<div id="vnav" class="vnav"><noscript><p class="callout warn">Для навігатора потрібен JavaScript. Нижче — повний перелік підстав.</p></noscript></div><script type="application/json" id="vdata">${JSON.stringify(vdata).replace(/</g, '\\u003c')}</script>`;
         case 'vall':
@@ -220,6 +220,7 @@ ${body}
   <p class="disclaimer"><strong>Це довідкова інформація, а не юридична консультація.</strong> Закони змінюються: перевіряйте актуальні редакції та за потреби звертайтесь до юриста.</p>
   ${sourcesBlock(sourceIds)}
   <p class="foot-links"><a href="/faq/">Часті запитання</a> · <a href="/pro-sait/">Як ми перевіряємо</a> · <a href="/pryvatnist/">Політика конфіденційності</a> · <a href="/poshuk/">Пошук</a></p>
+  <!--donate--><p class="support"><a class="btn secondary" href="%%DONATE_URL%%" target="_blank" rel="noopener noreferrer">Підтримати проєкт</a> <span class="muted">Сайт безкоштовний, без реклами й трекерів.</span></p><!--/donate-->
   <p class="muted">Сайт не збирає ваших даних і не містить даних про місця й час роботи ТЦК, блокпостів чи поліції.</p>
 </footer>
 <nav class="bottom" aria-label="Основна навігація">${bottom}</nav>
