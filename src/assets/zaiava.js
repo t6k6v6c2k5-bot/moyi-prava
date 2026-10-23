@@ -6,10 +6,11 @@
   var $ = function (id) { return document.getElementById(id); };
   var G = JSON.parse($('zdata').textContent);
   var sel = $('z-ground'), out = $('z-out');
-  Object.keys(G).forEach(function (k) { var o = document.createElement('option'); o.value = k; o.textContent = G[k].t + ' (' + G[k].ref + ')'; sel.appendChild(o); });
+  Object.keys(G).filter(function (k) { return G[k].zaiava; }).forEach(function (k) { var o = document.createElement('option'); o.value = k; o.textContent = G[k].t + ' (' + G[k].ref + ')'; sel.appendChild(o); });
   function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
   function plain(s) { return String(s).replace(/\*\*/g, ''); }
-  function docs() { var g = G[sel.value]; $('z-docs').innerHTML = '<strong>Додайте до заяви (оригінали або завірені копії):</strong><ul>' + g.docs.map(function (d) { return '<li>' + esc(plain(d)).replace(/\n/g, ' ') + '</li>'; }).join('') + '</ul><p class="muted">Перелік — за додатком 5 ПКМУ № 560; у ЦНАП уточніть повний перелік для вашої ситуації.</p>'; }
+  function docs() { var g = G[sel.value]; $('z-docs').innerHTML = '<strong>Додайте до заяви (оригінали або завірені копії):</strong><ul>' + g.docs.map(function (d) { return '<li>' + esc(plain(d)).replace(/\n/g, ' ') + '</li>'; }).join('') + '</ul><p class="muted">Перелік — за додатком 5 ПКМУ № 560; у ЦНАП уточніть повний перелік для вашої ситуації.</p>' + ((g.notes && g.notes.length) ? '<p class="muted"><strong>Зверніть увагу:</strong> ' + g.notes.map(function (n) { return esc(plain(n)); }).join(' ') + '</p>' : '');
+    $('z-spar-l').hidden = g.s581 !== 'care'; }
   sel.addEventListener('change', docs); docs();
   form.elements.renew.addEventListener('change', function () { var r = form.elements.renew.checked; $('z-old').hidden = !r; $('z-old-l').hidden = !r; });
   function v(n) { return (form.elements[n].value || '').trim(); }
@@ -31,8 +32,14 @@
     L.push('Прошу ' + (renew ? 'переоформити' : 'надати') + ' мені відстрочку від призову на військову службу під час мобілізації, на особливий період на підставі: ' + g.t + ' (' + g.ref + ' Закону України «Про мобілізаційну підготовку та мобілізацію»).');
     if (renew) L.push('Наявна відстрочка: ' + b(v('old'), 'підстава, строк') + '.');
     L.push('');
+    var spar = form.elements.spar.checked;
+    if (g.s581 === 'parent') L.push('Підтверджую відсутність інших осіб, які не є військовозобов’язаними та відповідно до закону зобов’язані утримувати зазначену особу (п. 58-1 Порядку, затвердженого постановою КМУ № 560 від 16.05.2024).');
+    if (g.s581 === 'rel') L.push('Підтверджую відсутність членів сім’ї першого ступеня споріднення (а для третього ступеня — також другого), які могли б здійснювати догляд (п. 58-1 Порядку, затвердженого постановою КМУ № 560 від 16.05.2024).');
+    if (g.s581 === 'care' && spar) L.push('Підтверджую відсутність інших працездатних членів сім’ї, які зобов’язані та можуть здійснювати постійний догляд (п. 58-1 Порядку, затвердженого постановою КМУ № 560 від 16.05.2024).');
+    if (g.s581) L.push('');
     L.push('До заяви додаю:');
     g.docs.forEach(function (d, i) { L.push((i + 1) + '. ' + plain(d)); });
+    if (!g.docs.length) L.push('(перелік документів — за додатком 5 Порядку для обраної підстави)');
     L.push('');
     L.push('Військово-обліковий документ пред’явлю під час подання заяви. Прошу повідомити про рішення комісії на вказану адресу електронної пошти.');
     L.push('');

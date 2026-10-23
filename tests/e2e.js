@@ -85,7 +85,7 @@ const ok = (c, m) => { if (!c) { fail++; console.log('FAIL', m); } else console.
   const um = await page.inputValue('#u-out');
   ok(um.includes('рідну людину') && um.includes('Петренко') && um.includes('Забрали / доставили до ТЦК') && um.includes('троє дітей') && um.includes('м. Львів'), 'терміново: повідомлення коректне');
   ok((await page.getAttribute('#u-tg', 'href')).startsWith('https://t.me/example_lawyer?text='), 'терміново: Telegram з готовим текстом');
-  ok(await page.locator('#u-tg[rel~=sponsored]').count() === 1, 'терміново: rel=sponsored');
+  ok(await page.locator('#u-tg[rel~=noopener]').count() === 1 && await page.locator('#u-tg[rel~=sponsored]').count() === 0, 'терміново: rel=noopener, без sponsored');
   // каталог ситуацій
   await page.goto(BASE + '/mene-zupynyly/');
   ok((await page.locator('a[href^="/sytuatsiyi/"]').count()) >= 14, 'мене зупинили: показано всі ситуації');
@@ -102,6 +102,20 @@ const ok = (c, m) => { if (!c) { fail++; console.log('FAIL', m); } else console.
   ok(zt.includes('Сидоренко Сидір') && zt.includes('17.05.1990') && zt.includes('ст. 23, ч. 1, п. 3') && zt.includes('про надання відстрочки') && zt.includes('Тестовий РТЦК'), 'заява: текст коректний');
   await page.check('input[name=renew]'); await page.fill('#z-old', 'п. 2, до 01.2027'); await page.click('#zv button[type=submit]');
   ok((await page.inputValue('#z-out')).includes('про переоформлення відстрочки') && (await page.inputValue('#z-out')).includes('п. 2, до 01.2027'), 'заява: переоформлення');
+
+  // 3d. заява: основи без подання, п. 58-1
+  const opts = await page.$$eval('#z-ground option', (o) => o.map((x) => x.value));
+  ok(!opts.includes('g_bron') && !opts.includes('g_contract1y'), 'заява: немає підстав, що не подаються до комісії');
+  await page.selectOption('#z-ground', 'g_parent_disab'); await page.fill('#z-name', 'Тест'); await page.click('#zv button[type=submit]');
+  const z58 = await page.inputValue('#z-out');
+  ok(z58.includes('п. 58-1') && !z58.includes('Оформлює'), 'заява: абзац п. 58-1, без службових пояснень у додатках');
+  await page.goto(BASE + '/skarha/'); await page.check('input[name=kind][value=appeal]'); await page.fill('#f-desc', 'Опис'); await page.check('input[name=kind][value=appeal]'); await page.selectOption('#f-viol', { value: 'так' }).catch(() => {}); await page.click('#make');
+  const ta = await page.inputValue('#out');
+  ok(!ta.includes('Насильство або погрози') && ta.includes('Вищестоящому органу'), 'скарга на штраф: без зайвих полів, адресат за ст. 288');
+  await page.check('input[name=kind][value=police]'); await page.selectOption('#f-viol', 'так'); await page.click('#make');
+  ok((await page.inputValue('#out')).includes('ст. 383'), 'поліція: попередження про ст. 383 КК');
+  await page.check('input[name=kind][value=ombudsman]'); await page.click('#make');
+  ok((await page.inputValue('#out')).includes('ст. 7 Закону України «Про звернення громадян»') && (await page.innerText('#status')).includes('анонімним'), 'омбудсман: ст. 7 і застереження про анонімність');
 
   // 4. навігатор відстрочок
   await page.goto(BASE + '/vidstrochka/');

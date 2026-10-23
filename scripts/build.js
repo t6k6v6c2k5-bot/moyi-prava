@@ -67,7 +67,7 @@ function renderVerification() {
   const cl = JSON.parse(fs.readFileSync(path.join(CONTENT, 'claims.json'), 'utf8'));
   const srcs = v ? v.sources : Object.fromEntries(Object.entries(cl.sources).map(([k, s]) => [k, { title: s.title, url: s.url, edition: s.edition }]));
   const claims = v ? v.claims : cl.claims.map((c) => ({ ...c, ok: true }));
-  let h = v ? `<p class="callout info"><strong>Остання автоматична перевірка: ${esc(v.date)}.</strong> Підтверджено цитат: <strong>${v.ok} з ${v.total}</strong>. Змінених редакцій джерел: <strong>${v.editionChanged}</strong>.</p>` : '';
+  let h = v ? `<p class="callout info"><strong>Остання автоматична перевірка: ${esc(v.date)}.</strong> Підтверджено цитат: <strong>${v.ok} з ${v.total}</strong>. Змінених редакцій джерел: <strong>${v.editionChanged}</strong>.${v.coverage ? ` Посилань «п./ст.» у текстах сайту, для яких є перевірена цитата: <strong>${v.coverage.covered} з ${v.coverage.total} (${v.coverage.pct}%)</strong>; решта потребує ручної звірки.` : ''}</p>` : '';
   h += '<h2>Джерела й редакції</h2><ul>' + Object.values(srcs).map((s) => `<li><a href="${s.url}" target="_blank" rel="noopener noreferrer">${esc(s.title)}</a>${s.edition ? ` — редакція від ${esc(s.edition)}` : ''}</li>`).join('') + '</ul>';
   h += '<h2>Перелік перевірених тверджень</h2><p class="muted">Кожне твердження супроводжується дослівною цитатою з норми. Скрипт повторює перевірку на актуальних текстах.</p>';
   const by = {};
@@ -97,7 +97,7 @@ function renderBlocks(blocks) {
         case 'links':
           return `<ul class="linklist">${b.items.map((i) => `<li><a class="btn secondary" href="${i.u}">${esc(i.t)}</a></li>`).join('')}</ul>`;
         case 'lawyer':
-          return `<p><a class="btn big" id="lawyer-btn" href="%%LAWYER_URL%%" target="_blank" rel="sponsored noopener noreferrer">Написати адвокату в Telegram</a></p><p class="muted" id="bpd">Безкоштовна лінія: <a href="tel:0800213103">0 800 213 103</a></p>`;
+          return `<p><a class="btn big" id="lawyer-btn" href="%%LAWYER_URL%%" target="_blank" rel="noopener noreferrer">Написати адвокату в Telegram</a></p><p class="muted" id="bpd">Безкоштовна лінія: <a href="tel:0800213103">0 800 213 103</a></p>`;
         case 'vnav':
           return `<div id="vnav" class="vnav"><noscript><p class="callout warn">Для навігатора потрібен JavaScript. Нижче — повний перелік підстав.</p></noscript></div><script type="application/json" id="vdata">${JSON.stringify(vdata).replace(/</g, '\\u003c')}</script>`;
         case 'vall':
@@ -106,7 +106,7 @@ function renderBlocks(blocks) {
             Object.values(vdata.grounds)
               .map(
                 (g) =>
-                  `<details class="ground"><summary>${esc(g.t)} <span class="ref">${esc(g.ref)}</span></summary><ul>${g.docs.map((d) => `<li>${inline(d)}</li>`).join('')}</ul></details>`
+                  `<details class="ground"><summary>${esc(g.t)} <span class="ref">${esc(g.ref)}</span></summary><ul>${[...g.docs, ...(g.notes || [])].map((d) => `<li>${inline(d)}</li>`).join('')}</ul></details>`
               )
               .join('')
           );
@@ -130,7 +130,7 @@ function renderBlocks(blocks) {
         case 'zaiava':
           return fs
             .readFileSync(path.join(SRC, 'zaiava.html'), 'utf8')
-            .replace('%%ZDATA%%', JSON.stringify(Object.fromEntries(Object.entries(vdata.grounds).map(([k, g]) => [k, { t: g.t, ref: g.ref, docs: g.docs }]))).replace(/</g, '\\u003c'));
+            .replace('%%ZDATA%%', JSON.stringify(Object.fromEntries(Object.entries(vdata.grounds).map(([k, g]) => [k, { t: g.t, ref: g.ref, docs: g.docs, notes: g.notes || [], zaiava: g.zaiava !== false, s581: g.s581 || '' }]))).replace(/</g, '\\u003c'));
         case 'verification':
           return renderVerification();
         case 'generator':
@@ -144,7 +144,7 @@ function renderBlocks(blocks) {
 
 function badge(ids) {
   if (!ids || !ids.length) return '';
-  return `<p class="verified">${ICON.check}<span>Перевірено за первинними джерелами · <time datetime="${VERIFIED_ISO}">${VERIFIED}</time> · <a href="/pro-sait/">як ми перевіряємо</a></span></p>`;
+  return `<p class="verified">${ICON.check}<span>Ключові норми звірено з офіційним текстом · <time datetime="${VERIFIED_ISO}">${VERIFIED}</time> · <a href="/pro-sait/">як ми перевіряємо</a></span></p>`;
 }
 
 function sourcesBlock(ids) {
@@ -374,7 +374,7 @@ ${faq.items.map((i) => `<details class="faq"><summary>${esc(i.q)}</summary><p>${
 <p class="lead">Навігатор для військовозобов’язаних та їхніх родин. Знай свої права й обов’язки. Дій за законом. Фіксуй порушення.</p>
 <a class="btn sos big" href="/mene-zupynyly/">${ICON.sos}<span>Мене зупинили — що робити</span></a>
 <p><a class="btn big amber" href="/terminovo/">Терміново: передати справу юристу</a></p>
-<ul class="trust" aria-label="Чому сайту можна довіряти"><li>${ICON.check}Кожне твердження — з джерелом</li><li>${ICON.check}Працює офлайн</li><li>${ICON.check}Без трекерів і реєстрації</li></ul>
+<ul class="trust" aria-label="Чому сайту можна довіряти"><li>${ICON.check}Норми — з посиланням на джерело</li><li>${ICON.check}Працює офлайн</li><li>${ICON.check}Без трекерів і реєстрації</li></ul>
 </section>
 <ul class="tiles">${tiles.map((t) => `<li><a class="tile c-${t.c || 'blue'}" href="${t.u}">${ICON[t.i]}<span class="tt">${esc(t.t)}</span><span class="td">${esc(t.d)}</span></a></li>`).join('')}</ul>
 <aside class="callout info"><p><strong>Принципи сайту.</strong> Нейтральний тон; кожне твердження спирається на офіційне джерело; жодних карт чи стрічок про ТЦК, блокпости й поліцію; жодних порад щодо ухилення чи підробок; усі дані залишаються на вашому пристрої. <a href="/pryvatnist/">Докладніше</a></p></aside>`;

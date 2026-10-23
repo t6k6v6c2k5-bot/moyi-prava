@@ -72,10 +72,11 @@ app.use((req, res, next) => {
 const origin = (req) => SITE_URL || `${req.protocol}://${req.get('host')}`;
 
 function sendHtml(req, res, key, status = 200) {
-  const html = htmlCache.get(key)
+  let html = htmlCache.get(key)
     .replace(/%%SITE_URL%%/g, origin(req))
     .replace(/%%LAWYER_URL%%/g, LAWYER_URL)
     .replace(/%%ROBOTS_INDEX%%/g, ROBOTS_INDEX);
+  if (LAWYER_URL.startsWith('tel:')) html = html.replace('Написати адвокату в Telegram', 'Заявка адвокату недоступна — зателефонуйте 0 800 213 103').replace('Надіслати в Telegram', 'Зателефонувати 0 800 213 103').replace(/ target="_blank" rel="noopener noreferrer">(Заявка адвокату недоступна|Зателефонувати)/g, '>$1');
   res.status(status).type('html').set('Cache-Control', 'no-cache').send(html);
 }
 

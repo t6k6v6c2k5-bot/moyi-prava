@@ -10,7 +10,8 @@ const { execFileSync } = require('child_process');
 const ROOT = path.join(__dirname, '..');
 const CACHE = path.join(ROOT, '.verify-cache');
 const offline = process.argv.includes('--offline');
-const claimsFile = JSON.parse(fs.readFileSync(path.join(ROOT, 'content', 'claims.json'), 'utf8'));
+const claimsPath = path.join(ROOT, 'content', 'claims.json');
+const claimsFile = JSON.parse(fs.readFileSync(claimsPath, 'utf8'));
 const { sources, claims } = claimsFile;
 
 const norm = (s) =>
@@ -54,6 +55,33 @@ function fetchSource(id, url) {
 }
 
 const staleCache = [];
+const crypto = require('crypto');
+const updateHashes = process.argv.includes('--update-hashes');
+const pointStart = /^\s*\d+(?:[.\-]\d+)*\.\s/;
+// Витягує текст статті/пункту, на який посилається claim (за першим «ст. N» або «п. N» у ref)
+function section(raw, ref) {
+  const lines = raw.split('\n');
+  let m = /ст\.\s*(\d+(?:-\d+)?)/.exec(ref);
+  if (m) {
+    const re = new RegExp('^\\s*Стаття ' + m[1].replace('-', '\\-') + '\\.\\s');
+    const i = lines.findIndex((l) => re.test(l));
+    if (i < 0) return null;
+    let j = i + 1;
+    while (j < lines.length && !/^\s*Стаття \d/.test(lines[j])) j++;
+    return lines.slice(i, j).join('\n');
+  }
+  m = /п\.\s*(\d+(?:[.\-]\d+)*)/.exec(ref);
+  if (m) {
+    const num = m[1];
+    const re = new RegExp('^\\s*' + num.replace(/\./g, '\\.').replace('-', '\\-') + '\\.\\s');
+    const i = lines.findIndex((l) => re.test(l));
+    if (i < 0) return null;
+    let j = i + 1;
+    while (j < lines.length && !pointStart.test(lines[j])) j++;
+    return lines.slice(i, j).join('\n');
+  }
+  return null;
+}
 const results = { sources: {}, claims: [], refs: [] };
 let failed = 0, editionChanged = 0;
 
@@ -72,9 +100,21 @@ for (const [id, s] of Object.entries(sources)) {
 // 2. Цитати
 for (const c of claims) {
   const src = texts[c.src];
-  const ok = !!src && src.n.includes(norm(c.quote));
+  let ok = !!src && src.n.includes(norm(c.quote));
+  let note = '';
   if (!ok) { failed++; console.log(`НЕ ЗНАЙДЕНО [${c.id}] ${c.src} ${c.ref}: «${c.quote.slice(0, 80)}…»`); }
-  results.claims.push({ ...c, ok });
+  else {
+    const sec = section(src.raw, c.ref);
+    if (sec == null) { ok = false; failed++; note = 'розділ не знайдено'; console.log(`РОЗДІЛ НЕ ЗНАЙДЕНО [${c.id}] ${c.src} ${c.ref}`); }
+    else if (!norm(sec).includes(norm(c.quote))) { ok = false; failed++; note = 'цитата поза зазначеним розділом'; console.log(`ЦИТАТА ПОЗА РОЗДІЛОМ [${c.id}] ${c.src} ${c.ref}`); }
+    else {
+      const h = crypto.createHash('sha1').update(norm(sec)).digest('hex').slice(0, 10);
+      if (updateHashes) c.h = h;
+      else if (c.h && c.h !== h) { ok = false; failed++; note = 'норму змінено'; console.log(`НОРМУ ЗМІНЕНО [${c.id}] ${c.src} ${c.ref}: перечитайте розділ і оновіть (--update-hashes)`); }
+      else if (!c.h) { console.log(`Немає хешу [${c.id}] — запустіть з --update-hashes`); }
+    }
+  }
+  results.claims.push({ ...c, ok, note });
 }
 
 // 3. Лінт посилань «п. N» / «ст. N» у контенті
@@ -116,6 +156,35 @@ for (const f of listJson(path.join(ROOT, 'content'))) {
   }
 }
 
+// 3b. Покриття: які «п./ст.» з контенту мають claim
+const covered = new Set(claims.map((c) => c.src + '|' + (/(?:ст|п)\.\s*\d+(?:[.\-]\d+)*/.exec(c.ref) || [''])[0].replace(/\s+/g, ' ')));
+const cov = { total: 0, covered: 0, missing: [] };
+for (const f of listJson(path.join(ROOT, 'content'))) {
+  if (/claims\.json|verification\.json|sources\.json|vidstrochka-data\.json/.test(f)) continue;
+  const data = JSON.parse(fs.readFileSync(f, 'utf8'));
+  const docSources = (data.sources || []).filter((x) => texts[x]);
+  const text = stringsOf(data).join('\n');
+  const seen = new Set();
+  for (const m of text.matchAll(/(?<![A-Za-zА-Яа-яІіЇїЄє])п\.\s*(\d+(?:-\d+)?)/g)) {
+    const ctx = text.slice(Math.max(0, m.index - 28), m.index);
+    if (/(ст\.|ч\.|додатк\S*|підп\.|підпункт\S*|пункт\S*|КК|КУпАП)\s*[\d\s\-–,.чч]*$/i.test(ctx)) continue;
+    const n = m[1];
+    const src = docSources.filter((x) => pointSources.includes(x)).find((x) => hasPoint(x, n));
+    if (!src || seen.has(src + n)) continue;
+    seen.add(src + n); cov.total++;
+    if (covered.has(src + '|п. ' + n)) cov.covered++; else cov.missing.push(`${path.relative(ROOT, f)}: ${src} п. ${n}`);
+  }
+  for (const m of text.matchAll(/ст\.\s*(\d+(?:-\d+)?)/g)) {
+    const n = m[1];
+    const src = docSources.filter((x) => articleSources.includes(x)).find((x) => hasArticle(x, n));
+    if (!src || seen.has(src + 'ст' + n)) continue;
+    seen.add(src + 'ст' + n); cov.total++;
+    if (covered.has(src + '|ст. ' + n)) cov.covered++; else cov.missing.push(`${path.relative(ROOT, f)}: ${src} ст. ${n}`);
+  }
+}
+cov.pct = cov.total ? Math.round((cov.covered / cov.total) * 100) : 100;
+console.log(`Покриття посилань claim-ами: ${cov.covered}/${cov.total} (${cov.pct}%)`);
+
 // 4. Звіт
 const date = new Date().toISOString().slice(0, 10);
 const okCount = results.claims.filter((c) => c.ok).length;
@@ -124,6 +193,7 @@ for (const c of results.claims) (bySrc[c.src] = bySrc[c.src] || []).push(c);
 let md = `# Звіт автоматичної перевірки тверджень\n\nДата перевірки: **${date}**. Підтверджено цитат: **${okCount} з ${claims.length}**. Змінених редакцій джерел: **${editionChanged}**. Неіснуючих посилань «п.»: **${results.refs.filter((r) => r.level === 'error').length}**.\n\n`;
 md += `Що це означає: скрипт завантажив поточні тексти норм з zakon.rada.gov.ua і підтвердив, що кожна цитата є в тексті дослівно. Це підтверджує **наявність і точність цитат та номерів пунктів**, але не замінює юридичної оцінки застосування норм до конкретної ситуації.\n\n## Джерела\n\n| Джерело | Редакція | Статус |\n|---|---|---|\n`;
 for (const [id, s] of Object.entries(results.sources)) md += `| [${s.title}](${s.url}) | ${s.edition} | ${s.changed ? '⚠ змінилась (було ' + s.expected + ')' : 'без змін'}${s.cached ? ' (текст із кешу)' : ''} |\n`;
+md += `\n## Покриття\n\nПосилань «п./ст.» у контенті, що мають перевірену цитату: **${cov.covered} з ${cov.total} (${cov.pct}%)**. Решта — без автоматичної перевірки:\n\n${cov.missing.map((x) => '- ' + x).join('\n')}\n`;
 md += '\n## Твердження\n';
 for (const [id, list] of Object.entries(bySrc)) {
   md += `\n### ${sources[id].title}\n\n| № | Пункт | Твердження | Результат |\n|---|---|---|---|\n`;
@@ -132,11 +202,13 @@ for (const [id, list] of Object.entries(bySrc)) {
 const warn = results.refs.filter((r) => r.level === 'warn');
 if (warn.length) md += `\n## Посилання на інші акти (не перевіряються автоматично)\n\nСтатті Конституції, КПК, Сімейного кодексу, Податкового кодексу та інші акти, яких немає в списку джерел, перевіряються вручну:\n\n${[...new Set(warn.map((w) => `- ${w.file}: ${w.ref}`))].join('\n')}\n`;
 fs.writeFileSync(path.join(ROOT, 'docs', 'VERIFICATION.md'), md);
+if (updateHashes) { fs.writeFileSync(claimsPath, JSON.stringify(claimsFile, null, 1) + '\n'); console.log('Хеші розділів оновлено в content/claims.json'); }
 const pub = {
   date,
   total: claims.length,
   ok: okCount,
   editionChanged,
+  coverage: { total: cov.total, covered: cov.covered, pct: cov.pct },
   sources: results.sources,
   claims: results.claims.map(({ id, src, ref, claim, quote, ok, pages }) => ({ id, src, ref, claim, quote, ok, pages })),
 };
