@@ -112,8 +112,8 @@ function renderBlocks(blocks) {
         }
         case 'sos':
           return `<div class="sosbox">
-<p class="sos-big">Спокійно.<br>Не чиніть опір. Не тікайте.</p>
-<p><a class="btn sos big" href="tel:0800213103">Подзвонити юристу 0 800 213 103</a></p>
+<p class="sos-big">Спокійно.<br>Не чиніть опір.<br>Не тікайте.</p>
+<p><a class="btn sos big" href="tel:0800213103">Подзвонити юристу 0&nbsp;800&nbsp;213&nbsp;103</a></p>
 <p><a class="btn big amber" href="sms:?&body=%D0%9C%D0%B5%D0%BD%D0%B5%20%D0%B7%D1%83%D0%BF%D0%B8%D0%BD%D0%B8%D0%BB%D0%B8.%20%D0%97%D0%B2%27%D1%8F%D0%B6%D1%96%D1%82%D1%8C%D1%81%D1%8F%20%D0%B7%20%D1%8E%D1%80%D0%B8%D1%81%D1%82%D0%BE%D0%BC%3A%200%20800%20213%20103">Написати рідним</a></p>
 <ol class="sos-steps">
 <li><strong>Запитайте:</strong> «Хто ви? Назвіть П.І.Б., посаду й причину».</li>
@@ -122,12 +122,14 @@ function renderBlocks(blocks) {
 <li><strong>Запам’ятайте</strong> час, П.І.Б., номери авто. Запишіть потім.</li>
 </ol>
 <p><a class="btn big secondary" href="/terminovo/">Передати справу юристу</a></p>
-<p class="muted">Загроза життю: <a href="tel:102">102</a> або <a href="tel:112">112</a>.</p>
-<h2>Якщо вже забрали силою</h2>
+<p class="quick2"><a class="btn secondary" href="tel:102">102 Поліція</a><a class="btn secondary" href="tel:112">112 Екстрена</a></p>
+<details class="fold"><summary>Якщо вже забрали силою</summary>
 <p>У такий момент розмови немає — і це нормально. Головне: <strong>не чиніть опір</strong>, берегти себе. Усе інше — після, і це можна зробити з телефона або руками рідних:</p>
 <ol class="sos-steps"><li><strong>Рідні:</strong> дзвінок юристу <a href="tel:0800213103">0 800 213 103</a> і сторінка <a href="/zabraly/">«Рідну людину забрали»</a>.</li><li><strong>Якщо була сила:</strong> лікар і довідка про травми одразу, фото травм, <a href="/mene-zupynyly/#tck-syla">що робити далі</a>.</li><li><strong>Скарга й заява</strong> — <a href="/skarha/">генератор</a>, юрист допоможе подати.</li></ol>
-<h2>Підготуйтесь заздалегідь</h2>
+</details>
+<details class="fold"><summary>Підготуйтесь заздалегідь</summary>
 <ul class="sos-steps"><li>Збережіть <strong>0 800 213 103</strong> у контактах і скажіть близькій людині, що робити.</li><li>Тримайте документи в порядку; перевірте свої статуси в Резерв+ (<a href="/statusy-rezerv/">що робити</a>).</li><li>Додайте сайт на головний екран і <strong>роздрукуйте картку</strong> — вона працює без телефону.</li></ul>
+</details>
 <p><a class="btn secondary" href="/mene-zupynyly/#politsiya-pokrokovo">Поліція: покроково</a> <a class="btn secondary" href="/mene-zupynyly/#tck-perevirka">ТЦК: покроково</a></p>
 <p><button class="btn secondary" type="button" data-print>Роздрукувати картку в гаманець / авто</button></p>
 </div>`;
@@ -246,12 +248,11 @@ ${body}
 <footer class="foot">
   <p class="disclaimer"><strong>Це довідкова інформація, а не юридична консультація.</strong> Закони змінюються: перевіряйте актуальні редакції та за потреби звертайтесь до юриста.</p>
   ${sourcesBlock(sourceIds)}
-  <p class="foot-links"><a href="/faq/">Часті запитання</a> · <a href="/pro-sait/">Як ми перевіряємо</a> · <a href="/pryvatnist/">Політика конфіденційності</a> · <a href="/poshuk/">Пошук</a></p>
+  <p class="foot-links"><a href="/faq/">Часті запитання</a><a href="/pro-sait/">Як ми перевіряємо</a><a href="/pryvatnist/">Конфіденційність</a></p>
   <!--donate--><p class="support"><a class="btn secondary" href="%%DONATE_URL%%" target="_blank" rel="noopener noreferrer">Підтримати проєкт</a> <span class="muted">Сайт безкоштовний, без реклами й трекерів.</span></p><!--/donate-->
   <p class="muted">Сайт не збирає ваших даних і не містить даних про місця й час роботи ТЦК, блокпостів чи поліції.</p>
 </footer>
-${callbar ? '<a class="callbar" href="tel:0800213103">Юрист безкоштовно · 0&nbsp;800&nbsp;213&nbsp;103</a>' : ''}
-<nav class="bottom" aria-label="Основна навігація">${bottom}</nav>
+<nav class="bottom" aria-label="Основна навігація">${callbar ? '<a class="callbar" href="tel:0800213103">Юрист безкоштовно · 0&nbsp;800&nbsp;213&nbsp;103</a>' : ''}${bottom}</nav>
 <script src="/assets/app.js?v=%%BUILD%%" defer></script>
 ${scripts.map((s) => `<script src="/assets/${s}?v=%%BUILD%%" defer></script>`).join('\n')}
 </body>
@@ -344,7 +345,7 @@ ${faq.items.map((i) => `<details class="faq"><summary>${esc(i.q)}</summary><p>${
   const urlPath = '/poshuk/';
   const body = `<article class="page"><h1>Пошук по сайту</h1>
 <form id="sf" role="search" class="search" action="/poshuk/" method="get"><label for="q" class="sr">Що шукаєте?</label>
-<input id="q" name="q" type="search" placeholder="Напр.: повістка, відстрочка, блокпост" autocomplete="off" enterkeyhint="search">
+<input id="q" name="q" type="search" placeholder="повістка, відстрочка…" autocomplete="off" enterkeyhint="search">
 <button class="btn" type="submit">Знайти</button></form>
 <div id="results" aria-live="polite"></div>
 <noscript><p class="callout warn">Для пошуку потрібен JavaScript. Скористайтесь <a href="/faq/">Частими запитаннями</a> або головною сторінкою.</p></noscript>
@@ -379,7 +380,7 @@ ${faq.items.map((i) => `<details class="faq"><summary>${esc(i.q)}</summary><p>${
 <li><a class="row-link" href="/povistka/"><span class="ri c-blue">${ICON.doc}</span><span class="rt"><strong>Мені прийшла повістка</strong><span>Перевірити, що робити, якщо не встигаю</span></span><i class="chev"></i></a></li>
 <li><a class="row-link" href="/vidstrochka/"><span class="ri c-green">${ICON.clock}</span><span class="rt"><strong>Хочу відстрочку</strong><span>Які підстави мені підходять і що подати</span></span><i class="chev"></i></a></li>
 <li><a class="row-link" href="/statusy-rezerv/"><span class="ri c-amber">${ICON.search}</span><span class="rt"><strong>Кажуть, що я в розшуку</strong><span>Статуси в Резерв+: як уточнити й оскаржити</span></span><i class="chev"></i></a></li>
-<li><a class="row-link" href="/skarha/"><span class="ri c-violet">${ICON.scale}</span><span class="rt"><strong>Скарга, відписка, штраф, суд</strong><span>Готові тексти й строки</span></span><i class="chev"></i></a></li>
+<li><a class="row-link" href="/skarha/"><span class="ri c-violet">${ICON.scale}</span><span class="rt"><strong>Скарга, відписка, суд</strong><span>Готові тексти й строки</span></span><i class="chev"></i></a></li>
 </ul>
 <a class="call-card" href="tel:0800213103">${ICON.phone}<span>Юрист безкоштовно · 0&nbsp;800&nbsp;213&nbsp;103<small>Безоплатна правова допомога, щодня</small></span></a>
 </section>
@@ -398,7 +399,7 @@ ${faq.items.map((i) => `<details class="faq"><summary>${esc(i.q)}</summary><p>${
       potentialAction: { '@type': 'SearchAction', target: SITE + '/poshuk/?q={search_term_string}', 'query-input': 'required name=search_term_string' },
     },
   ];
-  write('/', layout({ title: 'Мої права — навігатор для військовозобов’язаних та їхніх родин', description: 'Що робити, якщо зупинили, як перевірити повістку, оформити відстрочку й подати скаргу. Довідник за офіційними джерелами; працює офлайн.', urlPath: '/', body, nav: 'home', jsonld, sourceIds: ['law3543', 'pkmu560', 'pkmu1455', 'bpd'] }));
+  write('/', layout({ title: 'Мої права — навігатор для військовозобов’язаних та їхніх родин', description: 'Що робити, якщо зупинили, як перевірити повістку, оформити відстрочку й подати скаргу. Довідник за офіційними джерелами; працює офлайн.', urlPath: '/', body, noSos: true, nav: 'home', jsonld, sourceIds: ['law3543', 'pkmu560', 'pkmu1455', 'bpd'] }));
   searchIndex.push({ u: '/', t: 'Головна', d: 'Мої права: навігатор', x: tiles.map((t) => t.t + ' ' + t.d).join(' ') });
   out.push({ u: '/', p: 1.0 });
 }

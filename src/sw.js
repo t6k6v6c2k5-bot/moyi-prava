@@ -18,16 +18,19 @@ self.addEventListener('fetch', (e) => {
   const url = new URL(req.url);
   if (url.origin !== location.origin) return;
 
-  // HTML: спершу мережа (свіжі тексти законів), без мережі — кеш
+  // HTML: мережа з таймаутом 3 с (свіжі тексти законів); на слабкому сигналі або без мережі — кеш
   if (req.mode === 'navigate') {
     e.respondWith(
-      fetch(req)
-        .then((res) => {
+      (async () => {
+        const cached = await caches.match(req, { ignoreSearch: true });
+        const net = fetch(req).then((res) => {
           const copy = res.clone();
           if (res.ok) caches.open(VERSION).then((c) => c.put(req, copy));
           return res;
-        })
-        .catch(() => caches.match(req, { ignoreSearch: true }).then((r) => r || caches.match('/offline/')))
+        });
+        if (!cached) return net.catch(() => caches.match('/offline/'));
+        return Promise.race([net.catch(() => cached), new Promise((r) => setTimeout(() => r(cached), 3000))]);
+      })()
     );
     return;
   }
