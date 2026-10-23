@@ -3,7 +3,7 @@
 const { chromium } = require('playwright');
 const BASE = process.env.BASE || 'http://localhost:3000';
 const SHOTS = process.env.SHOTS || '';
-const PAGES = ['/', '/mene-zupynyly/', '/blokpost/', '/povistka/', '/perevirka-povistky/', '/vidstrochka/', '/skarha/', '/shtraf/', '/zabraly/', '/dopomoha/', '/faq/', '/poshuk/', '/pryvatnist/', '/terminovo/', '/sytuatsiyi/politsiya-pdr/', '/sytuatsiyi/politsiya-szch/', '/sytuatsiyi/tck-vidstrochka/', '/zaiava-vidstrochka/', '/sytuatsiyi/povistka-poshtoiu/', '/sytuatsiyi/ne-prybuv-u-strok/', '/dlia-rodyn/', '/rezerv-plus/', '/slovnyk/', '/pro-sait/', '/vidpyska-tck/', '/znyattia-vyklyuchennia/'];
+const PAGES = ['/', '/mene-zupynyly/', '/blokpost/', '/povistka/', '/perevirka-povistky/', '/vidstrochka/', '/skarha/', '/shtraf/', '/zabraly/', '/dopomoha/', '/faq/', '/poshuk/', '/pryvatnist/', '/terminovo/', '/sytuatsiyi/politsiya-pdr/', '/sytuatsiyi/politsiya-szch/', '/sytuatsiyi/tck-vidstrochka/', '/zaiava-vidstrochka/', '/sytuatsiyi/povistka-poshtoiu/', '/sytuatsiyi/ne-prybuv-u-strok/', '/dlia-rodyn/', '/rezerv-plus/', '/slovnyk/', '/pro-sait/', '/vidpyska-tck/', '/znyattia-vyklyuchennia/', '/sud/'];
 let fail = 0;
 const ok = (c, m) => { if (!c) { fail++; console.log('FAIL', m); } else console.log('ok  ', m); };
 
@@ -91,7 +91,7 @@ const ok = (c, m) => { if (!c) { fail++; console.log('FAIL', m); } else console.
   await page.goto(BASE + '/skarha/'); await page.fill('#f-name', 'Тест'); await page.fill('#f-contact', 'м. Київ'); await page.fill('#f-desc', 'Опис');
   await page.check('input[name=kind][value=higher]'); await page.fill('#f-pnum', '12/345'); await page.fill('#f-pgr', 'Не перевірено відео.'); await page.fill('#f-porg', 'Районний ТЦК'); await page.click('#make');
   const hg = await page.inputValue('#out');
-  ok(hg.includes('Органу вищого рівня') && hg.includes('№ 12/345') && hg.includes('Не перевірено відео.') && hg.includes('ст. 18 Закону') && hg.includes('ст. 17 цього Закону'), 'скарга до вищого органу: структура й норми');
+  ok(hg.includes('Керівнику обласного (Київського міського)') && hg.includes('№ 12/345') && hg.includes('Не перевірено відео.') && hg.includes('ст. 18 Закону') && hg.includes('ст. 17 цього Закону'), 'скарга до вищого органу: структура й норми');
 
   // 3a4. деловий стиль і лінт неформального тексту
   await page.goto(BASE + '/skarha/');
@@ -104,6 +104,19 @@ const ok = (c, m) => { if (!c) { fail++; console.log('FAIL', m); } else console.
   ok(ds.includes('1) О 14:20 мені сказали пройти до автобуса') && ds.includes('3) Відео зафіксувало розмову') && ds.includes('[рядок вилучено') && !ds.includes('пізд') && !ds.includes('фраєр'), 'лінт: нецензурний рядок вилучено, факти залишені');
   ok((await page.innerText('#status')).includes('вилучено'), 'лінт: попередження користувачу');
   ok(ds.includes('п. 31') && ds.includes('п. 47') && ds.includes('п. 54') && ds.includes('ст. 259'), 'II розділ: норми про оповіщення, ст. 262 і 259');
+
+  // 3a5. позов, список адресатів
+  await page.goto(BASE + '/skarha/'); await page.check('input[name=kind][value=higher]');
+  const optsH = await page.$$eval('#f-tosel option', (o) => o.map((x) => x.textContent));
+  ok(optsH.length === 3 && optsH[0].includes('Обласний') && optsH[1].includes('оперативного командування') && optsH[2].includes('Інше'), 'адресати: виринаючий список для вищого органу');
+  ok((await page.innerText('#to-help')).includes('структурний підрозділ'), 'адресати: пояснення, хто вищестоящий');
+  await page.selectOption('#f-tosel', '2'); ok(await page.locator('#f-to').isVisible(), 'адресати: «Інше» показує поле');
+  await page.check('input[name=kind][value=claim]'); await page.fill('#f-name', 'Позивач П.'); await page.fill('#f-contact', 'м. Київ');
+  await page.selectOption('#f-ctype', 'post'); await page.fill('#f-pnum', '77'); await page.fill('#f-porg', 'Районний ТЦК та СП'); await page.check('input[name=gr][value=nopov]');
+  await page.click('#make'); const cl = await page.inputValue('#out');
+  ok(cl.includes('ПОЗОВНА ЗАЯВА') && cl.includes('Відповідач: Районний ТЦК та СП') && cl.includes('ч. 2 ст. 286 КАС') && cl.includes('ч. 1 ст. 25 КАС') && cl.includes('ст. 160 КАС') && cl.includes('закрити справу про адміністративне правопорушення') && cl.includes('п. 41'), 'позов (постанова): структура, строк 10 днів, підсудність, вимоги');
+  await page.selectOption('#f-ctype', 'dii'); await page.click('#make');
+  ok((await page.inputValue('#out')).includes('шестимісячного строку') && (await page.inputValue('#out')).includes('ч. 6 ст. 161 КАС'), 'позов (дії): шестимісячний строк і поновлення');
 
   // 3b. швидка заявка юристу
   await page.goto(BASE + '/terminovo/');

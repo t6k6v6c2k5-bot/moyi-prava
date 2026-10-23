@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="uk" data-v="ddd9e051">
+<html lang="uk" data-v="f9ab9266">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -16,7 +16,7 @@
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="48x48">
-<link rel="preload" href="/assets/style.css?v=ddd9e051" as="style">
+<link rel="preload" href="/assets/style.css?v=f9ab9266" as="style">
 <link rel="apple-touch-icon" href="/assets/icon-192.png">
 <meta property="og:site_name" content="Мої права">
 <meta property="og:type" content="article">
@@ -33,7 +33,7 @@
 <meta name="twitter:description" content="Безкоштовний генератор скарги до омбудсмана, поліції, прокуратури та заяви про оскарження постанови. Працює на вашому пристрої, без сервера. Копіювання, .txt, друк, Telegram.">
 <meta name="twitter:image" content="%%SITE_URL%%/assets/og.png">
 <script>try{var t=localStorage.getItem('theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
-<link rel="stylesheet" href="/assets/style.css?v=ddd9e051">
+<link rel="stylesheet" href="/assets/style.css?v=f9ab9266">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Скласти скаргу","description":"Безкоштовний генератор скарги до омбудсмана, поліції, прокуратури та заяви про оскарження постанови. Працює на вашому пристрої, без сервера. Копіювання, .txt, друк, Telegram.","url":"%%SITE_URL%%/skarha/","inLanguage":"uk","dateModified":"2026-10-23"}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Головна","item":"%%SITE_URL%%/"},{"@type":"ListItem","position":2,"name":"Скласти скаргу","item":"%%SITE_URL%%/skarha/"}]}</script>
 </head>
@@ -60,6 +60,7 @@
 <label class="opt"><input type="radio" name="kind" value="ombudsman" checked> <span>Скарга Уповноваженому з прав людини (омбудсману)</span></label>
 <label class="opt"><input type="radio" name="kind" value="police"> <span>Заява до поліції (було насильство, погрози)</span></label>
 <label class="opt"><input type="radio" name="kind" value="prosecutor"> <span>Скарга до прокуратури</span></label>
+<label class="opt"><input type="radio" name="kind" value="claim"> <span>Позовна заява до адміністративного суду (чернетка для адвоката)</span></label>
 <label class="opt"><input type="radio" name="kind" value="appeal"> <span>Заява про оскарження постанови про штраф</span></label>
 <label class="opt"><input type="radio" name="kind" value="higher"> <span>Скарга до вищого органу на відповідь ТЦК («відписку»)</span></label>
 <label class="opt"><input type="radio" name="kind" value="vlk"> <span>Заява про незгоду з рішенням ВЛК</span></label>
@@ -72,8 +73,10 @@
 <input id="f-name" name="name" type="text" autocomplete="name" placeholder="Прізвище Ім’я По батькові">
 <label for="f-contact">Адреса та контакти для відповіді</label>
 <input id="f-contact" name="contact" type="text" placeholder="Адреса, телефон, e-mail">
-<label for="f-to">Кому (адресат, за потреби уточніть)</label>
-<input id="f-to" name="to" type="text" placeholder="Підставляється автоматично; змініть, якщо знаєте точного адресата">
+<label for="f-tosel">Кому адресувати (оберіть зі списку)</label>
+<select id="f-tosel" name="tosel"></select>
+<p class="muted" id="to-help" role="note"></p>
+<input id="f-to" name="to" type="text" placeholder="Введіть адресата вручну" hidden>
 </fieldset>
 
 <fieldset>
@@ -141,6 +144,8 @@
 
 <fieldset id="appeal-box" hidden>
 <legend id="ab-legend">5. Постанова про штраф</legend>
+<div id="ctype-box" hidden><label for="f-ctype">Що саме оскаржуєте в суді</label>
+<select id="f-ctype" name="ctype"><option value="dii">Дії чи бездіяльність ТЦК (зупинка, доставлення, відмова розглянути заяву тощо)</option><option value="post">Постанову про штраф (КУпАП)</option><option value="komisia">Рішення комісії щодо відстрочки</option></select></div>
 <label for="f-pnum">Номер постанови (якщо є)</label>
 <input id="f-pnum" name="pnum" type="text">
 <label for="f-pdate">Дата постанови</label>
@@ -192,7 +197,7 @@
   <p class="muted">Сайт не збирає ваших даних і не містить даних про місця й час роботи ТЦК, блокпостів чи поліції.</p>
 </footer>
 <nav class="bottom" aria-label="Основна навігація"><a href="/perevirka-povistky/" class="nav-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h8l6 6v14H6V2zm7 1.5V9h5.5L13 3.5zM8 13h8v1.6H8V13zm0 3.4h8V18H8v-1.6z"/></svg><span>Повістка</span></a><a href="/vidstrochka/" class="nav-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 5v5.2l4 2.4-.8 1.3L11 13V7h2z"/></svg><span>Відстрочка</span></a><a href="/mene-zupynyly/" class="nav-sos" aria-label="Мене зупинили — що робити"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 3 6v6c0 5 3.8 9.3 9 10 5.2-.7 9-5 9-10V6l-9-4zm-1 5h2v6h-2V7zm0 8h2v2h-2v-2z"/></svg><span>Мене зупинили</span></a><a href="/skarha/" class="nav-i on" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17.3V21h3.7L17.8 9.9l-3.7-3.7L3 17.3zM20.7 7a1 1 0 0 0 0-1.4l-2.3-2.3a1 1 0 0 0-1.4 0l-1.8 1.8 3.7 3.7L20.7 7z"/></svg><span>Скарга</span></a><a href="/dopomoha/" class="nav-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v2.2H4V6zm0 5h16v2.2H4V11zm0 5h16v2.2H4V16z"/></svg><span>Ще</span></a></nav>
-<script src="/assets/app.js?v=ddd9e051" defer></script>
-<script src="/assets/generator.js?v=ddd9e051" defer></script>
+<script src="/assets/app.js?v=f9ab9266" defer></script>
+<script src="/assets/generator.js?v=f9ab9266" defer></script>
 </body>
 </html>

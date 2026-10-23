@@ -6,6 +6,7 @@
 <label class="opt"><input type="radio" name="kind" value="ombudsman" checked> <span>Скарга Уповноваженому з прав людини (омбудсману)</span></label>
 <label class="opt"><input type="radio" name="kind" value="police"> <span>Заява до поліції (було насильство, погрози)</span></label>
 <label class="opt"><input type="radio" name="kind" value="prosecutor"> <span>Скарга до прокуратури</span></label>
+<label class="opt"><input type="radio" name="kind" value="claim"> <span>Позовна заява до адміністративного суду (чернетка для адвоката)</span></label>
 <label class="opt"><input type="radio" name="kind" value="appeal"> <span>Заява про оскарження постанови про штраф</span></label>
 <label class="opt"><input type="radio" name="kind" value="higher"> <span>Скарга до вищого органу на відповідь ТЦК («відписку»)</span></label>
 <label class="opt"><input type="radio" name="kind" value="vlk"> <span>Заява про незгоду з рішенням ВЛК</span></label>
@@ -18,8 +19,10 @@
 <input id="f-name" name="name" type="text" autocomplete="name" placeholder="Прізвище Ім’я По батькові">
 <label for="f-contact">Адреса та контакти для відповіді</label>
 <input id="f-contact" name="contact" type="text" placeholder="Адреса, телефон, e-mail">
-<label for="f-to">Кому (адресат, за потреби уточніть)</label>
-<input id="f-to" name="to" type="text" placeholder="Підставляється автоматично; змініть, якщо знаєте точного адресата">
+<label for="f-tosel">Кому адресувати (оберіть зі списку)</label>
+<select id="f-tosel" name="tosel"></select>
+<p class="muted" id="to-help" role="note"></p>
+<input id="f-to" name="to" type="text" placeholder="Введіть адресата вручну" hidden>
 </fieldset>
 
 <fieldset>
@@ -87,6 +90,8 @@
 
 <fieldset id="appeal-box" hidden>
 <legend id="ab-legend">5. Постанова про штраф</legend>
+<div id="ctype-box" hidden><label for="f-ctype">Що саме оскаржуєте в суді</label>
+<select id="f-ctype" name="ctype"><option value="dii">Дії чи бездіяльність ТЦК (зупинка, доставлення, відмова розглянути заяву тощо)</option><option value="post">Постанову про штраф (КУпАП)</option><option value="komisia">Рішення комісії щодо відстрочки</option></select></div>
 <label for="f-pnum">Номер постанови (якщо є)</label>
 <input id="f-pnum" name="pnum" type="text">
 <label for="f-pdate">Дата постанови</label>

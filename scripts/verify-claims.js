@@ -122,8 +122,8 @@ for (const c of claims) {
 function listJson(dir) {
   return fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? listJson(path.join(dir, e.name)) : e.name.endsWith('.json') ? [path.join(dir, e.name)] : []));
 }
-const pointSources = ['pkmu560', 'pkmu1455', 'pkmu1456', 'pdr', 'pkmu1487'];
-const articleSources = ['law3543', 'znp', 'voenstan', 'kupap', 'kk', 'zvern', 'zvos'];
+const pointSources = ['pkmu560', 'pkmu1455', 'pkmu1456', 'pdr', 'pkmu1487', 'pkmu154'];
+const articleSources = ['law3543', 'znp', 'voenstan', 'kupap', 'kk', 'zvern', 'zvos', 'kas'];
 const hasPoint = (id, n) => new RegExp('(^|\\n)\\s*' + n.replace('-', '\\-') + '\\.\\s', 'm').test(texts[id].raw);
 const hasArticle = (id, n) => new RegExp('(^|\\n)\\s*Стаття ' + n.replace('.', '\\.') + '\\.\\s', 'm').test(texts[id].raw);
 const stringsOf = (o) => (typeof o === 'string' ? [o] : Array.isArray(o) ? o.flatMap(stringsOf) : o && typeof o === 'object' ? Object.values(o).flatMap(stringsOf) : []);
