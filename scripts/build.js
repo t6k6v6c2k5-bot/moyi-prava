@@ -33,6 +33,7 @@ const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 function inline(s) {
   let t = esc(s);
   t = t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  t = t.replace(/0 800 213 103(?![^<]*<\/a>)/g, '<a href="tel:0800213103">0 800 213 103</a>');
   t = t.replace(/\[([^\]]+)\]\(([^)\s]+)(?:\s+&quot;sponsored&quot;)?\)/g, (m, text, url) => {
     const sponsored = /&quot;sponsored&quot;\)$/.test(m);
     const ext = /^https?:/.test(url);
@@ -263,9 +264,9 @@ for (const p of pages) {
   const body = `<article class="page">
 <h1>${esc(p.h1)}</h1>
 <p class="lead">${esc(p.lead)}</p>
-${badge(p.sources)}
-${p.slug === 'mene-zupynyly' ? '<p class="timer muted">Оберіть ситуацію вище. Загальні правила нижче читаються за 1–2 хвилини.</p>' : ''}
+${p.slug === 'mene-zupynyly' ? '<p class="timer muted">Оберіть свою ситуацію у списку нижче. Загальні правила під списком читаються за 1–2 хвилини.</p>' : ''}
 ${renderBlocks(p.blocks)}
+${badge(p.sources)}
 </article>`;
   const scripts = [];
   if (p.slug === 'skarha') scripts.push('generator.js');
@@ -305,7 +306,7 @@ for (const [id, st] of Object.entries(situations.situations)) {
 <p class="crumb"><a href="/mene-zupynyly/">← Усі ситуації</a></p>
 <h1>${esc(st.h1)}</h1>
 <p class="lead">${esc(st.lead)}</p>
-${badge(st.sources)}
+<aside class="callout info now" role="note"><strong class="ct">Прямо зараз</strong><p>${inline(st.now || 'Зберігайте спокій і не чиніть опір. Попросіть назвати прізвище, посаду та причину вимоги. Потрібна допомога — **0 800 213 103**. Кроки й норми — нижче.')}</p></aside>
 <h2>Що робити</h2>
 <ul class="check">${st.do.map((i) => `<li>${inline(i)}</li>`).join('')}</ul>
 <h2>Чого не робити</h2>
@@ -313,6 +314,7 @@ ${badge(st.sources)}
 <h2>Що варто знати</h2>
 <ul>${st.know.map((i) => `<li>${inline(i)}</li>`).join('')}</ul>
 ${st.lawyer && (LAWYER_NOTES.push({ page: 'sytuatsiyi/' + (st.slug || st.id || st.label), title: '', x: st.lawyer }), SHOW_NOTES) ? `<aside class="callout lawyer" role="note"><strong class="ct">Потребує перевірки юристом</strong><p>${inline(st.lawyer)}</p></aside>` : ''}
+${badge(st.sources)}
 ${st.plain ? '' : `<aside class="callout warn" role="note"><strong class="ct">Дії здаються незаконними?</strong><p>Не чиніть опір. Зафіксуйте факти й передайте їх юристу — навіть якщо людину вже забрали до ТЦК, юрист може діяти одразу.</p></aside>`}
 <p><a class="btn big sos" href="/terminovo/">Передати справу юристу</a></p>
 <ul class="linklist"><li><a class="btn secondary" href="/skarha/">Скласти скаргу</a></li><li><a class="btn secondary" href="/vidstrochka/">Перевірити підстави відстрочки</a></li><li><a class="btn secondary" href="/mene-zupynyly/">Інші ситуації</a></li></ul>
@@ -384,6 +386,7 @@ ${faq.items.map((i) => `<details class="faq"><summary>${esc(i.q)}</summary><p>${
 <p class="lead">Навігатор для військовозобов’язаних та їхніх родин. Знай свої права й обов’язки. Дій за законом. Фіксуй порушення.</p>
 <a class="btn sos big" href="/mene-zupynyly/">${ICON.sos}<span>Мене зупинили — що робити</span></a>
 <p><a class="btn big amber" href="/terminovo/">Терміново: передати справу юристу</a></p>
+<ul class="quick"><li><a class="btn secondary" href="/sytuatsiyi/politsiya-pokrokovo/">Зупинила поліція</a></li><li><a class="btn secondary" href="/sytuatsiyi/tck-perevirka/">ТЦК / вручають повістку</a></li><li><a class="btn secondary" href="/zabraly/">Рідну людину забрали</a></li><li><a class="btn secondary" href="/vidstrochka/">Потрібна відстрочка</a></li><li><a class="btn secondary" href="/vidpyska-tck/">ТЦК відповіло відпискою</a></li></ul>
 <ul class="trust" aria-label="Чому сайту можна довіряти"><li>${ICON.check}Норми — з посиланням на джерело</li><li>${ICON.check}Працює офлайн</li><li>${ICON.check}Без трекерів і реєстрації</li></ul>
 </section>
 <ul class="tiles">${tiles.map((t) => `<li><a class="tile c-${t.c || 'blue'}" href="${t.u}">${ICON[t.i]}<span class="tt">${esc(t.t)}</span><span class="td">${esc(t.d)}</span></a></li>`).join('')}</ul>

@@ -405,4 +405,9 @@
     pre.textContent = out.value;
     window.print();
   });
+  // Перехід за посиланням /skarha/#higher тощо: одразу обираємо тип документа
+  (function () {
+    var h = (location.hash || '').slice(1), r = form.querySelector('input[name=kind][value="' + h.replace(/[^a-z]/g, '') + '"]');
+    if (r) { r.checked = true; syncKind(); }
+  })();
 })();
