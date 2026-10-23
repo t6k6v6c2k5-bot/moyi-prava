@@ -17,7 +17,6 @@ let curPage = '';
 const sources = JSON.parse(fs.readFileSync(path.join(CONTENT, 'sources.json'), 'utf8'));
 const faq = JSON.parse(fs.readFileSync(path.join(CONTENT, 'faq.json'), 'utf8'));
 const vdata = JSON.parse(fs.readFileSync(path.join(CONTENT, 'vidstrochka-data.json'), 'utf8'));
-const situations = JSON.parse(fs.readFileSync(path.join(CONTENT, 'situations.json'), 'utf8'));
 const pages = fs
   .readdirSync(path.join(CONTENT, 'pages'))
   .filter((f) => f.endsWith('.json'))
@@ -61,7 +60,7 @@ const ICON = {
 };
 
 const NAV = [
-  { id: 'povistka', href: '/perevirka-povistky/', label: 'Повістка', icon: 'doc' },
+  { id: 'povistka', href: '/povistka/', label: 'Повістка', icon: 'doc' },
   { id: 'vidstrochka', href: '/vidstrochka/', label: 'Відстрочка', icon: 'clock' },
   { id: 'skarha', href: '/skarha/', label: 'Скарга', icon: 'edit' },
   { id: 'more', href: '/dopomoha/', label: 'Ще', icon: 'more' },
@@ -92,13 +91,13 @@ function renderBlocks(blocks) {
     if (b.t === 'h2' && b.fold) {
       const inner = [];
       while (i + 1 < blocks.length && blocks[i + 1].t !== 'h2') inner.push(blocks[++i]);
-      folded.push({ t: '_fold', title: b.x, inner });
+      folded.push({ t: '_fold', title: b.x, inner, id: b.id });
     } else folded.push(b);
   }
   return folded
     .map((b) => {
       switch (b.t) {
-        case '_fold': return `<details class="fold"><summary>${inline(b.title)}</summary>${renderBlocks(b.inner)}</details>`;
+        case '_fold': return `<details class="fold"${b.id ? ` id="${b.id}"` : ''}><summary>${inline(b.title)}</summary>${renderBlocks(b.inner)}</details>`;
         case 'h2': return `<h2>${inline(b.x)}</h2>`;
         case 'p': return `<p>${inline(b.x)}</p>`;
         case 'ul': return `<ul>${b.items.map((i) => `<li>${inline(i)}</li>`).join('')}</ul>`;
@@ -126,10 +125,10 @@ function renderBlocks(blocks) {
 <p class="muted">Загроза життю: <a href="tel:102">102</a> або <a href="tel:112">112</a>.</p>
 <h2>Якщо вже забрали силою</h2>
 <p>У такий момент розмови немає — і це нормально. Головне: <strong>не чиніть опір</strong>, берегти себе. Усе інше — після, і це можна зробити з телефона або руками рідних:</p>
-<ol class="sos-steps"><li><strong>Рідні:</strong> дзвінок юристу <a href="tel:0800213103">0 800 213 103</a> і сторінка <a href="/zabraly/">«Рідну людину забрали»</a>.</li><li><strong>Якщо була сила:</strong> лікар і довідка про травми одразу, фото травм, <a href="/sytuatsiyi/tck-syla/">що робити далі</a>.</li><li><strong>Скарга й заява</strong> — <a href="/skarha/">генератор</a>, юрист допоможе подати.</li></ol>
+<ol class="sos-steps"><li><strong>Рідні:</strong> дзвінок юристу <a href="tel:0800213103">0 800 213 103</a> і сторінка <a href="/zabraly/">«Рідну людину забрали»</a>.</li><li><strong>Якщо була сила:</strong> лікар і довідка про травми одразу, фото травм, <a href="/mene-zupynyly/#tck-syla">що робити далі</a>.</li><li><strong>Скарга й заява</strong> — <a href="/skarha/">генератор</a>, юрист допоможе подати.</li></ol>
 <h2>Підготуйтесь заздалегідь</h2>
 <ul class="sos-steps"><li>Збережіть <strong>0 800 213 103</strong> у контактах і скажіть близькій людині, що робити.</li><li>Тримайте документи в порядку; перевірте свої статуси в Резерв+ (<a href="/statusy-rezerv/">що робити</a>).</li><li>Додайте сайт на головний екран і <strong>роздрукуйте картку</strong> — вона працює без телефону.</li></ul>
-<p><a class="btn secondary" href="/sytuatsiyi/politsiya-pokrokovo/">Поліція: покроково</a> <a class="btn secondary" href="/sytuatsiyi/tck-perevirka/">ТЦК: покроково</a></p>
+<p><a class="btn secondary" href="/mene-zupynyly/#politsiya-pokrokovo">Поліція: покроково</a> <a class="btn secondary" href="/mene-zupynyly/#tck-perevirka">ТЦК: покроково</a></p>
 <p><button class="btn secondary" type="button" data-print>Роздрукувати картку в гаманець / авто</button></p>
 </div>`;
         case 'links':
@@ -148,19 +147,7 @@ function renderBlocks(blocks) {
               )
               .join('')
           );
-        case 'situations':
-          return (
-            '<h2>Що сталося?</h2>' +
-            situations.groups
-              .map(
-                (g) =>
-                  `<h3 class="grp">${esc(g.title)}</h3><ul class="linklist">${g.items
-                    .map((id) => `<li><a class="btn secondary" href="/sytuatsiyi/${id}/">${esc(situations.situations[id].label)}</a></li>`)
-                    .join('')}</ul>`
-              )
-              .join('') +
-            '<h3 class="grp">Рідну людину забрали</h3><ul class="linklist"><li><a class="btn secondary" href="/zabraly/">Рідну людину забрали — що робити</a></li></ul>'
-          );
+        case 'grp': return `<h3 class="grp">${esc(b.x)}</h3>`;
         case 'call':
           return `<p><a class="btn sos big" href="tel:0800213103">Подзвонити юристу безкоштовно 0&nbsp;800&nbsp;213&nbsp;103</a></p><p><a class="btn big secondary" href="sms:?&body=%D0%A0%D1%96%D0%B4%D0%BD%D1%83%20%D0%BB%D1%8E%D0%B4%D0%B8%D0%BD%D1%83%20%D0%B7%D0%B0%D0%B1%D1%80%D0%B0%D0%BB%D0%B8.%20%D0%AE%D1%80%D0%B8%D1%81%D1%82%20%D0%B1%D0%B5%D0%B7%D0%BE%D0%BF%D0%BB%D0%B0%D1%82%D0%BD%D0%BE%3A%200%20800%20213%20103">Надіслати номер юриста рідним (SMS)</a></p>`;
         case 'urgent_cta':
@@ -334,37 +321,6 @@ ${badge(p.sources)}
   out.push({ u: urlPath, p: 0.8 });
 }
 
-// --- Ситуації
-for (const [id, st] of Object.entries(situations.situations)) {
-  const urlPath = `/sytuatsiyi/${id}/`;
-  const body = `<article class="page">
-<p class="crumb"><a href="/mene-zupynyly/">← Усі ситуації</a></p>
-<h1>${esc(st.h1)}</h1>
-<p class="lead">${esc(st.lead)}</p>
-<aside class="callout info now" role="note"><strong class="ct">Прямо зараз</strong><p>${inline(st.now || 'Зберігайте спокій і не чиніть опір. Попросіть назвати прізвище, посаду та причину вимоги. Потрібна допомога — **0 800 213 103**. Кроки й норми — нижче.')}</p></aside>
-<h2>Що робити</h2>
-<ul class="check">${st.do.map((i) => `<li>${inline(i)}</li>`).join('')}</ul>
-<h2>Чого не робити</h2>
-<ul>${st.dont.map((i) => `<li>${inline(i)}</li>`).join('')}</ul>
-<details class="fold"><summary>Чому так: норми й подробиці</summary>
-<ul>${st.know.map((i) => `<li>${inline(i)}</li>`).join('')}</ul></details>
-${st.lawyer && (LAWYER_NOTES.push({ page: 'sytuatsiyi/' + (st.slug || st.id || st.label), title: '', x: st.lawyer }), SHOW_NOTES) ? `<aside class="callout lawyer" role="note"><strong class="ct">Потребує перевірки юристом</strong><p>${inline(st.lawyer)}</p></aside>` : ''}
-${badge(st.sources)}
-${st.plain ? '' : `<aside class="callout warn" role="note"><strong class="ct">Дії здаються незаконними?</strong><p>Не чиніть опір. Зафіксуйте факти й передайте їх юристу — навіть якщо людину вже забрали до ТЦК, юрист може діяти одразу.</p></aside>`}
-<p><a class="btn big sos" href="/terminovo/">Передати справу юристу</a></p>
-<ul class="linklist"><li><a class="btn secondary" href="/skarha/">Скласти скаргу</a></li><li><a class="btn secondary" href="/vidstrochka/">Перевірити підстави відстрочки</a></li><li><a class="btn secondary" href="/mene-zupynyly/">Інші ситуації</a></li></ul>
-</article>`;
-  const jsonld = [
-    { '@context': 'https://schema.org', '@type': 'WebPage', name: st.h1, description: st.description, url: SITE + urlPath, inLanguage: 'uk', dateModified: VERIFIED_ISO },
-    { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Головна', item: SITE + '/' },
-      { '@type': 'ListItem', position: 2, name: 'Мене зупинили', item: SITE + '/mene-zupynyly/' },
-      { '@type': 'ListItem', position: 3, name: st.h1, item: SITE + urlPath } ] },
-  ];
-  write(urlPath, layout({ title: st.h1 + ' | Мої права', description: st.description, urlPath, body, callbar: true, nav: 'stop', jsonld, ogType: 'article', sourceIds: st.sources }));
-  searchIndex.push({ u: urlPath, t: st.h1, d: st.description, x: [st.label, st.lead, ...st.do, ...st.dont, ...st.know].map(plain).join(' ') });
-  out.push({ u: urlPath, p: 0.7 });
-}
 
 // --- FAQ
 {
@@ -400,22 +356,19 @@ ${faq.items.map((i) => `<details class="faq"><summary>${esc(i.q)}</summary><p>${
 // --- Головна
 {
   const tiles = [
-    { u: '/perevirka-povistky/', t: 'Перевірити повістку', d: 'QR-код, Резерв+, ознаки недійсної', i: 'doc', c: 'blue' },
+    { u: '/povistka/#perevirka-povistky', t: 'Перевірити повістку', d: 'QR-код, Резерв+, ознаки недійсної', i: 'doc', c: 'blue' },
     { u: '/vidstrochka/', t: 'Відстрочка', d: 'Які підстави мені підходять', i: 'clock', c: 'green' },
     { u: '/zaiava-vidstrochka/', t: 'Заява про відстрочку', d: 'Чернетка та перелік документів', i: 'edit', c: 'green' },
     { u: '/skarha/', t: 'Скласти скаргу', d: 'Омбудсман, поліція, прокуратура, штраф, ВЛК', i: 'edit', c: 'amber' },
-    { u: '/rezerv-plus/', t: 'Резерв+: що передбачено', d: 'QR-код, електронний документ, автовідстрочка', i: 'phone', c: 'blue' },
-    { u: '/slovnyk/', t: 'Словник термінів', d: 'Прості визначення з норм', i: 'book', c: 'blue' },
+        { u: '/slovnyk/', t: 'Словник термінів', d: 'Прості визначення з норм', i: 'book', c: 'blue' },
     { u: '/dlia-rodyn/', t: 'Папка документів', d: 'Що зібрати заздалегідь', i: 'folder', c: 'amber' },
     { u: '/zabraly/', t: 'Рідну людину забрали', d: 'Що робити в перші години', i: 'family', c: 'red' },
     { u: '/terminovo/', t: 'Передати справу юристу', d: 'Швидка заявка: людину зупинили чи забрали', i: 'sos', c: 'red' },
     { u: '/dopomoha/', t: 'Юридична допомога', d: '0 800 213 103 та заявка адвокату', i: 'scale', c: 'blue' },
     { u: '/pro-sait/', t: 'Як ми перевіряємо', d: 'Цитати з норм і автоперевірка', i: 'check', c: 'green' },
-    { u: '/vidpyska-tck/', t: 'ТЦК відповіло «все законно»', d: 'Що робити після відписки', i: 'edit', c: 'amber' },
     { u: '/znyattia-vyklyuchennia/', t: 'Знятий чи виключений з обліку', d: 'У чому різниця за законом', i: 'doc', c: 'blue' },
     { u: '/statusy-rezerv/', t: 'Розшук і статуси в Резерв+', d: 'Як уточнити, оскаржити, коли потрібен юрист', i: 'search', c: 'blue' },
     { u: '/szch/', t: 'СЗЧ: законний шлях повернення', d: 'Відповідальність і звільнення за ст. 401 КК', i: 'scale', c: 'amber' },
-    { u: '/sud/', t: 'Суд: як оскаржити дії ТЦК', d: 'Строки, куди подавати, що додати', i: 'scale', c: 'amber' },
     { u: '/faq/', t: 'Часті запитання', d: 'Короткі відповіді з джерелами', i: 'search', c: 'blue' },
   ];
   const body = `<section class="hero">
@@ -425,8 +378,8 @@ ${faq.items.map((i) => `<details class="faq"><summary>${esc(i.q)}</summary><p>${
 <li><a class="btn big" href="/zabraly/"><span>Рідну людину забрали</span></a></li>
 <li><a class="btn big" href="/povistka/"><span>Мені прийшла повістка</span></a></li>
 <li><a class="btn big" href="/vidstrochka/"><span>Хочу відстрочку</span></a></li>
-<li><a class="btn big" href="/sytuatsiyi/blokpost-rozshuk/"><span>Кажуть, що я в розшуку</span></a></li>
-<li class="full"><a class="btn big" href="/vidpyska-tck/"><span>ТЦК відписало «все законно» / штраф</span></a></li>
+<li><a class="btn big" href="/statusy-rezerv/#blokpost-rozshuk"><span>Кажуть, що я в розшуку</span></a></li>
+<li class="full"><a class="btn big" href="/skarha/#vidpyska-tck"><span>ТЦК відписало «все законно» / штраф</span></a></li>
 <li class="full"><a class="btn big callb" href="tel:0800213103"><span>Юрист безкоштовно · 0&nbsp;800&nbsp;213&nbsp;103</span></a></li>
 </ul>
 </section>
@@ -466,7 +419,7 @@ const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).forEach((e) => (e
 walk(DIST);
 const build = hash.digest('hex').slice(0, 8);
 
-const precache = ['/', '/offline/', '/mene-zupynyly/', '/blokpost/', '/povistka/', '/perevirka-povistky/', '/skarha/', '/vidstrochka/', '/zabraly/', '/dopomoha/', '/faq/', '/poshuk/', '/pryvatnist/', '/shtraf/', '/terminovo/', '/zaiava-vidstrochka/', '/dlia-rodyn/', '/rezerv-plus/', '/slovnyk/', '/pro-sait/', '/vidpyska-tck/', '/znyattia-vyklyuchennia/', '/sud/', '/sos/', '/statusy-rezerv/', '/szch/', ...Object.keys(situations.situations).map((i) => `/sytuatsiyi/${i}/`), '/assets/style.css', '/assets/app.js', '/assets/generator.js', '/assets/vnav.js', '/assets/search.js', '/assets/urgent.js', '/assets/zaiava.js', '/assets/search-index.json', '/assets/icon.svg', '/assets/icon-192.png', '/assets/favicon-48.png', '/manifest.webmanifest'];
+const precache = ['/', '/offline/', '/mene-zupynyly/', '/povistka/', '/skarha/', '/vidstrochka/', '/zabraly/', '/dopomoha/', '/faq/', '/poshuk/', '/pryvatnist/', '/terminovo/', '/zaiava-vidstrochka/', '/dlia-rodyn/', '/slovnyk/', '/pro-sait/', '/znyattia-vyklyuchennia/', '/sos/', '/statusy-rezerv/', '/szch/', '/assets/style.css', '/assets/app.js', '/assets/generator.js', '/assets/vnav.js', '/assets/search.js', '/assets/urgent.js', '/assets/zaiava.js', '/assets/search-index.json', '/assets/icon.svg', '/assets/icon-192.png', '/assets/favicon-48.png', '/manifest.webmanifest'];
 for (const u of precache) {
   const f = u.endsWith('/') ? path.join(DIST, u, 'index.html') : path.join(DIST, u);
   if (!fs.existsSync(f)) throw new Error('Немає файлу для precache: ' + u);

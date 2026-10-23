@@ -9,7 +9,7 @@ const meta = (h, re) => (re.exec(h) || [])[1];
 (async () => {
   const sm = await get(ON, '/sitemap.xml');
   const urls = [...sm.t.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
-  ok(urls.length >= 30, 'sitemap: ' + urls.length + ' URL');
+  ok(urls.length >= 15, 'sitemap: ' + urls.length + ' URL');
   ok(urls.every((u) => u.startsWith(SITE + '/')), 'sitemap: усі URL з SITE_URL');
   ok(!urls.some((u) => /poshuk|offline/.test(u)), 'sitemap: без /poshuk/ та /offline/');
   ok(/<lastmod>\d{4}-\d{2}-\d{2}<\/lastmod>/.test(sm.t), 'sitemap: lastmod');

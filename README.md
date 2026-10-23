@@ -31,7 +31,7 @@ scripts/build.js          генератор: content/*.json + src/ → dist/ (�
 scripts/make-images.js    разовая генерация PNG-иконок и og.png (нужен Playwright)
 content/
   sources.json            список официальных источников (id → название, ссылка) и дата «Перевірено»
-  situations.json         ситуации «Мене зупинили» (поліція/ТЦК/блокпост): по одной странице /sytuatsiyi/<id>/ на каждую
+  redirects.json          старые адреса → новые разделы-«гармошки» (301)
   faq.json                вопросы и ответы (FAQ + разметка schema.org FAQPage)
   vidstrochka-data.json   вопросы и основания навигатора отсрочек
   pages/*.json            по одному файлу на страницу (тексты)
@@ -61,7 +61,7 @@ tests/e2e.js              проверка страниц, ширины 360px, �
 
 ### Ситуации («Меня остановили»)
 
-Файл `content/situations.json`: `groups` — группы и порядок кнопок на `/mene-zupynyly/`; `situations` — страницы. Поля ситуации: `label` (текст кнопки), `h1`, `description`, `lead`, `do` (что делать), `dont` (чего не делать), `know` (что важно знать, с ссылками на пункты норм), `lawyer` (необязательно — плашка «Потребує перевірки юристом»), `sources` (id из `sources.json`). Чтобы добавить ситуацию — добавьте объект и его id в нужную группу, затем `npm run build`.
+Сайт собран из «хабов»: `/mene-zupynyly/`, `/povistka/`, `/statusy-rezerv/`, `/skarha/`. Ситуации внутри — это сворачиваемые разделы (`{"t":"h2","x":"...","fold":true,"id":"якір"}` + блоки до следующего h2); ссылка вида `/mene-zupynyly/#якір` открывает раздел. Старые адреса `/sytuatsiyi/...`, `/sud/` и т. д. перенаправляются по `content/redirects.json`.
 
 ### Заявление об отсрочке (/zaiava-vidstrochka/)
 

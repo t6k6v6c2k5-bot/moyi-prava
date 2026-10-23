@@ -3,7 +3,7 @@
 const { chromium } = require('playwright');
 const BASE = process.env.BASE || 'http://localhost:3000';
 const SHOTS = process.env.SHOTS || '';
-const PAGES = ['/', '/mene-zupynyly/', '/blokpost/', '/povistka/', '/perevirka-povistky/', '/vidstrochka/', '/skarha/', '/shtraf/', '/zabraly/', '/dopomoha/', '/faq/', '/poshuk/', '/pryvatnist/', '/terminovo/', '/sytuatsiyi/politsiya-pokrokovo/', '/sytuatsiyi/blokpost-rozshuk/', '/sytuatsiyi/politsiya-pdr/', '/sytuatsiyi/politsiya-szch/', '/sytuatsiyi/tck-vidstrochka/', '/zaiava-vidstrochka/', '/sytuatsiyi/povistka-poshtoiu/', '/sytuatsiyi/ne-prybuv-u-strok/', '/dlia-rodyn/', '/rezerv-plus/', '/slovnyk/', '/pro-sait/', '/vidpyska-tck/', '/znyattia-vyklyuchennia/', '/sud/', '/statusy-rezerv/', '/szch/', '/sos/'];
+const PAGES = ['/', '/mene-zupynyly/', '/povistka/', '/vidstrochka/', '/skarha/', '/zabraly/', '/dopomoha/', '/faq/', '/poshuk/', '/pryvatnist/', '/terminovo/', '/zaiava-vidstrochka/', '/dlia-rodyn/', '/statusy-rezerv/', '/slovnyk/', '/pro-sait/', '/znyattia-vyklyuchennia/', '/szch/', '/sos/'];
 let fail = 0;
 const ok = (c, m) => { if (!c) { fail++; console.log('FAIL', m); } else console.log('ok  ', m); };
 
@@ -135,7 +135,9 @@ const ok = (c, m) => { if (!c) { fail++; console.log('FAIL', m); } else console.
   ok(await page.locator('#u-tg[rel~=noopener]').count() === 1 && await page.locator('#u-tg[rel~=sponsored]').count() === 0, 'терміново: rel=noopener, без sponsored');
   // каталог ситуацій
   await page.goto(BASE + '/mene-zupynyly/');
-  ok((await page.locator('a[href^="/sytuatsiyi/"]').count()) >= 14, 'мене зупинили: показано всі ситуації');
+  ok((await page.locator('details.fold[id]').count()) >= 14, 'мене зупинили: усі ситуації як розділи');
+  await page.goto(BASE + '/mene-zupynyly/#tck-syla'); await page.waitForTimeout(200);
+  ok(await page.evaluate(() => document.getElementById('tck-syla').open === true), 'посилання з # відкриває розділ');
 
   // 3c. заява про відстрочку
   await page.goto(BASE + '/zaiava-vidstrochka/');
@@ -192,7 +194,7 @@ const ok = (c, m) => { if (!c) { fail++; console.log('FAIL', m); } else console.
   await page.evaluate(() => navigator.serviceWorker.ready);
   await page.waitForTimeout(1500);
   await ctx.setOffline(true);
-  for (const u of ['/', '/mene-zupynyly/', '/skarha/', '/vidstrochka/', '/faq/', '/terminovo/', '/sytuatsiyi/politsiya-pdr/']) {
+  for (const u of ['/', '/mene-zupynyly/', '/skarha/', '/vidstrochka/', '/faq/', '/terminovo/', '/mene-zupynyly/#politsiya-pdr']) {
     try { const r = await page.goto(BASE + u); ok(r && r.ok() && (await page.locator('h1').count()) === 1, `офлайн: ${u}`); } catch (e) { ok(false, `офлайн: ${u} ${e.message}`); }
   }
   await page.goto(BASE + '/skarha/'); await page.evaluate(() => document.querySelectorAll('details.more').forEach((d) => { d.open = true; }));

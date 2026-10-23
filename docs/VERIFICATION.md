@@ -25,7 +25,7 @@
 
 ## Покриття
 
-Посилань «п./ст.» у контенті, що мають перевірену цитату: **138 з 179 (77%)**. Решта — без автоматичної перевірки:
+Посилань «п./ст.» у контенті, що мають перевірену цитату: **140 з 192 (73%)**. Решта — без автоматичної перевірки:
 
 - content/faq.json: pkmu560 п. 9
 - content/faq.json: pkmu560 п. 7
@@ -35,22 +35,35 @@
 - content/faq.json: law3543 ст. 17
 - content/faq.json: law3543 ст. 7
 - content/faq.json: znp ст. 37
-- content/pages/blokpost.json: pkmu1455 п. 7
-- content/pages/blokpost.json: pkmu1455 п. 4
-- content/pages/blokpost.json: pkmu1455 п. 8
-- content/pages/blokpost.json: pkmu1455 п. 9
-- content/pages/blokpost.json: pkmu1455 п. 6
-- content/pages/blokpost.json: pkmu1455 п. 10
-- content/pages/mene-zupynyly.json: pkmu560 п. 7
+- content/pages/mene-zupynyly.json: pkmu560 п. 2
 - content/pages/mene-zupynyly.json: pkmu560 п. 9
+- content/pages/mene-zupynyly.json: pkmu560 п. 4
+- content/pages/mene-zupynyly.json: pkmu560 п. 7
+- content/pages/mene-zupynyly.json: pkmu560 п. 20
+- content/pages/mene-zupynyly.json: pkmu560 п. 8
+- content/pages/mene-zupynyly.json: pkmu560 п. 10
+- content/pages/mene-zupynyly.json: pkmu560 п. 21
+- content/pages/mene-zupynyly.json: pkmu560 п. 3
+- content/pages/mene-zupynyly.json: pkmu560 п. 5
+- content/pages/mene-zupynyly.json: pkmu560 п. 6
 - content/pages/mene-zupynyly.json: law3543 ст. 18
+- content/pages/mene-zupynyly.json: law3543 ст. 7
+- content/pages/mene-zupynyly.json: law3543 ст. 8
+- content/pages/mene-zupynyly.json: znp ст. 64
 - content/pages/povistka.json: pkmu560 п. 32
 - content/pages/povistka.json: pkmu560 п. 36
-- content/pages/shtraf.json: pkmu560 п. 5
-- content/pages/shtraf.json: kupap ст. 4
-- content/pages/shtraf.json: kupap ст. 287
-- content/pages/shtraf.json: kupap ст. 286
-- content/pages/skarha.json: kupap ст. 7
+- content/pages/skarha.json: pkmu560 п. 3
+- content/pages/skarha.json: pkmu560 п. 13
+- content/pages/skarha.json: pkmu560 п. 5
+- content/pages/skarha.json: law3543 ст. 7
+- content/pages/skarha.json: law3543 ст. 18
+- content/pages/skarha.json: law3543 ст. 17
+- content/pages/skarha.json: kupap ст. 286
+- content/pages/skarha.json: kupap ст. 287
+- content/pages/skarha.json: kupap ст. 122
+- content/pages/skarha.json: law3543 ст. 25
+- content/pages/skarha.json: kupap ст. 160
+- content/pages/skarha.json: kupap ст. 161
 - content/pages/slovnyk.json: pkmu560 п. 28
 - content/pages/slovnyk.json: pkmu560 п. 36
 - content/pages/slovnyk.json: pkmu560 п. 56
@@ -58,14 +71,12 @@
 - content/pages/slovnyk.json: pkmu560 п. 2
 - content/pages/slovnyk.json: pkmu560 п. 9
 - content/pages/slovnyk.json: kupap ст. 37
-- content/pages/statusy-rezerv.json: zvern ст. 25
-- content/pages/statusy-rezerv.json: zvern ст. 24
-- content/pages/sud.json: pkmu560 п. 3
-- content/pages/sud.json: pkmu560 п. 13
-- content/pages/sud.json: kas ст. 289
-- content/pages/vidpyska-tck.json: pkmu560 п. 3
-- content/pages/vidpyska-tck.json: pkmu560 п. 13
-- content/pages/vidpyska-tck.json: kupap ст. 286
+- content/pages/statusy-rezerv.json: law3543 ст. 17
+- content/pages/statusy-rezerv.json: law3543 ст. 20
+- content/pages/statusy-rezerv.json: law3543 ст. 18
+- content/pages/statusy-rezerv.json: law3543 ст. 7
+- content/pages/statusy-rezerv.json: law3543 ст. 25
+- content/pages/statusy-rezerv.json: law3543 ст. 24
 - content/pages/vidstrochka.json: pkmu560 п. 62
 - content/pages/znyattia-vyklyuchennia.json: zvos ст. 23
 
@@ -315,8 +326,5 @@
 Статті Конституції, КПК, Сімейного кодексу, Податкового кодексу та інші акти, яких немає в списку джерел, перевіряються вручну:
 
 - content/faq.json: ст. 114-2
-- content/pages/blokpost.json: ст. 64
-- content/pages/blokpost.json: ст. 114-2
-- content/pages/mene-zupynyly.json: ст. 114-2
 - content/pages/terminovo.json: ст. 114-2
 - content/pages/zabraly.json: ст. 114-2

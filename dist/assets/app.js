@@ -23,6 +23,13 @@
       window.print();
     }
   });
+  // посилання виду /сторінка/#розділ: відкриваємо розділ-згортку
+  function openHash() {
+    var h = decodeURIComponent((location.hash || '').slice(1)), el = h && document.getElementById(h);
+    if (el && el.tagName === 'DETAILS') { el.open = true; setTimeout(function () { el.scrollIntoView(); }, 50); }
+  }
+  openHash();
+  window.addEventListener('hashchange', openHash);
   // кнопка адвоката: якщо LAWYER_TELEGRAM_URL не задано, сервер ставить tel:
   var lb = document.getElementById('lawyer-btn');
   if (lb && /^tel:/.test(lb.getAttribute('href'))) {

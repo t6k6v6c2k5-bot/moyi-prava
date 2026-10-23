@@ -115,6 +115,14 @@ app.get(/^\/(?:[a-z0-9-]+\/)*$/, (req, res, next) => {
   if (htmlCache.has(req.path)) return sendHtml(req, res, req.path);
   next();
 });
+// старі адреси (до об’єднання сторінок) → нові розділи
+let OLD_URLS = {};
+try { OLD_URLS = JSON.parse(fs.readFileSync(path.join(__dirname, 'content', 'redirects.json'), 'utf8')); } catch (e) { /* без перенаправлень */ }
+app.use((req, res, next) => {
+  const p = req.path.endsWith('/') ? req.path : req.path + '/';
+  if (OLD_URLS[p]) return res.redirect(301, OLD_URLS[p]);
+  next();
+});
 // /faq → /faq/
 app.get(/^\/[a-z0-9-]+$/, (req, res, next) => {
   if (htmlCache.has(req.path + '/')) return res.redirect(301, req.path + '/' + (req._parsedUrl.search || ''));
