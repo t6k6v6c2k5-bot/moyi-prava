@@ -111,6 +111,22 @@ function renderBlocks(blocks) {
           const title = b.title || (kind === 'lawyer' ? 'Потребує перевірки юристом' : '');
           return `<aside class="callout ${kind}" role="note">${title ? `<strong class="ct">${esc(title)}</strong>` : ''}<p>${inline(b.x)}</p></aside>`;
         }
+        case 'sos':
+          return `<div class="sosbox">
+<p class="sos-big">Спокійно.<br>Не чиніть опір. Не тікайте.</p>
+<p><a class="btn sos big" href="tel:0800213103">Подзвонити юристу 0 800 213 103</a></p>
+<p><a class="btn big amber" href="sms:?&body=%D0%9C%D0%B5%D0%BD%D0%B5%20%D0%B7%D1%83%D0%BF%D0%B8%D0%BD%D0%B8%D0%BB%D0%B8.%20%D0%97%D0%B2%27%D1%8F%D0%B6%D1%96%D1%82%D1%8C%D1%81%D1%8F%20%D0%B7%20%D1%8E%D1%80%D0%B8%D1%81%D1%82%D0%BE%D0%BC%3A%200%20800%20213%20103">Написати рідним</a></p>
+<ol class="sos-steps">
+<li><strong>Запитайте:</strong> «Хто ви? Назвіть П.І.Б., посаду й причину».</li>
+<li><strong>Покажіть</strong> паспорт і військово-обліковий документ.</li>
+<li><strong>Не підписуйте</strong> нічого, чого не прочитали.</li>
+<li><strong>Запам’ятайте</strong> час, П.І.Б., номери авто. Запишіть потім.</li>
+</ol>
+<p><a class="btn big secondary" href="/terminovo/">Передати справу юристу</a></p>
+<p class="muted">Загроза життю: <a href="tel:102">102</a> або <a href="tel:112">112</a>.</p>
+<p><a class="btn secondary" href="/sytuatsiyi/politsiya-pokrokovo/">Поліція: покроково</a> <a class="btn secondary" href="/sytuatsiyi/tck-perevirka/">ТЦК: покроково</a></p>
+<p><button class="btn secondary" type="button" data-print>Роздрукувати картку в гаманець / авто</button></p>
+</div>`;
         case 'links':
           return `<ul class="linklist">${b.items.map((i) => `<li><a class="btn secondary" href="${i.u}">${esc(i.t)}</a></li>`).join('')}</ul>`;
         case 'lawyer':
@@ -181,7 +197,7 @@ function layout({ title, description, urlPath, body, nav, scripts = [], jsonld =
     (n) => `<a href="${n.href}" class="nav-i${n.id === nav ? ' on' : ''}"${n.id === nav ? ' aria-current="page"' : ''}>${ICON[n.icon]}<span>${n.label}</span></a>`
   );
   // SOS-кнопка в центрі нижньої навігації
-  const sos = `<a href="/mene-zupynyly/" class="nav-sos${nav === 'stop' ? ' on' : ''}" aria-label="Мене зупинили — що робити">${ICON.sos}<span>Мене зупинили</span></a>`;
+  const sos = `<a href="/sos/" class="nav-sos${nav === 'stop' ? ' on' : ''}" aria-label="Мене зупинили — що робити">${ICON.sos}<span>Мене зупинили</span></a>`;
   const bottom = [navHtml[0], navHtml[1], sos, navHtml[2], navHtml[3]].join('');
   return `<!doctype html>
 <html lang="uk" data-v="%%BUILD%%">
@@ -303,7 +319,7 @@ ${badge(p.sources)}
       ],
     },
   ];
-  write(urlPath, layout({ title: p.title, description: p.description, urlPath, body, nav: p.nav, scripts, jsonld, noSos: p.slug === 'mene-zupynyly', ogType: 'article', sourceIds: p.sources }));
+  write(urlPath, layout({ title: p.title, description: p.description, urlPath, body, nav: p.nav, scripts, jsonld, noSos: p.slug === 'mene-zupynyly' || p.slug === 'sos', ogType: 'article', sourceIds: p.sources }));
   let text = strings(p.blocks);
   if (p.slug === 'vidstrochka') text += ' ' + Object.values(vdata.grounds).map((g) => g.t + ' ' + g.ref + ' ' + g.docs.map(plain).join(' ')).join(' ');
   searchIndex.push({ u: urlPath, t: p.h1, d: p.description, x: text });
@@ -397,7 +413,7 @@ ${faq.items.map((i) => `<details class="faq"><summary>${esc(i.q)}</summary><p>${
   const body = `<section class="hero">
 <h1>Мої права</h1>
 <p class="lead">Навігатор для військовозобов’язаних та їхніх родин. Знай свої права й обов’язки. Дій за законом. Фіксуй порушення.</p>
-<a class="btn sos big" href="/mene-zupynyly/">${ICON.sos}<span>Мене зупинили — що робити</span></a>
+<a class="btn sos big" href="/sos/">${ICON.sos}<span>Мене зупинили — що робити</span></a>
 <p><a class="btn big amber" href="/terminovo/">Терміново: передати справу юристу</a></p>
 <ul class="quick"><li><a class="btn secondary" href="/sytuatsiyi/politsiya-pokrokovo/">Зупинила поліція</a></li><li><a class="btn secondary" href="/sytuatsiyi/tck-perevirka/">ТЦК / вручають повістку</a></li><li><a class="btn secondary" href="/zabraly/">Рідну людину забрали</a></li><li><a class="btn secondary" href="/vidstrochka/">Потрібна відстрочка</a></li><li><a class="btn secondary" href="/vidpyska-tck/">ТЦК відповіло відпискою</a></li></ul>
 <ul class="trust" aria-label="Чому сайту можна довіряти"><li>${ICON.check}Норми — з посиланням на джерело</li><li>${ICON.check}Працює офлайн</li><li>${ICON.check}Без трекерів і реєстрації</li></ul>
@@ -436,7 +452,7 @@ const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).forEach((e) => (e
 walk(DIST);
 const build = hash.digest('hex').slice(0, 8);
 
-const precache = ['/', '/offline/', '/mene-zupynyly/', '/blokpost/', '/povistka/', '/perevirka-povistky/', '/skarha/', '/vidstrochka/', '/zabraly/', '/dopomoha/', '/faq/', '/poshuk/', '/pryvatnist/', '/shtraf/', '/terminovo/', '/zaiava-vidstrochka/', '/dlia-rodyn/', '/rezerv-plus/', '/slovnyk/', '/pro-sait/', '/vidpyska-tck/', '/znyattia-vyklyuchennia/', '/sud/', '/statusy-rezerv/', '/szch/', ...Object.keys(situations.situations).map((i) => `/sytuatsiyi/${i}/`), '/assets/style.css', '/assets/app.js', '/assets/generator.js', '/assets/vnav.js', '/assets/search.js', '/assets/urgent.js', '/assets/zaiava.js', '/assets/search-index.json', '/assets/icon.svg', '/assets/icon-192.png', '/assets/favicon-48.png', '/manifest.webmanifest'];
+const precache = ['/', '/offline/', '/mene-zupynyly/', '/blokpost/', '/povistka/', '/perevirka-povistky/', '/skarha/', '/vidstrochka/', '/zabraly/', '/dopomoha/', '/faq/', '/poshuk/', '/pryvatnist/', '/shtraf/', '/terminovo/', '/zaiava-vidstrochka/', '/dlia-rodyn/', '/rezerv-plus/', '/slovnyk/', '/pro-sait/', '/vidpyska-tck/', '/znyattia-vyklyuchennia/', '/sud/', '/sos/', '/statusy-rezerv/', '/szch/', ...Object.keys(situations.situations).map((i) => `/sytuatsiyi/${i}/`), '/assets/style.css', '/assets/app.js', '/assets/generator.js', '/assets/vnav.js', '/assets/search.js', '/assets/urgent.js', '/assets/zaiava.js', '/assets/search-index.json', '/assets/icon.svg', '/assets/icon-192.png', '/assets/favicon-48.png', '/manifest.webmanifest'];
 for (const u of precache) {
   const f = u.endsWith('/') ? path.join(DIST, u, 'index.html') : path.join(DIST, u);
   if (!fs.existsSync(f)) throw new Error('Немає файлу для precache: ' + u);
