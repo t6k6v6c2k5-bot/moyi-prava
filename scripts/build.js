@@ -21,6 +21,7 @@ const pages = fs
 
 const SITE = '%%SITE_URL%%'; // підставляється сервером з process.env.SITE_URL
 const VERIFIED = sources.verified;
+const VERIFIED_ISO = VERIFIED.split('.').reverse().join('-');
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
@@ -45,6 +46,12 @@ const ICON = {
   edit: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17.3V21h3.7L17.8 9.9l-3.7-3.7L3 17.3zM20.7 7a1 1 0 0 0 0-1.4l-2.3-2.3a1 1 0 0 0-1.4 0l-1.8 1.8 3.7 3.7L20.7 7z"/></svg>',
   more: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v2.2H4V6zm0 5h16v2.2H4V11zm0 5h16v2.2H4V16z"/></svg>',
   search: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 2a8 8 0 1 0 4.9 14.3l5.4 5.4 1.4-1.4-5.4-5.4A8 8 0 0 0 10 2zm0 2a6 6 0 1 1 0 12 6 6 0 0 1 0-12z"/></svg>',
+  folder: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-8l-2-2z"/></svg>',
+  book: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h12a3 3 0 0 1 3 3v13H7a3 3 0 0 1-3-3V4zm3 2v9.3c.3-.2.6-.3 1-.3h9V7a1 1 0 0 0-1-1H7z"/></svg>',
+  phone: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15 15 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.100.4 2.300.6 3.600.6.600 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.500c.6 0 1 .4 1 1 0 1.300.2 2.500.6 3.600.1.300 0 .7-.2 1l-2.300 2.200z"/></svg>',
+  check: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.2 4.800 12l-1.400 1.400L9 19 21 7l-1.400-1.400z"/></svg>',
+  family: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 11a3 3 0 1 0-3-3 3 3 0 0 0 3 3zM8 11a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm0 2c-2.300 0-7 1.200-7 3.500V19h14v-2.500C15 14.200 10.300 13 8 13zm8 0c-.3 0-.6 0-1 .1 1.200.8 2 1.900 2 3.400V19h6v-2.500c0-2.300-4.700-3.500-7-3.500z"/></svg>',
+  scale: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a1.500 1.500 0 0 1 1.400 1H20v2h-1.600l2.600 6a4 4 0 0 1-8 0l2.500-6H13v14h4v2H7v-2h4V5H8.600L11.100 11a4 4 0 0 1-8 0l2.600-6H4V3h6.600A1.500 1.500 0 0 1 12 2z"/></svg>',
   theme: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9c0-.5 0-.9-.1-1.4A5.5 5.5 0 0 1 12.4 3.1 9 9 0 0 0 12 3z"/></svg>',
 };
 
@@ -54,6 +61,23 @@ const NAV = [
   { id: 'skarha', href: '/skarha/', label: 'Скарга', icon: 'edit' },
   { id: 'more', href: '/dopomoha/', label: 'Ще', icon: 'more' },
 ];
+
+function renderVerification() {
+  const v = fs.existsSync(path.join(CONTENT, 'verification.json')) ? JSON.parse(fs.readFileSync(path.join(CONTENT, 'verification.json'), 'utf8')) : null;
+  const cl = JSON.parse(fs.readFileSync(path.join(CONTENT, 'claims.json'), 'utf8'));
+  const srcs = v ? v.sources : Object.fromEntries(Object.entries(cl.sources).map(([k, s]) => [k, { title: s.title, url: s.url, edition: s.edition }]));
+  const claims = v ? v.claims : cl.claims.map((c) => ({ ...c, ok: true }));
+  let h = v ? `<p class="callout info"><strong>Остання автоматична перевірка: ${esc(v.date)}.</strong> Підтверджено цитат: <strong>${v.ok} з ${v.total}</strong>. Змінених редакцій джерел: <strong>${v.editionChanged}</strong>.</p>` : '';
+  h += '<h2>Джерела й редакції</h2><ul>' + Object.values(srcs).map((s) => `<li><a href="${s.url}" target="_blank" rel="noopener noreferrer">${esc(s.title)}</a>${s.edition ? ` — редакція від ${esc(s.edition)}` : ''}</li>`).join('') + '</ul>';
+  h += '<h2>Перелік перевірених тверджень</h2><p class="muted">Кожне твердження супроводжується дослівною цитатою з норми. Скрипт повторює перевірку на актуальних текстах.</p>';
+  const by = {};
+  for (const c of claims) (by[c.src] = by[c.src] || []).push(c);
+  for (const [id, list] of Object.entries(by)) {
+    h += `<details class="ground"><summary>${esc(srcs[id].title)} <span class="ref">${list.length} тверджень</span></summary><ul class="claims">` +
+      list.map((c) => `<li><strong>${esc(c.ref)}.</strong> ${esc(c.claim)}<blockquote>«${esc(c.quote)}»</blockquote></li>`).join('') + '</ul></details>';
+  }
+  return h;
+}
 
 function renderBlocks(blocks) {
   return blocks
@@ -107,6 +131,8 @@ function renderBlocks(blocks) {
           return fs
             .readFileSync(path.join(SRC, 'zaiava.html'), 'utf8')
             .replace('%%ZDATA%%', JSON.stringify(Object.fromEntries(Object.entries(vdata.grounds).map(([k, g]) => [k, { t: g.t, ref: g.ref, docs: g.docs }]))).replace(/</g, '\\u003c'));
+        case 'verification':
+          return renderVerification();
         case 'generator':
           return fs.readFileSync(path.join(SRC, 'generator.html'), 'utf8');
         default:
@@ -114,6 +140,11 @@ function renderBlocks(blocks) {
       }
     })
     .join('\n');
+}
+
+function badge(ids) {
+  if (!ids || !ids.length) return '';
+  return `<p class="verified">${ICON.check}<span>Перевірено за первинними джерелами · <time datetime="${VERIFIED_ISO}">${VERIFIED}</time> · <a href="/pro-sait/">як ми перевіряємо</a></span></p>`;
 }
 
 function sourcesBlock(ids) {
@@ -124,10 +155,10 @@ function sourcesBlock(ids) {
       if (!s) throw new Error('Невідоме джерело: ' + id);
       return `<li><a href="${s.u}" target="_blank" rel="noopener noreferrer">${esc(s.t)}</a></li>`;
     })
-    .join('')}</ul><p class="muted">Перевірено: <time datetime="2026-10-22">${VERIFIED}</time></p></section>`;
+    .join('')}</ul><p class="muted">Перевірено: <time datetime="${VERIFIED_ISO}">${VERIFIED}</time></p></section>`;
 }
 
-function layout({ title, description, urlPath, body, nav, scripts = [], jsonld = [], noSos = false, ogType = 'website', sourceIds = [] }) {
+function layout({ title, description, urlPath, body, nav, scripts = [], jsonld = [], noSos = false, ogType = 'website', sourceIds = [], robots = 'index' }) {
   const canonical = `${SITE}${urlPath}`;
   const navHtml = NAV.map(
     (n) => `<a href="${n.href}" class="nav-i${n.id === nav ? ' on' : ''}"${n.id === nav ? ' aria-current="page"' : ''}>${ICON[n.icon]}<span>${n.label}</span></a>`
@@ -142,11 +173,18 @@ function layout({ title, description, urlPath, body, nav, scripts = [], jsonld =
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
+<meta name="robots" content="${robots === 'index' ? '%%ROBOTS_INDEX%%' : 'noindex,follow'}">
 <link rel="canonical" href="${canonical}">
+<link rel="alternate" hreflang="uk" href="${canonical}">
+<link rel="alternate" hreflang="x-default" href="${canonical}">
+<meta name="application-name" content="Мої права">
+<meta name="format-detection" content="telephone=no">
 <meta name="theme-color" content="#14213d">
 <meta name="color-scheme" content="light dark">
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="preload" href="/assets/style.css?v=%%BUILD%%" as="style">
 <link rel="apple-touch-icon" href="/assets/icon-192.png">
 <meta property="og:site_name" content="Мої права">
 <meta property="og:type" content="${ogType}">
@@ -157,6 +195,7 @@ function layout({ title, description, urlPath, body, nav, scripts = [], jsonld =
 <meta property="og:image" content="${SITE}/assets/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Мої права — навігатор для військовозобов’язаних та їхніх родин">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(title)}">
 <meta name="twitter:description" content="${esc(description)}">
@@ -180,7 +219,7 @@ ${body}
 <footer class="foot">
   <p class="disclaimer"><strong>Це довідкова інформація, а не юридична консультація.</strong> Закони змінюються: перевіряйте актуальні редакції та за потреби звертайтесь до юриста.</p>
   ${sourcesBlock(sourceIds)}
-  <p class="foot-links"><a href="/faq/">Часті запитання</a> · <a href="/pryvatnist/">Політика конфіденційності</a> · <a href="/poshuk/">Пошук</a></p>
+  <p class="foot-links"><a href="/faq/">Часті запитання</a> · <a href="/pro-sait/">Як ми перевіряємо</a> · <a href="/pryvatnist/">Політика конфіденційності</a> · <a href="/poshuk/">Пошук</a></p>
   <p class="muted">Сайт не збирає ваших даних і не містить даних про місця й час роботи ТЦК, блокпостів чи поліції.</p>
 </footer>
 <nav class="bottom" aria-label="Основна навігація">${bottom}</nav>
@@ -217,6 +256,7 @@ for (const p of pages) {
   const body = `<article class="page">
 <h1>${esc(p.h1)}</h1>
 <p class="lead">${esc(p.lead)}</p>
+${badge(p.sources)}
 ${p.slug === 'mene-zupynyly' ? '<p class="timer muted">Оберіть ситуацію вище. Загальні правила нижче читаються за 1–2 хвилини.</p>' : ''}
 ${renderBlocks(p.blocks)}
 </article>`;
@@ -233,7 +273,7 @@ ${renderBlocks(p.blocks)}
       description: p.description,
       url: SITE + urlPath,
       inLanguage: 'uk',
-      dateModified: '2026-10-22',
+      dateModified: VERIFIED_ISO,
     },
     {
       '@context': 'https://schema.org',
@@ -258,6 +298,7 @@ for (const [id, st] of Object.entries(situations.situations)) {
 <p class="crumb"><a href="/mene-zupynyly/">← Усі ситуації</a></p>
 <h1>${esc(st.h1)}</h1>
 <p class="lead">${esc(st.lead)}</p>
+${badge(st.sources)}
 <h2>Що робити</h2>
 <ul class="check">${st.do.map((i) => `<li>${inline(i)}</li>`).join('')}</ul>
 <h2>Чого не робити</h2>
@@ -270,7 +311,7 @@ ${st.plain ? '' : `<aside class="callout warn" role="note"><strong class="ct">Д
 <ul class="linklist"><li><a class="btn secondary" href="/skarha/">Скласти скаргу</a></li><li><a class="btn secondary" href="/vidstrochka/">Перевірити підстави відстрочки</a></li><li><a class="btn secondary" href="/mene-zupynyly/">Інші ситуації</a></li></ul>
 </article>`;
   const jsonld = [
-    { '@context': 'https://schema.org', '@type': 'WebPage', name: st.h1, description: st.description, url: SITE + urlPath, inLanguage: 'uk', dateModified: '2026-10-22' },
+    { '@context': 'https://schema.org', '@type': 'WebPage', name: st.h1, description: st.description, url: SITE + urlPath, inLanguage: 'uk', dateModified: VERIFIED_ISO },
     { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Головна', item: SITE + '/' },
       { '@type': 'ListItem', position: 2, name: 'Мене зупинили', item: SITE + '/mene-zupynyly/' },
@@ -309,31 +350,33 @@ ${faq.items.map((i) => `<details class="faq"><summary>${esc(i.q)}</summary><p>${
 <div id="results" aria-live="polite"></div>
 <noscript><p class="callout warn">Для пошуку потрібен JavaScript. Скористайтесь <a href="/faq/">Частими запитаннями</a> або головною сторінкою.</p></noscript>
 </article>`;
-  write(urlPath, layout({ title: 'Пошук по сайту | Мої права', description: 'Пошук по сторінках сайту «Мої права»: повістка, відстрочка, блокпост, скарга.', urlPath, body, nav: 'more', scripts: ['search.js'] }));
-  out.push({ u: urlPath, p: 0.4 });
+  write(urlPath, layout({ title: 'Пошук по сайту | Мої права', description: 'Пошук по сторінках сайту «Мої права»: повістка, відстрочка, блокпост, скарга.', urlPath, body, nav: 'more', scripts: ['search.js'], robots: 'noindex' }));
 }
 
 // --- Головна
 {
   const tiles = [
-    { u: '/perevirka-povistky/', t: 'Перевірити повістку', d: 'QR-код, Резерв+, ознаки недійсної', i: 'doc' },
-    { u: '/vidstrochka/', t: 'Відстрочка', d: 'Навігатор: які підстави мені підходять', i: 'clock' },
-    { u: '/skarha/', t: 'Скласти скаргу', d: 'Омбудсман, поліція, прокуратура, штраф', i: 'edit' },
-    { u: '/rezerv-plus/', t: 'Резерв+: що передбачено', d: 'QR-код, електронний документ, автовідстрочка', i: 'doc' },
-    { u: '/slovnyk/', t: 'Словник термінів', d: 'Прості визначення з норм', i: 'search' },
-    { u: '/dlia-rodyn/', t: 'Папка документів', d: 'Що зібрати заздалегідь', i: 'doc' },
-    { u: '/zabraly/', t: 'Рідну людину забрали', d: 'Що робити в перші години', i: 'sos' },
-    { u: '/terminovo/', t: 'Передати справу юристу', d: 'Швидка заявка: людину зупинили чи забрали', i: 'sos' },
-    { u: '/dopomoha/', t: 'Юридична допомога', d: '0 800 213 103 та заявка адвокату', i: 'more' },
-    { u: '/faq/', t: 'Часті запитання', d: 'Короткі відповіді з джерелами', i: 'search' },
+    { u: '/perevirka-povistky/', t: 'Перевірити повістку', d: 'QR-код, Резерв+, ознаки недійсної', i: 'doc', c: 'blue' },
+    { u: '/vidstrochka/', t: 'Відстрочка', d: 'Які підстави мені підходять', i: 'clock', c: 'green' },
+    { u: '/zaiava-vidstrochka/', t: 'Заява про відстрочку', d: 'Чернетка та перелік документів', i: 'edit', c: 'green' },
+    { u: '/skarha/', t: 'Скласти скаргу', d: 'Омбудсман, поліція, прокуратура, штраф, ВЛК', i: 'edit', c: 'amber' },
+    { u: '/rezerv-plus/', t: 'Резерв+: що передбачено', d: 'QR-код, електронний документ, автовідстрочка', i: 'phone', c: 'blue' },
+    { u: '/slovnyk/', t: 'Словник термінів', d: 'Прості визначення з норм', i: 'book', c: 'blue' },
+    { u: '/dlia-rodyn/', t: 'Папка документів', d: 'Що зібрати заздалегідь', i: 'folder', c: 'amber' },
+    { u: '/zabraly/', t: 'Рідну людину забрали', d: 'Що робити в перші години', i: 'family', c: 'red' },
+    { u: '/terminovo/', t: 'Передати справу юристу', d: 'Швидка заявка: людину зупинили чи забрали', i: 'sos', c: 'red' },
+    { u: '/dopomoha/', t: 'Юридична допомога', d: '0 800 213 103 та заявка адвокату', i: 'scale', c: 'blue' },
+    { u: '/pro-sait/', t: 'Як ми перевіряємо', d: 'Цитати з норм і автоперевірка', i: 'check', c: 'green' },
+    { u: '/faq/', t: 'Часті запитання', d: 'Короткі відповіді з джерелами', i: 'search', c: 'blue' },
   ];
   const body = `<section class="hero">
 <h1>Мої права</h1>
 <p class="lead">Навігатор для військовозобов’язаних та їхніх родин. Знай свої права й обов’язки. Дій за законом. Фіксуй порушення.</p>
 <a class="btn sos big" href="/mene-zupynyly/">${ICON.sos}<span>Мене зупинили — що робити</span></a>
-<p><a class="btn big" href="/terminovo/">Терміново: передати справу юристу</a></p>
+<p><a class="btn big amber" href="/terminovo/">Терміново: передати справу юристу</a></p>
+<ul class="trust" aria-label="Чому сайту можна довіряти"><li>${ICON.check}Кожне твердження — з джерелом</li><li>${ICON.check}Працює офлайн</li><li>${ICON.check}Без трекерів і реєстрації</li></ul>
 </section>
-<ul class="tiles">${tiles.map((t) => `<li><a class="tile" href="${t.u}">${ICON[t.i]}<span class="tt">${esc(t.t)}</span><span class="td">${esc(t.d)}</span></a></li>`).join('')}</ul>
+<ul class="tiles">${tiles.map((t) => `<li><a class="tile c-${t.c || 'blue'}" href="${t.u}">${ICON[t.i]}<span class="tt">${esc(t.t)}</span><span class="td">${esc(t.d)}</span></a></li>`).join('')}</ul>
 <aside class="callout info"><p><strong>Принципи сайту.</strong> Нейтральний тон; кожне твердження спирається на офіційне джерело; жодних карт чи стрічок про ТЦК, блокпости й поліцію; жодних порад щодо ухилення чи підробок; усі дані залишаються на вашому пристрої. <a href="/pryvatnist/">Докладніше</a></p></aside>`;
   const jsonld = [
     {
@@ -342,6 +385,7 @@ ${faq.items.map((i) => `<details class="faq"><summary>${esc(i.q)}</summary><p>${
       name: 'Мої права',
       url: SITE + '/',
       inLanguage: 'uk',
+      publisher: { '@type': 'Organization', name: 'Мої права', url: SITE + '/', logo: { '@type': 'ImageObject', url: SITE + '/assets/icon-512.png' } },
       potentialAction: { '@type': 'SearchAction', target: SITE + '/poshuk/?q={search_term_string}', 'query-input': 'required name=search_term_string' },
     },
   ];
@@ -351,7 +395,7 @@ ${faq.items.map((i) => `<details class="faq"><summary>${esc(i.q)}</summary><p>${
 }
 
 // --- Офлайн-запасна сторінка
-write('/offline/', layout({ title: 'Немає з’єднання | Мої права', description: 'Сторінка недоступна офлайн.', urlPath: '/offline/', nav: '', body: `<article class="page"><h1>Немає з’єднання</h1><p class="lead">Цю сторінку ще не збережено на пристрої. Відкрийте <a href="/">головну</a>, <a href="/mene-zupynyly/">«Мене зупинили»</a> або <a href="/skarha/">генератор скарг</a> — вони працюють без інтернету.</p></article>` }));
+write('/offline/', layout({ title: 'Немає з’єднання | Мої права', description: 'Сторінка недоступна офлайн.', urlPath: '/offline/', nav: '', robots: 'noindex', body: `<article class="page"><h1>Немає з’єднання</h1><p class="lead">Цю сторінку ще не збережено на пристрої. Відкрийте <a href="/">головну</a>, <a href="/mene-zupynyly/">«Мене зупинили»</a> або <a href="/skarha/">генератор скарг</a> — вони працюють без інтернету.</p></article>` }));
 
 // --- Ресурси
 const assets = path.join(DIST, 'assets');
@@ -366,7 +410,7 @@ const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).forEach((e) => (e
 walk(DIST);
 const build = hash.digest('hex').slice(0, 8);
 
-const precache = ['/', '/offline/', '/mene-zupynyly/', '/blokpost/', '/povistka/', '/perevirka-povistky/', '/skarha/', '/vidstrochka/', '/zabraly/', '/dopomoha/', '/faq/', '/poshuk/', '/pryvatnist/', '/shtraf/', '/terminovo/', '/zaiava-vidstrochka/', '/dlia-rodyn/', '/rezerv-plus/', '/slovnyk/', ...Object.keys(situations.situations).map((i) => `/sytuatsiyi/${i}/`), '/assets/style.css', '/assets/app.js', '/assets/generator.js', '/assets/vnav.js', '/assets/search.js', '/assets/urgent.js', '/assets/zaiava.js', '/assets/search-index.json', '/assets/icon.svg', '/assets/icon-192.png', '/manifest.webmanifest'];
+const precache = ['/', '/offline/', '/mene-zupynyly/', '/blokpost/', '/povistka/', '/perevirka-povistky/', '/skarha/', '/vidstrochka/', '/zabraly/', '/dopomoha/', '/faq/', '/poshuk/', '/pryvatnist/', '/shtraf/', '/terminovo/', '/zaiava-vidstrochka/', '/dlia-rodyn/', '/rezerv-plus/', '/slovnyk/', '/pro-sait/', ...Object.keys(situations.situations).map((i) => `/sytuatsiyi/${i}/`), '/assets/style.css', '/assets/app.js', '/assets/generator.js', '/assets/vnav.js', '/assets/search.js', '/assets/urgent.js', '/assets/zaiava.js', '/assets/search-index.json', '/assets/icon.svg', '/assets/icon-192.png', '/assets/favicon-48.png', '/manifest.webmanifest'];
 for (const u of precache) {
   const f = u.endsWith('/') ? path.join(DIST, u, 'index.html') : path.join(DIST, u);
   if (!fs.existsSync(f)) throw new Error('Немає файлу для precache: ' + u);
@@ -383,5 +427,5 @@ fs.writeFileSync(path.join(DIST, 'sw.js'), sw);
   }
 })(DIST);
 
-fs.writeFileSync(path.join(DIST, 'pages.json'), JSON.stringify(out));
+fs.writeFileSync(path.join(DIST, 'pages.json'), JSON.stringify({ built: new Date().toISOString().slice(0, 10), pages: out }));
 console.log(`Зібрано ${out.length + 1} сторінок, версія ${build}`);

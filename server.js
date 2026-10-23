@@ -15,6 +15,10 @@ if (!fs.existsSync(path.join(DIST, 'index.html'))) {
 // Змінні оточення
 const PORT = process.env.PORT || 3000;
 const SITE_URL = (process.env.SITE_URL || '').replace(/\/+$/, '');
+// Індексація пошуковими системами вмикається лише явно: INDEXING=on (разом із SITE_URL = фінальний домен).
+const INDEXING = String(process.env.INDEXING || '').toLowerCase() === 'on';
+const REDIRECT_TO_SITE_URL = process.env.REDIRECT_TO_SITE_URL === '1';
+const ROBOTS_INDEX = INDEXING ? 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1' : 'noindex,nofollow';
 const lawyerRaw = (process.env.LAWYER_TELEGRAM_URL || '').trim();
 // приймаємо лише https://t.me/… або tg://…
 const LAWYER_URL = /^(https:\/\/(t\.me|telegram\.me)\/|tg:\/\/)[^\s"'<>]+$/.test(lawyerRaw) ? lawyerRaw : 'tel:0800213103';
@@ -28,7 +32,8 @@ const htmlCache = new Map();
     else if (e.name === 'index.html') htmlCache.set(base, fs.readFileSync(p, 'utf8'));
   }
 })(DIST, '/');
-const pagesMeta = JSON.parse(fs.readFileSync(path.join(DIST, 'pages.json'), 'utf8'));
+const pagesInfo = JSON.parse(fs.readFileSync(path.join(DIST, 'pages.json'), 'utf8'));
+const pagesMeta = pagesInfo.pages;
 
 // хеш inline-скрипта теми для CSP
 const sample = htmlCache.get('/');
@@ -52,6 +57,9 @@ app.disable('x-powered-by');
 app.set('trust proxy', true);
 app.use(compression());
 app.use((req, res, next) => {
+  if (REDIRECT_TO_SITE_URL && SITE_URL && req.hostname !== new URL(SITE_URL).hostname) return res.redirect(301, SITE_URL + req.originalUrl);
+  if (!INDEXING) res.set('X-Robots-Tag', 'noindex, nofollow');
+  if (req.protocol === 'https') res.set('Strict-Transport-Security', 'max-age=31536000');
   res.set({
     'Content-Security-Policy': CSP,
     'X-Content-Type-Options': 'nosniff',
@@ -66,17 +74,21 @@ const origin = (req) => SITE_URL || `${req.protocol}://${req.get('host')}`;
 function sendHtml(req, res, key, status = 200) {
   const html = htmlCache.get(key)
     .replace(/%%SITE_URL%%/g, origin(req))
-    .replace(/%%LAWYER_URL%%/g, LAWYER_URL);
+    .replace(/%%LAWYER_URL%%/g, LAWYER_URL)
+    .replace(/%%ROBOTS_INDEX%%/g, ROBOTS_INDEX);
   res.status(status).type('html').set('Cache-Control', 'no-cache').send(html);
 }
 
 app.get('/robots.txt', (req, res) => {
-  res.type('text/plain').send(`User-agent: *\nAllow: /\n\nSitemap: ${origin(req)}/sitemap.xml\n`);
+  if (!INDEXING) return res.type('text/plain').send('User-agent: *\nDisallow: /\n');
+  res.type('text/plain').send(`User-agent: *\nAllow: /\nDisallow: /poshuk/\nDisallow: /offline/\n\nSitemap: ${origin(req)}/sitemap.xml\n`);
 });
+
+app.get('/favicon.ico', (req, res) => res.set('Cache-Control', 'public, max-age=86400').type('image/png').sendFile(path.join(DIST, 'assets', 'favicon-48.png')));
 
 app.get('/sitemap.xml', (req, res) => {
   const o = origin(req);
-  const today = new Date().toISOString().slice(0, 10);
+  const today = pagesInfo.built;
   const urls = pagesMeta
     .map((p) => `  <url><loc>${o}${p.u}</loc><lastmod>${today}</lastmod><priority>${p.p}</priority></url>`)
     .join('\n');

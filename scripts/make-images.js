@@ -12,6 +12,11 @@ const svg = fs.readFileSync(path.join(out, 'icon.svg'), 'utf8');
     await p.setContent(`<body style="margin:0">${svg.replace('<svg ', `<svg width="${s}" height="${s}" `)}</body>`);
     await p.screenshot({ path: path.join(out, `icon-${s}.png`) });
   }
+  {
+    const f = await b.newPage({ viewport: { width: 48, height: 48 } });
+    await f.setContent(`<body style="margin:0">${svg.replace('<svg ', '<svg width="48" height="48" ')}</body>`);
+    await f.screenshot({ path: path.join(out, 'favicon-48.png') });
+  }
   const p = await b.newPage({ viewport: { width: 1200, height: 630 } });
   await p.setContent(`<body style="margin:0;width:1200px;height:630px;background:#14213d;color:#fff;font-family:system-ui,Arial,sans-serif;display:flex;align-items:center;gap:56px;padding:0 80px;box-sizing:border-box">
   <div style="width:260px;height:260px;flex:none">${svg.replace('<svg ', '<svg width="260" height="260" ')}</div>
