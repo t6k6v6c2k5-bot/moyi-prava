@@ -9,6 +9,10 @@ const ROOT = path.join(__dirname, '..');
 const CONTENT = path.join(ROOT, 'content');
 const SRC = path.join(ROOT, 'src');
 const DIST = path.join(ROOT, 'dist');
+// Позначки «Потребує перевірки юристом» — лише для власника: на сайті приховані, збираються в docs/LAWYER_REVIEW.md (SHOW_NOTES=1 покаже їх на сторінках)
+const SHOW_NOTES = process.env.SHOW_NOTES === '1';
+const LAWYER_NOTES = [];
+let curPage = '';
 
 const sources = JSON.parse(fs.readFileSync(path.join(CONTENT, 'sources.json'), 'utf8'));
 const faq = JSON.parse(fs.readFileSync(path.join(CONTENT, 'faq.json'), 'utf8'));
@@ -91,6 +95,7 @@ function renderBlocks(blocks) {
           return `<ul class="check">${b.items.map((i) => `<li>${inline(i)}</li>`).join('')}</ul>`;
         case 'callout': {
           const kind = b.kind || 'info';
+          if (kind === 'lawyer') { LAWYER_NOTES.push({ page: curPage, title: b.title || '', x: b.x }); if (!SHOW_NOTES) return ''; }
           const title = b.title || (kind === 'lawyer' ? 'Потребує перевірки юристом' : '');
           return `<aside class="callout ${kind}" role="note">${title ? `<strong class="ct">${esc(title)}</strong>` : ''}<p>${inline(b.x)}</p></aside>`;
         }
@@ -254,6 +259,7 @@ function strings(blocks) {
 
 for (const p of pages) {
   const urlPath = `/${p.slug}/`;
+  curPage = p.slug;
   const body = `<article class="page">
 <h1>${esc(p.h1)}</h1>
 <p class="lead">${esc(p.lead)}</p>
@@ -306,7 +312,7 @@ ${badge(st.sources)}
 <ul>${st.dont.map((i) => `<li>${inline(i)}</li>`).join('')}</ul>
 <h2>Що варто знати</h2>
 <ul>${st.know.map((i) => `<li>${inline(i)}</li>`).join('')}</ul>
-${st.lawyer ? `<aside class="callout lawyer" role="note"><strong class="ct">Потребує перевірки юристом</strong><p>${inline(st.lawyer)}</p></aside>` : ''}
+${st.lawyer && (LAWYER_NOTES.push({ page: 'sytuatsiyi/' + (st.slug || st.id || st.label), title: '', x: st.lawyer }), SHOW_NOTES) ? `<aside class="callout lawyer" role="note"><strong class="ct">Потребує перевірки юристом</strong><p>${inline(st.lawyer)}</p></aside>` : ''}
 ${st.plain ? '' : `<aside class="callout warn" role="note"><strong class="ct">Дії здаються незаконними?</strong><p>Не чиніть опір. Зафіксуйте факти й передайте їх юристу — навіть якщо людину вже забрали до ТЦК, юрист може діяти одразу.</p></aside>`}
 <p><a class="btn big sos" href="/terminovo/">Передати справу юристу</a></p>
 <ul class="linklist"><li><a class="btn secondary" href="/skarha/">Скласти скаргу</a></li><li><a class="btn secondary" href="/vidstrochka/">Перевірити підстави відстрочки</a></li><li><a class="btn secondary" href="/mene-zupynyly/">Інші ситуації</a></li></ul>
@@ -432,4 +438,5 @@ fs.writeFileSync(path.join(DIST, 'sw.js'), sw);
 })(DIST);
 
 fs.writeFileSync(path.join(DIST, 'pages.json'), JSON.stringify({ built: new Date().toISOString().slice(0, 10), pages: out }));
+fs.writeFileSync(path.join(ROOT, 'docs', 'LAWYER_REVIEW.md'), '# Що звірити юристу (лише для власника, на сайті не показується)\n\nАвтоматично збирається `npm run build`. Показати на сторінках для себе: `SHOW_NOTES=1 npm run build` (не комітити).\n\n' + LAWYER_NOTES.map((n) => `## /${n.page}/\n${n.x.replace(/\n/g, ' ')}\n`).join('\n'));
 console.log(`Зібрано ${out.length + 1} сторінок, версія ${build}`);

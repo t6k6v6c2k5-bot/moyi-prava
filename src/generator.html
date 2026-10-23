@@ -2,6 +2,7 @@
 <noscript><p class="callout warn">Для генератора потрібен JavaScript. Він працює лише на вашому пристрої й нічого не надсилає.</p></noscript>
 <fieldset>
 <legend>1. Тип документа</legend>
+<p class="muted">Не знаєте, що обрати? Почніть зі скарги омбудсману — вона безкоштовна й підходить у більшості випадків.</p>
 <div class="radios" role="radiogroup" aria-label="Тип документа">
 <label class="opt"><input type="radio" name="kind" value="ombudsman" checked> <span>Скарга Уповноваженому з прав людини (омбудсману)</span></label>
 <label class="opt"><input type="radio" name="kind" value="police"> <span>Заява до поліції (було насильство, погрози)</span></label>
@@ -48,8 +49,19 @@
 </div>
 <label for="f-desc">Додаткові факти (кожен — з нового рядка; лише факти: що сказали, що зробили, хто був поруч; без оцінок і нецензурної лексики)</label>
 <textarea id="f-desc" name="desc" rows="7" placeholder="1) О 14:20 мені сказали, що...&#10;2) Відео зафіксувало, що..."></textarea>
+<div class="checks" role="group" aria-label="Що порушено">
+<p class="muted"><strong>Що, на вашу думку, порушено</strong> — від цього залежать норми, на які посилатиметься текст:</p>
+<label class="opt"><input type="checkbox" name="v2" value="docs"> <span>Вимагали документи чи огляд речей без належної підстави</span></label>
+<label class="opt"><input type="checkbox" name="v2" value="detain"> <span>Затримали або доставили без достатніх підстав</span></label>
+<label class="opt"><input type="checkbox" name="v2" value="hours3"> <span>Затримання тривало понад 3 години</span></label>
+<label class="opt"><input type="checkbox" name="v2" value="relatives"> <span>Рідних не повідомили, де я перебуваю</span></label>
+<label class="opt"><input type="checkbox" name="v2" value="povistka"> <span>Повістку вручили з порушенням порядку</span></label>
+<label class="opt"><input type="checkbox" name="v2" value="vidstr"> <span>Не врахували відстрочку або подану заяву про неї</span></label>
+<label class="opt"><input type="checkbox" name="v2" value="vlk"> <span>Відмовили в направленні на ВЛК при обласному ТЦК</span></label>
+</div>
 </fieldset>
 
+<details class="more"><summary>Додатково: докази й ознаки (необов’язково — можна пропустити)</summary>
 <fieldset>
 <legend>4. Ознаки та докази</legend>
 <div class="sig"><div class="row">
@@ -68,16 +80,6 @@
 <input id="f-ids2" name="marks" type="text" placeholder="Колір форми, шеврони, номерний знак…">
 <label for="f-wt">Хто діяв (категорія)</label>
 <select id="f-wt" name="wt"><option value="">не знаю</option><option value="tck">Представники ТЦК</option><option value="police">Поліцейські</option><option value="mil">Військові на блокпосту</option></select>
-<div class="checks" role="group" aria-label="Що порушено">
-<p class="muted"><strong>Що, на вашу думку, порушено</strong> — від цього залежать норми, на які посилатиметься текст:</p>
-<label class="opt"><input type="checkbox" name="v2" value="docs"> <span>Вимагали документи чи огляд речей без належної підстави</span></label>
-<label class="opt"><input type="checkbox" name="v2" value="detain"> <span>Затримали або доставили без достатніх підстав</span></label>
-<label class="opt"><input type="checkbox" name="v2" value="hours3"> <span>Затримання тривало понад 3 години</span></label>
-<label class="opt"><input type="checkbox" name="v2" value="relatives"> <span>Рідних не повідомили, де я перебуваю</span></label>
-<label class="opt"><input type="checkbox" name="v2" value="povistka"> <span>Повістку вручили з порушенням порядку</span></label>
-<label class="opt"><input type="checkbox" name="v2" value="vidstr"> <span>Не врахували відстрочку або подану заяву про неї</span></label>
-<label class="opt"><input type="checkbox" name="v2" value="vlk"> <span>Відмовили в направленні на ВЛК при обласному ТЦК</span></label>
-</div></div>
 <label for="f-wit">Свідки (ПІБ, контакти — лише з їх згоди)</label>
 <input id="f-wit" name="wit" type="text">
 <div class="checks" role="group" aria-label="Наявні докази">
@@ -86,7 +88,9 @@
 <label class="opt"><input type="checkbox" name="ev" value="медична довідка про травми"> <span>Є медична довідка</span></label>
 <label class="opt"><input type="checkbox" name="ev" value="копії документів, які мені вручили"> <span>Є копії документів</span></label>
 </div>
+</div>
 </fieldset>
+</details>
 
 <fieldset id="appeal-box" hidden>
 <legend id="ab-legend">5. Постанова про штраф</legend>

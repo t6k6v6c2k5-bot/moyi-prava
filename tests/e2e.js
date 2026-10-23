@@ -32,7 +32,7 @@ const ok = (c, m) => { if (!c) { fail++; console.log('FAIL', m); } else console.
   for (const l of links) { if (!l) continue; const r = await ctx.request.get(BASE + l); ok(r.status() === 200, `посилання ${l} → ${r.status()}`); }
 
   // 3. генератор скарг
-  await page.goto(BASE + '/skarha/');
+  await page.goto(BASE + '/skarha/'); await page.evaluate(() => document.querySelectorAll('details.more').forEach((d) => { d.open = true; }));
   await page.fill('#f-name', 'Іваненко Іван Іванович');
   await page.fill('#f-contact', 'м. Київ, +380000000000');
   await page.fill('#f-date', '2026-10-20');
@@ -72,7 +72,7 @@ const ok = (c, m) => { if (!c) { fail++; console.log('FAIL', m); } else console.
   ok(ls.every((k) => k === 'theme'), 'генератор: у сховищі тільки тема: ' + JSON.stringify(ls));
 
   // 3a2. правове обґрунтування у скарзі
-  await page.goto(BASE + '/skarha/');
+  await page.goto(BASE + '/skarha/'); await page.evaluate(() => document.querySelectorAll('details.more').forEach((d) => { d.open = true; }));
   await page.fill('#f-name', 'Тест'); await page.fill('#f-contact', 'м. Київ'); await page.fill('#f-desc', 'Опис');
   await page.selectOption('#f-intro', 'ні'); await page.selectOption('#f-wt', 'tck');
   await page.check('input[name=act][value=proceed]'); await page.check('input[name=v2][value=detain]'); await page.check('input[name=v2][value=hours3]'); await page.check('input[name=v2][value=relatives]');
@@ -88,13 +88,13 @@ const ok = (c, m) => { if (!c) { fail++; console.log('FAIL', m); } else console.
   ok(at.includes('ПРАВОВЕ ОБҐРУНТУВАННЯ') && at.includes('п. 41') && at.includes('приміткою до ст. 210'), 'оскарження: підстави з нормами');
 
   // 3a3. скарга до вищого органу
-  await page.goto(BASE + '/skarha/'); await page.fill('#f-name', 'Тест'); await page.fill('#f-contact', 'м. Київ'); await page.fill('#f-desc', 'Опис');
+  await page.goto(BASE + '/skarha/'); await page.evaluate(() => document.querySelectorAll('details.more').forEach((d) => { d.open = true; })); await page.fill('#f-name', 'Тест'); await page.fill('#f-contact', 'м. Київ'); await page.fill('#f-desc', 'Опис');
   await page.check('input[name=kind][value=higher]'); await page.fill('#f-pnum', '12/345'); await page.fill('#f-pgr', 'Не перевірено відео.'); await page.fill('#f-porg', 'Районний ТЦК'); await page.click('#make');
   const hg = await page.inputValue('#out');
   ok(hg.includes('Керівнику обласного (Київського міського)') && hg.includes('№ 12/345') && hg.includes('Не перевірено відео.') && hg.includes('ст. 18 Закону') && hg.includes('ст. 17 цього Закону'), 'скарга до вищого органу: структура й норми');
 
   // 3a4. деловий стиль і лінт неформального тексту
-  await page.goto(BASE + '/skarha/');
+  await page.goto(BASE + '/skarha/'); await page.evaluate(() => document.querySelectorAll('details.more').forEach((d) => { d.open = true; }));
   await page.fill('#f-name', 'Тест Тестович'); await page.fill('#f-contact', 'м. Київ'); await page.fill('#f-date', '2026-10-20'); await page.fill('#f-place', 'м. Харків');
   await page.selectOption('#f-how', 'street'); await page.selectOption('#f-wt', 'tck'); await page.check('input[name=act][value=docs]'); await page.check('input[name=act][value=proceed]');
   await page.fill('#f-desc', '1) О 14:20 мені сказали пройти до автобуса\n2) ТЦК це пізд*ц, собака фраєр!!!\n3) Відео зафіксувало розмову');
@@ -106,7 +106,7 @@ const ok = (c, m) => { if (!c) { fail++; console.log('FAIL', m); } else console.
   ok(ds.includes('п. 31') && ds.includes('п. 47') && ds.includes('п. 54') && ds.includes('ст. 259'), 'II розділ: норми про оповіщення, ст. 262 і 259');
 
   // 3a5. позов, список адресатів
-  await page.goto(BASE + '/skarha/'); await page.check('input[name=kind][value=higher]');
+  await page.goto(BASE + '/skarha/'); await page.evaluate(() => document.querySelectorAll('details.more').forEach((d) => { d.open = true; })); await page.check('input[name=kind][value=higher]');
   const optsH = await page.$$eval('#f-tosel option', (o) => o.map((x) => x.textContent));
   ok(optsH.length === 3 && optsH[0].includes('Обласний') && optsH[1].includes('оперативного командування') && optsH[2].includes('Інше'), 'адресати: виринаючий список для вищого органу');
   ok((await page.innerText('#to-help')).includes('структурний підрозділ'), 'адресати: пояснення, хто вищестоящий');
@@ -156,7 +156,7 @@ const ok = (c, m) => { if (!c) { fail++; console.log('FAIL', m); } else console.
   await page.selectOption('#z-ground', 'g_parent_disab'); await page.fill('#z-name', 'Тест'); await page.click('#zv button[type=submit]');
   const z58 = await page.inputValue('#z-out');
   ok(z58.includes('п. 58-1') && !z58.includes('Оформлює'), 'заява: абзац п. 58-1, без службових пояснень у додатках');
-  await page.goto(BASE + '/skarha/'); await page.check('input[name=kind][value=appeal]'); await page.fill('#f-desc', 'Опис'); await page.check('input[name=kind][value=appeal]'); await page.selectOption('#f-viol', { value: 'так' }).catch(() => {}); await page.click('#make');
+  await page.goto(BASE + '/skarha/'); await page.evaluate(() => document.querySelectorAll('details.more').forEach((d) => { d.open = true; })); await page.check('input[name=kind][value=appeal]'); await page.fill('#f-desc', 'Опис'); await page.check('input[name=kind][value=appeal]'); await page.selectOption('#f-viol', { value: 'так' }).catch(() => {}); await page.click('#make');
   const ta = await page.inputValue('#out');
   ok(!ta.includes('Насильство або погрози') && ta.includes('Вищестоящому органу'), 'скарга на штраф: без зайвих полів, адресат за ст. 288');
   await page.check('input[name=kind][value=police]'); await page.selectOption('#f-viol', 'так'); await page.click('#make');
@@ -194,7 +194,7 @@ const ok = (c, m) => { if (!c) { fail++; console.log('FAIL', m); } else console.
   for (const u of ['/', '/mene-zupynyly/', '/skarha/', '/vidstrochka/', '/faq/', '/terminovo/', '/sytuatsiyi/politsiya-pdr/']) {
     try { const r = await page.goto(BASE + u); ok(r && r.ok() && (await page.locator('h1').count()) === 1, `офлайн: ${u}`); } catch (e) { ok(false, `офлайн: ${u} ${e.message}`); }
   }
-  await page.goto(BASE + '/skarha/');
+  await page.goto(BASE + '/skarha/'); await page.evaluate(() => document.querySelectorAll('details.more').forEach((d) => { d.open = true; }));
   await page.fill('#f-name', 'Тест'); await page.click('#make');
   ok((await page.inputValue('#out')).includes('Тест'), 'офлайн: генератор працює');
   await ctx.setOffline(false);

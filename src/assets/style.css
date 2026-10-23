@@ -167,3 +167,4 @@ blockquote{margin:.4rem 0 .2rem;padding:.4rem .75rem;border-left:3px solid var(-
 .verified{border-radius:14px}
 
 .support{display:flex;flex-wrap:wrap;gap:.5rem .8rem;align-items:center;margin:.8rem 0}.support .btn{min-height:44px;padding:.5rem 1rem}
+details.more{margin:1rem 0}details.more>summary{cursor:pointer;font-weight:600;padding:.7rem 0;min-height:44px}
