@@ -3,7 +3,7 @@
 const { chromium } = require('playwright');
 const BASE = process.env.BASE || 'http://localhost:3000';
 const SHOTS = process.env.SHOTS || '';
-const PAGES = ['/', '/mene-zupynyly/', '/blokpost/', '/povistka/', '/perevirka-povistky/', '/vidstrochka/', '/skarha/', '/shtraf/', '/zabraly/', '/dopomoha/', '/faq/', '/poshuk/', '/pryvatnist/', '/terminovo/', '/sytuatsiyi/politsiya-pdr/', '/sytuatsiyi/politsiya-szch/', '/sytuatsiyi/tck-vidstrochka/', '/zaiava-vidstrochka/', '/sytuatsiyi/povistka-poshtoiu/', '/sytuatsiyi/ne-prybuv-u-strok/', '/dlia-rodyn/', '/rezerv-plus/', '/slovnyk/', '/pro-sait/'];
+const PAGES = ['/', '/mene-zupynyly/', '/blokpost/', '/povistka/', '/perevirka-povistky/', '/vidstrochka/', '/skarha/', '/shtraf/', '/zabraly/', '/dopomoha/', '/faq/', '/poshuk/', '/pryvatnist/', '/terminovo/', '/sytuatsiyi/politsiya-pdr/', '/sytuatsiyi/politsiya-szch/', '/sytuatsiyi/tck-vidstrochka/', '/zaiava-vidstrochka/', '/sytuatsiyi/povistka-poshtoiu/', '/sytuatsiyi/ne-prybuv-u-strok/', '/dlia-rodyn/', '/rezerv-plus/', '/slovnyk/', '/pro-sait/', '/vidpyska-tck/'];
 let fail = 0;
 const ok = (c, m) => { if (!c) { fail++; console.log('FAIL', m); } else console.log('ok  ', m); };
 
@@ -86,6 +86,12 @@ const ok = (c, m) => { if (!c) { fail++; console.log('FAIL', m); } else console.
   await page.check('input[name=kind][value=appeal]'); await page.check('input[name=gr][value=nopov]'); await page.check('input[name=gr][value=reg]'); await page.click('#make');
   const at = await page.inputValue('#out');
   ok(at.includes('Обґрунтування:') && at.includes('п. 41') && at.includes('приміткою до ст. 210'), 'оскарження: підстави з нормами');
+
+  // 3a3. скарга до вищого органу
+  await page.goto(BASE + '/skarha/'); await page.fill('#f-name', 'Тест'); await page.fill('#f-contact', 'м. Київ'); await page.fill('#f-desc', 'Опис');
+  await page.check('input[name=kind][value=higher]'); await page.fill('#f-pnum', '12/345'); await page.fill('#f-pgr', 'Не перевірено відео.'); await page.fill('#f-porg', 'Районний ТЦК'); await page.click('#make');
+  const hg = await page.inputValue('#out');
+  ok(hg.includes('Органу вищого рівня') && hg.includes('№ 12/345') && hg.includes('Не перевірено відео.') && hg.includes('ст. 18 Закону') && hg.includes('ст. 17 цього Закону'), 'скарга до вищого органу: структура й норми');
 
   // 3b. швидка заявка юристу
   await page.goto(BASE + '/terminovo/');
