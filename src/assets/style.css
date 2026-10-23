@@ -13,7 +13,7 @@
   --violet:#6d3fd1;--violet-soft:rgba(109,63,209,.10);
   --line-field:rgba(14,22,32,.46);--green-ink:#0e6b36;--accent-ink:#155db5;
   --info-bg:#e3eefd;--warn-bg:#fff2d4;--law-bg:#eee8ff;--now-bg:#ffe6e9;
-  --focus:#f2a516;--r:16px;--r-lg:22px;
+  --focus:#f2a516;--focus-ring:#0b4aa6;--r:16px;--r-lg:22px;
   --shadow:0 1px 2px rgba(14,22,32,.05),0 8px 24px rgba(14,22,32,.07);
   --blur:rgba(255,255,255,.93);
 }
@@ -55,7 +55,9 @@ body{margin:0;background:var(--bg);color:var(--fg);
   line-height:1.5;padding-bottom:calc(112px + env(safe-area-inset-bottom));overflow-wrap:anywhere;
   font-feature-settings:"kern","liga";text-rendering:optimizeLegibility;-webkit-tap-highlight-color:transparent}
 a{color:var(--accent);text-underline-offset:3px;text-decoration-thickness:1.5px}
-:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:8px}
+:focus{outline:3px solid var(--focus-ring);outline-offset:2px}
+:focus:not(:focus-visible){outline:none}
+:focus-visible{outline:3px solid var(--focus-ring);outline-offset:2px;border-radius:8px}
 .skip{position:absolute;left:-999px;top:0;background:var(--accent);color:var(--accent-fg);padding:.6rem 1rem;z-index:100}
 .skip:focus{left:8px;top:8px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
@@ -190,7 +192,7 @@ label{display:block;font-weight:600;margin:.8rem 0 .3rem;font-size:.94rem}
 input[type=text],input[type=date],input[type=time],input[type=search],select,textarea{width:100%;min-height:50px;padding:.65rem .85rem;font:inherit;color:var(--fg);background:var(--surface-2);border:1.5px solid var(--line-field);border-radius:13px;transition:border-color .15s,box-shadow .15s}
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
 textarea{min-height:130px;resize:vertical;line-height:1.45}
-input::placeholder,textarea::placeholder{color:var(--muted);opacity:.8}
+input::placeholder,textarea::placeholder{color:var(--muted);opacity:1}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 @media (max-width:380px){.row{grid-template-columns:1fr}}
 .opt{display:flex;gap:.8rem;align-items:flex-start;font-weight:500;padding:.7rem .8rem;border:1.5px solid var(--line-field);border-radius:13px;margin:.45rem 0;background:var(--surface-2);cursor:pointer;line-height:1.4;transition:border-color .12s,background .12s}
@@ -275,3 +277,22 @@ body.no-sos .nav-sos.on{background:linear-gradient(160deg,#d92b3b,#a8182a);color
 h1,.lead,.sos-big,.rt strong,.rt span,.sos-txt strong{text-wrap:balance}
 input[type=search]{font-size:1rem;text-overflow:ellipsis}
 .quick2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:.6rem 0}.quick2 .btn{min-height:48px}
+
+/* аудит доступності */
+[hidden]{display:none!important}
+:root[data-theme=dark]{--focus-ring:#ffb93d}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--focus-ring:#ffb93d}}
+a:not(.btn):not(.row-link):not(.sos-card):not(.tile):not(.nav-i):not(.nav-sos):not(.callbar):not(.call-card):not(.brand):not(.icon-btn){color:var(--accent-ink)}
+.nav-i.on{color:var(--accent-ink)}
+.call-card,.callout a{color:var(--accent-ink)}
+input:focus,select:focus,textarea:focus{outline:3px solid var(--focus-ring);outline-offset:1px;box-shadow:none}
+.nav-sos.on{outline:0}
+.nav-sos:focus-visible{outline:3px solid var(--focus-ring);outline-offset:3px}
+.row{grid-template-columns:repeat(auto-fit,minmax(min(100%,11rem),1fr))}
+input,select,textarea{min-width:0;max-width:100%}
+@media (max-width:420px){a[href^="tel:"]:not(.btn):not(.call-card):not(.callbar){white-space:normal}}
+@media (forced-colors:active){:focus,:focus-visible{outline:3px solid Highlight}input:focus,select:focus,textarea:focus{outline:3px solid Highlight}}
+.callbar{min-height:44px}
+.sources a,.foot-links a{display:inline-block;padding:.5rem .1rem}
+.verified a{color:inherit!important}.callout.lawyer a{color:#4b2aa8!important}:root[data-theme=dark] .callout.lawyer a{color:#cdb8ff!important}
+.callbar{text-align:center;padding:.4rem .7rem;font-size:.92rem;line-height:1.25;color:var(--accent-fg)!important}

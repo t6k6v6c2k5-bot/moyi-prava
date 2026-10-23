@@ -26,7 +26,7 @@
   // посилання виду /сторінка/#розділ: відкриваємо розділ-згортку
   function openHash() {
     var h = decodeURIComponent((location.hash || '').slice(1)), el = h && document.getElementById(h);
-    if (el && el.tagName === 'DETAILS') { el.open = true; setTimeout(function () { el.scrollIntoView(); }, 50); }
+    if (el && el.tagName === 'DETAILS') { el.open = true; setTimeout(function () { el.scrollIntoView(); var sm = el.querySelector('summary'); if (sm) sm.focus({ preventScroll: true }); }, 50); }
   }
   openHash();
   window.addEventListener('hashchange', openHash);

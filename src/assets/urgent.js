@@ -39,7 +39,7 @@
     $('u-out-wrap').hidden = false;
     link();
     say(/^https:\/\/(t|telegram)\.me\/[A-Za-z0-9_]+$/.test(base) || noLawyer ? 'Текст готовий. Перевірте і надішліть.' : 'Текст готовий. Після відкриття чату вставте скопійований текст.');
-    $('u-out-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    $('u-out-wrap').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
   });
   out.addEventListener('input', link);
   $('u-copy').addEventListener('click', function () {

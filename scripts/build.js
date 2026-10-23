@@ -424,7 +424,7 @@ for (const u of precache) {
   const f = u.endsWith('/') ? path.join(DIST, u, 'index.html') : path.join(DIST, u);
   if (!fs.existsSync(f)) throw new Error('Немає файлу для precache: ' + u);
 }
-const sw = fs.readFileSync(path.join(SRC, 'sw.js'), 'utf8').replace('%%BUILD%%', build).replace('%%PRECACHE%%', JSON.stringify(precache.map((u) => u + (u.startsWith('/assets/') && /\.(css|js)$/.test(u) ? `?v=${build}` : ''))));
+const sw = fs.readFileSync(path.join(SRC, 'sw.js'), 'utf8').replace('%%BUILD%%', build).replace('%%PRECACHE%%', JSON.stringify(precache.map((u) => u + (u.startsWith('/assets/') && /\.(css|js|json)$/.test(u) ? `?v=${build}` : ''))));
 fs.writeFileSync(path.join(DIST, 'sw.js'), sw);
 
 // підставляємо версію збірки у HTML

@@ -57,6 +57,6 @@
       h += '<div class="callout info"><p><strong>Куди подавати:</strong> заяву на ім’я голови комісії при ТЦК — особисто через ЦНАП (з військово-обліковим документом). Окремо, за технічної можливості, відстрочка може оформитися автоматично через електронний кабінет (Резерв+) — це не заява до комісії. Заява реєструється протягом 1 робочого дня, розглядається до 7 робочих днів. (ПКМУ № 560, п. 58–60)</p></div>';
     }
     res.innerHTML = h;
-    res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    res.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
   });
 })();

@@ -51,7 +51,7 @@
     e.preventDefault(); out.value = build(); $('z-out-wrap').hidden = false;
     var miss = ['name', 'id', 'birth', 'addr', 'mail', 'tel'].filter(function (n) { return !v(n); });
     say(miss.length ? 'Не заповнено обов’язкові відомості (п. 58): залишено «________». Допишіть їх. Офіційна форма — додаток 4 ПКМУ № 560; ЦНАП може запропонувати її.' : 'Текст готовий. Офіційна форма заяви — додаток 4 ПКМУ № 560; ЦНАП може запропонувати її.');
-    $('z-out-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    $('z-out-wrap').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
   });
   form.addEventListener('reset', function () { $('z-out-wrap').hidden = true; out.value = ''; setTimeout(function () { $('z-old').hidden = true; $('z-old-l').hidden = true; docs(); }, 0); });
   $('z-copy').addEventListener('click', function () {

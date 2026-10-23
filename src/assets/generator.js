@@ -376,7 +376,7 @@
     if (kind() === 'appeal' && !checked('gr').length) miss.push('підстави оскарження (позначте — тоді в тексті з’являться норми)');
     if (flaggedCount) miss.push('рядки з емоційними чи нецензурними висловами вилучено — перепишіть їх нейтрально');
     say((miss.length ? 'Не заповнено: ' + miss.join(', ') + '. Пропуски «________» допишіть вручну. ' : 'Текст готовий. ') + (kind() === 'claim' ? 'Це чернетка: перед поданням у суд перевірте з адвокатом чи секретаріатом суду форму, строки та суму судового збору.' : 'Перевірте текст перед відправкою.'));
-    wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    wrap.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
     $('tg').href = tgHref();
   });
   out.addEventListener('input', function () { $('tg').href = tgHref(); });

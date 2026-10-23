@@ -24,6 +24,7 @@ self.addEventListener('fetch', (e) => {
       (async () => {
         const cached = await caches.match(req, { ignoreSearch: true });
         const net = fetch(req).then((res) => {
+          if (!res.ok && cached) return cached;
           const copy = res.clone();
           if (res.ok && !new URL(req.url).search) caches.open(VERSION).then((c) => c.put(req, copy));
           return res;
