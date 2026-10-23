@@ -30,10 +30,21 @@
 </div>
 <label for="f-place">Місце (населений пункт, область; без вказівки розташування постів у відкритих публікаціях)</label>
 <input id="f-place" name="place" type="text" placeholder="Напр.: м. …, … область">
-<label for="f-who">Хто діяв (ТЦК, поліція, військові, невстановлені особи)</label>
+<label for="f-who">Опис осіб, які діяли (форма, кількість, номери авто — за потреби)</label>
 <input id="f-who" name="who" type="text" placeholder="Підрозділ, якщо відомо">
-<label for="f-desc">Опис подій (по порядку: що сталося, що сказали, що зробили)</label>
-<textarea id="f-desc" name="desc" rows="7" placeholder="Коротко й по фактах. Без оцінок і образ."></textarea>
+<label for="f-how">Де й за яких обставин це сталося</label>
+<select id="f-how" name="how"><option value="">не вказувати</option><option value="street">у громадському місці (на вулиці)</option><option value="car">під час руху в автомобілі</option><option value="home">за місцем проживання</option><option value="work">на місці роботи</option><option value="block">на блокпосту</option></select>
+<div class="checks" role="group" aria-label="Що було зроблено">
+<p class="muted"><strong>Що зробили ці особи</strong> (позначте все, що було):</p>
+<label class="opt"><input type="checkbox" name="act" value="docs"> <span>Зупинили й вимагали пред’явити документи</span></label>
+<label class="opt"><input type="checkbox" name="act" value="povistka"> <span>Вручили (намагалися вручити) повістку</span></label>
+<label class="opt"><input type="checkbox" name="act" value="proceed"> <span>Вимагали прослідувати до ТЦК</span></label>
+<label class="opt"><input type="checkbox" name="act" value="deliver"> <span>Доставили до ТЦК</span></label>
+<label class="opt"><input type="checkbox" name="act" value="force"> <span>Застосували фізичну силу</span></label>
+<label class="opt"><input type="checkbox" name="act" value="noexpl"> <span>Не пояснили підстав своїх вимог</span></label>
+</div>
+<label for="f-desc">Додаткові факти (кожен — з нового рядка; лише факти: що сказали, що зробили, хто був поруч; без оцінок і нецензурної лексики)</label>
+<textarea id="f-desc" name="desc" rows="7" placeholder="1) О 14:20 мені сказали, що...&#10;2) Відео зафіксувало, що..."></textarea>
 </fieldset>
 
 <fieldset>

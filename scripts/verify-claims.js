@@ -100,13 +100,14 @@ for (const [id, s] of Object.entries(sources)) {
 // 2. Цитати
 for (const c of claims) {
   const src = texts[c.src];
-  let ok = !!src && src.n.includes(norm(c.quote));
+  let ok = !!src && (c.absent ? true : src.n.includes(norm(c.quote)));
   let note = '';
   if (!ok) { failed++; console.log(`НЕ ЗНАЙДЕНО [${c.id}] ${c.src} ${c.ref}: «${c.quote.slice(0, 80)}…»`); }
   else {
     const sec = section(src.raw, c.ref);
     if (sec == null) { ok = false; failed++; note = 'розділ не знайдено'; console.log(`РОЗДІЛ НЕ ЗНАЙДЕНО [${c.id}] ${c.src} ${c.ref}`); }
-    else if (!norm(sec).includes(norm(c.quote))) { ok = false; failed++; note = 'цитата поза зазначеним розділом'; console.log(`ЦИТАТА ПОЗА РОЗДІЛОМ [${c.id}] ${c.src} ${c.ref}`); }
+    else if (c.absent && norm(sec).toLowerCase().includes(c.absent.toLowerCase())) { ok = false; failed++; note = 'термін присутній'; console.log(`ТЕРМІН ПРИСУТНІЙ [${c.id}] ${c.src} ${c.ref}: ${c.absent}`); }
+    else if (!c.absent && !norm(sec).includes(norm(c.quote))) { ok = false; failed++; note = 'цитата поза зазначеним розділом'; console.log(`ЦИТАТА ПОЗА РОЗДІЛОМ [${c.id}] ${c.src} ${c.ref}`); }
     else {
       const h = crypto.createHash('sha1').update(norm(sec)).digest('hex').slice(0, 10);
       if (updateHashes) c.h = h;

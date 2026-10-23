@@ -45,7 +45,7 @@ const ok = (c, m) => { if (!c) { fail++; console.log('FAIL', m); } else console.
   const reqs = []; page.on('request', (r) => { if (r.method() !== 'GET') reqs.push(r.url()); });
   await page.click('#make');
   const text = await page.inputValue('#out');
-  ok(text.includes('Іваненко Іван Іванович') && text.includes('20.10.2026 о 14:30') && text.includes('Обличчя були закриті (балаклави): так.') && text.includes('Особи назвалися та пред’явили службові посвідчення: ні.') && text.includes('відеозапис'), 'генератор: омбудсман — текст коректний');
+  ok(text.includes('Іваненко Іван Іванович') && text.includes('20.10.2026 приблизно о 14:30') && text.includes('мали закриті обличчя') && text.includes('Особи не назвалися та не пред’явили службових посвідчень.') && text.includes('відеозапис'), 'генератор: омбудсман — текст коректний');
   ok(text.includes('Уповноваженому Верховної Ради'), 'генератор: адресат за замовчуванням');
   ok((await page.getAttribute('#tg', 'href')).startsWith('https://t.me/share/url?'), 'генератор: Telegram-посилання');
   await page.click('#copy');
@@ -75,23 +75,35 @@ const ok = (c, m) => { if (!c) { fail++; console.log('FAIL', m); } else console.
   await page.goto(BASE + '/skarha/');
   await page.fill('#f-name', 'Тест'); await page.fill('#f-contact', 'м. Київ'); await page.fill('#f-desc', 'Опис');
   await page.selectOption('#f-intro', 'ні'); await page.selectOption('#f-wt', 'tck');
-  await page.check('input[name=v2][value=detain]'); await page.check('input[name=v2][value=hours3]'); await page.check('input[name=v2][value=relatives]');
+  await page.check('input[name=act][value=proceed]'); await page.check('input[name=v2][value=detain]'); await page.check('input[name=v2][value=hours3]'); await page.check('input[name=v2][value=relatives]');
   await page.click('#make');
   const lt = await page.inputValue('#out');
-  ok(lt.includes('Правове обґрунтування:') && lt.includes('Пунктом 54') && lt.includes('статей 261 і 262') && lt.includes('ч. 1 ст. 263') && lt.includes('ст. 261') && !lt.includes('статті 18'), 'скарга: норми за обраними порушеннями (ТЦК)');
+  ok(lt.includes('III. ЩОДО ПОРУШЕНЬ') && lt.includes('II. ЩОДО ПОРЯДКУ') && lt.includes('ст. 262') && lt.includes('відсутні') && lt.includes('Пунктом 54') && lt.includes('статей 261 і 262') && lt.includes('ч. 1 ст. 263') && lt.includes('ст. 261') && !lt.includes('статті 18'), 'скарга: норми за обраними порушеннями (ТЦК)');
   await page.selectOption('#f-wt', 'police'); await page.click('#make');
   ok((await page.inputValue('#out')).includes('статті 18 Закону України «Про Національну поліцію»'), 'скарга: для поліції — ст. 18 ЗНП');
   await page.selectOption('#f-intro', ''); await page.uncheck('input[name=v2][value=detain]'); await page.uncheck('input[name=v2][value=hours3]'); await page.uncheck('input[name=v2][value=relatives]'); await page.click('#make');
   ok((await page.innerText('#status')).includes('що порушено'), 'скарга: підказка, якщо порушення не обрано');
   await page.check('input[name=kind][value=appeal]'); await page.check('input[name=gr][value=nopov]'); await page.check('input[name=gr][value=reg]'); await page.click('#make');
   const at = await page.inputValue('#out');
-  ok(at.includes('Обґрунтування:') && at.includes('п. 41') && at.includes('приміткою до ст. 210'), 'оскарження: підстави з нормами');
+  ok(at.includes('ПРАВОВЕ ОБҐРУНТУВАННЯ') && at.includes('п. 41') && at.includes('приміткою до ст. 210'), 'оскарження: підстави з нормами');
 
   // 3a3. скарга до вищого органу
   await page.goto(BASE + '/skarha/'); await page.fill('#f-name', 'Тест'); await page.fill('#f-contact', 'м. Київ'); await page.fill('#f-desc', 'Опис');
   await page.check('input[name=kind][value=higher]'); await page.fill('#f-pnum', '12/345'); await page.fill('#f-pgr', 'Не перевірено відео.'); await page.fill('#f-porg', 'Районний ТЦК'); await page.click('#make');
   const hg = await page.inputValue('#out');
   ok(hg.includes('Органу вищого рівня') && hg.includes('№ 12/345') && hg.includes('Не перевірено відео.') && hg.includes('ст. 18 Закону') && hg.includes('ст. 17 цього Закону'), 'скарга до вищого органу: структура й норми');
+
+  // 3a4. деловий стиль і лінт неформального тексту
+  await page.goto(BASE + '/skarha/');
+  await page.fill('#f-name', 'Тест Тестович'); await page.fill('#f-contact', 'м. Київ'); await page.fill('#f-date', '2026-10-20'); await page.fill('#f-place', 'м. Харків');
+  await page.selectOption('#f-how', 'street'); await page.selectOption('#f-wt', 'tck'); await page.check('input[name=act][value=docs]'); await page.check('input[name=act][value=proceed]');
+  await page.fill('#f-desc', '1) О 14:20 мені сказали пройти до автобуса\n2) ТЦК це пізд*ц, собака фраєр!!!\n3) Відео зафіксувало розмову');
+  await page.click('#make');
+  const ds = await page.inputValue('#out');
+  ok(ds.includes('I. ЩОДО ОБСТАВИН') && ds.includes('20.10.2026') && ds.includes('перебуваючи у громадському місці') && ds.includes('до мене підійшли представники територіального центру комплектування') && ds.includes('вимагали прослідувати до ТЦК'), 'деловий стиль: структуроване викладення обставин');
+  ok(ds.includes('1) О 14:20 мені сказали пройти до автобуса') && ds.includes('3) Відео зафіксувало розмову') && ds.includes('[рядок вилучено') && !ds.includes('пізд') && !ds.includes('фраєр'), 'лінт: нецензурний рядок вилучено, факти залишені');
+  ok((await page.innerText('#status')).includes('вилучено'), 'лінт: попередження користувачу');
+  ok(ds.includes('п. 31') && ds.includes('п. 47') && ds.includes('п. 54') && ds.includes('ст. 259'), 'II розділ: норми про оповіщення, ст. 262 і 259');
 
   // 3b. швидка заявка юристу
   await page.goto(BASE + '/terminovo/');
