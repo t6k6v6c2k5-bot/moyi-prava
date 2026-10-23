@@ -416,14 +416,19 @@ ${faq.items.map((i) => `<details class="faq"><summary>${esc(i.q)}</summary><p>${
     { u: '/faq/', t: 'Часті запитання', d: 'Короткі відповіді з джерелами', i: 'search', c: 'blue' },
   ];
   const body = `<section class="hero">
-<h1>Мої права</h1>
-<p class="lead">Навігатор для військовозобов’язаних та їхніх родин. Знай свої права й обов’язки. Дій за законом. Фіксуй порушення.</p>
-<a class="btn sos big" href="/sos/">${ICON.sos}<span>Мене зупинили — що робити</span></a>
-<p><a class="btn big amber" href="/terminovo/">Терміново: передати справу юристу</a></p>
-<ul class="quick"><li><a class="btn secondary" href="/sytuatsiyi/politsiya-pokrokovo/">Зупинила поліція</a></li><li><a class="btn secondary" href="/sytuatsiyi/tck-perevirka/">ТЦК / вручають повістку</a></li><li><a class="btn secondary" href="/zabraly/">Рідну людину забрали</a></li><li><a class="btn secondary" href="/vidstrochka/">Потрібна відстрочка</a></li><li><a class="btn secondary" href="/vidpyska-tck/">ТЦК відповіло відпискою</a></li></ul>
-<ul class="trust" aria-label="Чому сайту можна довіряти"><li>${ICON.check}Норми — з посиланням на джерело</li><li>${ICON.check}Працює офлайн</li><li>${ICON.check}Без трекерів і реєстрації</li></ul>
+<h1>Що сталося?</h1>
+<ul class="big6">
+<li><a class="btn sos big" href="/sos/">${ICON.sos}<span>Мене зупинили</span></a></li>
+<li><a class="btn big red2" href="/zabraly/"><span>Рідну людину забрали</span></a></li>
+<li><a class="btn big amber" href="/sytuatsiyi/blokpost-rozshuk/"><span>Кажуть, що я в розшуку</span></a></li>
+<li><a class="btn big" href="/vidstrochka/"><span>Хочу відстрочку</span></a></li>
+<li><a class="btn big" href="/vidpyska-tck/"><span>ТЦК відписало «все законно»</span></a></li>
+<li><a class="btn big amber" href="/terminovo/"><span>Потрібен юрист зараз</span></a></li>
+</ul>
 </section>
+<details class="fold"><summary>Усе інше (повістка, скарга, суд, Резерв+, словник…)</summary>
 <ul class="tiles">${tiles.map((t) => `<li><a class="tile c-${t.c || 'blue'}" href="${t.u}">${ICON[t.i]}<span class="tt">${esc(t.t)}</span><span class="td">${esc(t.d)}</span></a></li>`).join('')}</ul>
+</details>
 <aside class="callout info"><p><strong>Принципи сайту.</strong> Нейтральний тон; кожне твердження спирається на офіційне джерело; жодних карт чи стрічок про ТЦК, блокпости й поліцію; жодних порад щодо ухилення чи підробок; усі дані залишаються на вашому пристрої. <a href="/pryvatnist/">Докладніше</a></p></aside>`;
   const jsonld = [
     {
