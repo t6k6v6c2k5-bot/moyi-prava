@@ -3,7 +3,7 @@
 const { chromium } = require('playwright');
 const BASE = process.env.BASE || 'http://localhost:3000';
 const SHOTS = process.env.SHOTS || '';
-const PAGES = ['/', '/mene-zupynyly/', '/blokpost/', '/povistka/', '/perevirka-povistky/', '/vidstrochka/', '/skarha/', '/shtraf/', '/zabraly/', '/dopomoha/', '/faq/', '/poshuk/', '/pryvatnist/', '/terminovo/', '/sytuatsiyi/politsiya-pdr/', '/sytuatsiyi/politsiya-szch/', '/sytuatsiyi/tck-vidstrochka/', '/zaiava-vidstrochka/', '/sytuatsiyi/povistka-poshtoiu/', '/sytuatsiyi/ne-prybuv-u-strok/'];
+const PAGES = ['/', '/mene-zupynyly/', '/blokpost/', '/povistka/', '/perevirka-povistky/', '/vidstrochka/', '/skarha/', '/shtraf/', '/zabraly/', '/dopomoha/', '/faq/', '/poshuk/', '/pryvatnist/', '/terminovo/', '/sytuatsiyi/politsiya-pdr/', '/sytuatsiyi/politsiya-szch/', '/sytuatsiyi/tck-vidstrochka/', '/zaiava-vidstrochka/', '/sytuatsiyi/povistka-poshtoiu/', '/sytuatsiyi/ne-prybuv-u-strok/', '/dlia-rodyn/'];
 let fail = 0;
 const ok = (c, m) => { if (!c) { fail++; console.log('FAIL', m); } else console.log('ok  ', m); };
 
@@ -58,6 +58,11 @@ const ok = (c, m) => { if (!c) { fail++; console.log('FAIL', m); } else console.
   await page.click('#make');
   const t2 = await page.inputValue('#out');
   ok(t2.includes('оскаржую постанову № 123') && t2.includes('Повістку не вручали.') && t2.includes('Скасувати зазначену постанову'), 'генератор: оскарження постанови');
+  await page.check('input[name=kind][value=vlk]');
+  ok(await page.locator('#appeal-box').isVisible() && (await page.innerText('#ab-legend')).includes('Рішення ВЛК'), 'генератор: ВЛК — блок рішення');
+  await page.fill('#f-pgr', 'Не враховано діагноз.'); await page.fill('#f-porg', 'Районний ТЦК'); await page.click('#make');
+  const tv = await page.inputValue('#out');
+  ok(tv.includes('не згоден(на) з рішенням військово-лікарської комісії') && tv.includes('п. 72') && tv.includes('Не враховано діагноз.'), 'генератор: заява про незгоду з ВЛК');
   await page.check('input[name=kind][value=police]'); await page.selectOption('#f-viol', 'так'); await page.click('#make');
   ok((await page.inputValue('#out')).includes('внести відомості до Єдиного реєстру'), 'генератор: поліція');
   await page.click('#clear');
