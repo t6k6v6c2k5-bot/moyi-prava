@@ -319,6 +319,8 @@ ${faq.items.map((i) => `<details class="faq"><summary>${esc(i.q)}</summary><p>${
     { u: '/perevirka-povistky/', t: 'Перевірити повістку', d: 'QR-код, Резерв+, ознаки недійсної', i: 'doc' },
     { u: '/vidstrochka/', t: 'Відстрочка', d: 'Навігатор: які підстави мені підходять', i: 'clock' },
     { u: '/skarha/', t: 'Скласти скаргу', d: 'Омбудсман, поліція, прокуратура, штраф', i: 'edit' },
+    { u: '/rezerv-plus/', t: 'Резерв+: що передбачено', d: 'QR-код, електронний документ, автовідстрочка', i: 'doc' },
+    { u: '/slovnyk/', t: 'Словник термінів', d: 'Прості визначення з норм', i: 'search' },
     { u: '/dlia-rodyn/', t: 'Папка документів', d: 'Що зібрати заздалегідь', i: 'doc' },
     { u: '/zabraly/', t: 'Рідну людину забрали', d: 'Що робити в перші години', i: 'sos' },
     { u: '/terminovo/', t: 'Передати справу юристу', d: 'Швидка заявка: людину зупинили чи забрали', i: 'sos' },
@@ -364,7 +366,7 @@ const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).forEach((e) => (e
 walk(DIST);
 const build = hash.digest('hex').slice(0, 8);
 
-const precache = ['/', '/offline/', '/mene-zupynyly/', '/blokpost/', '/povistka/', '/perevirka-povistky/', '/skarha/', '/vidstrochka/', '/zabraly/', '/dopomoha/', '/faq/', '/poshuk/', '/pryvatnist/', '/shtraf/', '/terminovo/', '/zaiava-vidstrochka/', '/dlia-rodyn/', ...Object.keys(situations.situations).map((i) => `/sytuatsiyi/${i}/`), '/assets/style.css', '/assets/app.js', '/assets/generator.js', '/assets/vnav.js', '/assets/search.js', '/assets/urgent.js', '/assets/zaiava.js', '/assets/search-index.json', '/assets/icon.svg', '/assets/icon-192.png', '/manifest.webmanifest'];
+const precache = ['/', '/offline/', '/mene-zupynyly/', '/blokpost/', '/povistka/', '/perevirka-povistky/', '/skarha/', '/vidstrochka/', '/zabraly/', '/dopomoha/', '/faq/', '/poshuk/', '/pryvatnist/', '/shtraf/', '/terminovo/', '/zaiava-vidstrochka/', '/dlia-rodyn/', '/rezerv-plus/', '/slovnyk/', ...Object.keys(situations.situations).map((i) => `/sytuatsiyi/${i}/`), '/assets/style.css', '/assets/app.js', '/assets/generator.js', '/assets/vnav.js', '/assets/search.js', '/assets/urgent.js', '/assets/zaiava.js', '/assets/search-index.json', '/assets/icon.svg', '/assets/icon-192.png', '/manifest.webmanifest'];
 for (const u of precache) {
   const f = u.endsWith('/') ? path.join(DIST, u, 'index.html') : path.join(DIST, u);
   if (!fs.existsSync(f)) throw new Error('Немає файлу для precache: ' + u);
