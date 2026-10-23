@@ -124,6 +124,11 @@ function renderBlocks(blocks) {
 </ol>
 <p><a class="btn big secondary" href="/terminovo/">Передати справу юристу</a></p>
 <p class="muted">Загроза життю: <a href="tel:102">102</a> або <a href="tel:112">112</a>.</p>
+<h2>Якщо вже забрали силою</h2>
+<p>У такий момент розмови немає — і це нормально. Головне: <strong>не чиніть опір</strong>, берегти себе. Усе інше — після, і це можна зробити з телефона або руками рідних:</p>
+<ol class="sos-steps"><li><strong>Рідні:</strong> дзвінок юристу <a href="tel:0800213103">0 800 213 103</a> і сторінка <a href="/zabraly/">«Рідну людину забрали»</a>.</li><li><strong>Якщо була сила:</strong> лікар і довідка про травми одразу, фото травм, <a href="/sytuatsiyi/tck-syla/">що робити далі</a>.</li><li><strong>Скарга й заява</strong> — <a href="/skarha/">генератор</a>, юрист допоможе подати.</li></ol>
+<h2>Підготуйтесь заздалегідь</h2>
+<ul class="sos-steps"><li>Збережіть <strong>0 800 213 103</strong> у контактах і скажіть близькій людині, що робити.</li><li>Тримайте документи в порядку; перевірте свої статуси в Резерв+ (<a href="/statusy-rezerv/">що робити</a>).</li><li>Додайте сайт на головний екран і <strong>роздрукуйте картку</strong> — вона працює без телефону.</li></ul>
 <p><a class="btn secondary" href="/sytuatsiyi/politsiya-pokrokovo/">Поліція: покроково</a> <a class="btn secondary" href="/sytuatsiyi/tck-perevirka/">ТЦК: покроково</a></p>
 <p><button class="btn secondary" type="button" data-print>Роздрукувати картку в гаманець / авто</button></p>
 </div>`;
