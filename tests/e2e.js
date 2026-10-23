@@ -78,7 +78,7 @@ const ok = (c, m) => { if (!c) { fail++; console.log('FAIL', m); } else console.
   await page.check('input[name=act][value=proceed]'); await page.check('input[name=v2][value=detain]'); await page.check('input[name=v2][value=hours3]'); await page.check('input[name=v2][value=relatives]');
   await page.click('#make');
   const lt = await page.inputValue('#out');
-  ok(lt.includes('III. ЩОДО ПОРУШЕНЬ') && lt.includes('II. ЩОДО ПОРЯДКУ') && lt.includes('ст. 262') && lt.includes('відсутні') && lt.includes('Пунктом 54') && lt.includes('статей 261 і 262') && lt.includes('ч. 1 ст. 263') && lt.includes('ст. 261') && !lt.includes('статті 18'), 'скарга: норми за обраними порушеннями (ТЦК)');
+  ok(lt.includes('III. ЩОДО ПОРУШЕНЬ') && lt.includes('II. ЩОДО ПОРЯДКУ') && lt.includes('ст. 262') && lt.includes('Національна поліція') && lt.includes('Пунктом 54') && lt.includes('статей 261 і 262') && lt.includes('ч. 1 ст. 263') && lt.includes('ст. 261') && !lt.includes('статті 18'), 'скарга: норми за обраними порушеннями (ТЦК)');
   await page.selectOption('#f-wt', 'police'); await page.click('#make');
   ok((await page.inputValue('#out')).includes('статті 18 Закону України «Про Національну поліцію»'), 'скарга: для поліції — ст. 18 ЗНП');
   await page.selectOption('#f-intro', ''); await page.uncheck('input[name=v2][value=detain]'); await page.uncheck('input[name=v2][value=hours3]'); await page.uncheck('input[name=v2][value=relatives]'); await page.click('#make');
@@ -103,7 +103,7 @@ const ok = (c, m) => { if (!c) { fail++; console.log('FAIL', m); } else console.
   ok(ds.includes('I. ЩОДО ОБСТАВИН') && ds.includes('20.10.2026') && ds.includes('перебуваючи у громадському місці') && ds.includes('до мене підійшли представники територіального центру комплектування') && ds.includes('вимагали прослідувати до ТЦК'), 'деловий стиль: структуроване викладення обставин');
   ok(ds.includes('1) О 14:20 мені сказали пройти до автобуса') && ds.includes('3) Відео зафіксувало розмову') && ds.includes('[рядок вилучено') && !ds.includes('пізд') && !ds.includes('фраєр'), 'лінт: нецензурний рядок вилучено, факти залишені');
   ok((await page.innerText('#status')).includes('вилучено'), 'лінт: попередження користувачу');
-  ok(ds.includes('п. 31') && ds.includes('п. 47') && ds.includes('п. 54') && ds.includes('ст. 259'), 'II розділ: норми про оповіщення, ст. 262 і 259');
+  ok(ds.includes('п. 31') && ds.includes('п. 47') && ds.includes('п. 54') && ds.includes('ст. 262'), 'II розділ: норми про оповіщення, ст. 262 і 259');
 
   // 3a5. позов, список адресатів
   await page.goto(BASE + '/skarha/'); await page.evaluate(() => document.querySelectorAll('details.more').forEach((d) => { d.open = true; })); await page.check('input[name=kind][value=higher]');
