@@ -10,13 +10,13 @@
 
   var f = document.createElement('form');
   f.setAttribute('aria-label', 'Навігатор відстрочок');
-  var html = '<div class="progress" aria-hidden="true"><i id="pg"></i></div>';
+  var html = '<p class="muted">Торкніться розділу, що вам підходить, і позначте пункти. Можна кілька розділів.</p>';
   D.questions.forEach(function (q, qi) {
-    html += '<fieldset class="q"><legend>' + (qi + 1) + '. ' + esc(q.q) + '</legend>' + (q.hint ? '<p class="muted hint">' + esc(q.hint) + '</p>' : '');
+    html += '<details class="q" id="d' + qi + '"><summary><span>' + esc(q.q) + '</span><span class="cnt" id="c' + qi + '"></span></summary>' + (q.hint ? '<p class="muted hint">' + esc(q.hint) + '</p>' : '');
     q.options.forEach(function (o, oi) {
       html += '<label class="opt"><input type="checkbox" name="q' + qi + '" value="' + oi + '"> <span>' + esc(o.l) + '</span></label>';
     });
-    html += '</fieldset>';
+    html += '</details>';
   });
   html += '<div class="actions"><button class="btn big" type="submit">Показати підстави</button><button class="btn secondary" type="reset">Очистити</button></div>';
   f.innerHTML = html;
@@ -26,9 +26,10 @@
   box.appendChild(res);
 
   function progress() {
-    var n = 0;
-    D.questions.forEach(function (q, qi) { if (f.querySelector('input[name=q' + qi + ']:checked')) n++; });
-    document.getElementById('pg').style.width = Math.round(n / D.questions.length * 100) + '%';
+    D.questions.forEach(function (q, qi) {
+      var n = f.querySelectorAll('input[name=q' + qi + ']:checked').length;
+      document.getElementById('c' + qi).textContent = n ? '✓ ' + n : '';
+    });
   }
   f.addEventListener('change', progress);
   f.addEventListener('reset', function () { res.innerHTML = ''; setTimeout(progress, 0); });
@@ -51,7 +52,7 @@
         h += '<section class="g"><h3>' + esc(g.t) + '</h3><p class="muted">' + esc(g.ref) + '</p>' +
           (g.zaiava === false ? '<p><strong>Заяву до комісії не подають</strong> (ПКМУ № 560, п. 57–58).</p>' : '') +
           (g.docs.length ? '<strong>Документи:</strong><ul>' + g.docs.map(function (d) { return '<li>' + md(d) + '</li>'; }).join('') + '</ul>' : '') +
-          ((g.notes && g.notes.length) ? '<p class="muted"><strong>Зверніть увагу:</strong></p><ul class="muted">' + g.notes.map(function (d) { return '<li>' + md(d) + '</li>'; }).join('') + '</ul>' : '') + '</section>';
+          '<details class="fold"><summary>Підстава в законі й нюанси</summary><p class="muted">' + esc(g.ref) + '</p>' + ((g.notes && g.notes.length) ? '<ul class="muted">' + g.notes.map(function (d) { return '<li>' + md(d) + '</li>'; }).join('') + '</ul>' : '') + '</details></section>';
       });
       h += '<div class="callout info"><p><strong>Куди подавати:</strong> заяву на ім’я голови комісії при ТЦК — особисто через ЦНАП (з військово-обліковим документом). Окремо, за технічної можливості, відстрочка може оформитися автоматично через електронний кабінет (Резерв+) — це не заява до комісії. Заява реєструється протягом 1 робочого дня, розглядається до 7 робочих днів. (ПКМУ № 560, п. 58–60, 59)</p></div>';
     }

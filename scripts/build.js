@@ -85,9 +85,20 @@ function renderVerification() {
 }
 
 function renderBlocks(blocks) {
-  return blocks
+  // h2 з "fold": true і всі блоки до наступного h2 згортаються в <details>
+  const folded = [];
+  for (let i = 0; i < blocks.length; i++) {
+    const b = blocks[i];
+    if (b.t === 'h2' && b.fold) {
+      const inner = [];
+      while (i + 1 < blocks.length && blocks[i + 1].t !== 'h2') inner.push(blocks[++i]);
+      folded.push({ t: '_fold', title: b.x, inner });
+    } else folded.push(b);
+  }
+  return folded
     .map((b) => {
       switch (b.t) {
+        case '_fold': return `<details class="fold"><summary>${inline(b.title)}</summary>${renderBlocks(b.inner)}</details>`;
         case 'h2': return `<h2>${inline(b.x)}</h2>`;
         case 'p': return `<p>${inline(b.x)}</p>`;
         case 'ul': return `<ul>${b.items.map((i) => `<li>${inline(i)}</li>`).join('')}</ul>`;
@@ -311,8 +322,8 @@ for (const [id, st] of Object.entries(situations.situations)) {
 <ul class="check">${st.do.map((i) => `<li>${inline(i)}</li>`).join('')}</ul>
 <h2>Чого не робити</h2>
 <ul>${st.dont.map((i) => `<li>${inline(i)}</li>`).join('')}</ul>
-<h2>Що варто знати</h2>
-<ul>${st.know.map((i) => `<li>${inline(i)}</li>`).join('')}</ul>
+<details class="fold"><summary>Чому так: норми й подробиці</summary>
+<ul>${st.know.map((i) => `<li>${inline(i)}</li>`).join('')}</ul></details>
 ${st.lawyer && (LAWYER_NOTES.push({ page: 'sytuatsiyi/' + (st.slug || st.id || st.label), title: '', x: st.lawyer }), SHOW_NOTES) ? `<aside class="callout lawyer" role="note"><strong class="ct">Потребує перевірки юристом</strong><p>${inline(st.lawyer)}</p></aside>` : ''}
 ${badge(st.sources)}
 ${st.plain ? '' : `<aside class="callout warn" role="note"><strong class="ct">Дії здаються незаконними?</strong><p>Не чиніть опір. Зафіксуйте факти й передайте їх юристу — навіть якщо людину вже забрали до ТЦК, юрист може діяти одразу.</p></aside>`}

@@ -166,6 +166,7 @@ const ok = (c, m) => { if (!c) { fail++; console.log('FAIL', m); } else console.
 
   // 4. навігатор відстрочок
   await page.goto(BASE + '/vidstrochka/');
+  await page.evaluate(() => document.querySelectorAll('details.q').forEach((d) => { d.open = true; }));
   await page.check('input[name=q0][value="0"]');
   await page.check('input[name=q2][value="3"]');
   await page.click('#vnav button[type=submit]');
