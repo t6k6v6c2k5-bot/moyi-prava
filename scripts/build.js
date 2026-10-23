@@ -389,6 +389,8 @@ ${faq.items.map((i) => `<details class="faq"><summary>${esc(i.q)}</summary><p>${
     { u: '/pro-sait/', t: 'Як ми перевіряємо', d: 'Цитати з норм і автоперевірка', i: 'check', c: 'green' },
     { u: '/vidpyska-tck/', t: 'ТЦК відповіло «все законно»', d: 'Що робити після відписки', i: 'edit', c: 'amber' },
     { u: '/znyattia-vyklyuchennia/', t: 'Знятий чи виключений з обліку', d: 'У чому різниця за законом', i: 'doc', c: 'blue' },
+    { u: '/statusy-rezerv/', t: 'Розшук і статуси в Резерв+', d: 'Як уточнити, оскаржити, коли потрібен юрист', i: 'search', c: 'blue' },
+    { u: '/szch/', t: 'СЗЧ: законний шлях повернення', d: 'Відповідальність і звільнення за ст. 401 КК', i: 'scale', c: 'amber' },
     { u: '/sud/', t: 'Суд: як оскаржити дії ТЦК', d: 'Строки, куди подавати, що додати', i: 'scale', c: 'amber' },
     { u: '/faq/', t: 'Часті запитання', d: 'Короткі відповіді з джерелами', i: 'search', c: 'blue' },
   ];
@@ -434,7 +436,7 @@ const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).forEach((e) => (e
 walk(DIST);
 const build = hash.digest('hex').slice(0, 8);
 
-const precache = ['/', '/offline/', '/mene-zupynyly/', '/blokpost/', '/povistka/', '/perevirka-povistky/', '/skarha/', '/vidstrochka/', '/zabraly/', '/dopomoha/', '/faq/', '/poshuk/', '/pryvatnist/', '/shtraf/', '/terminovo/', '/zaiava-vidstrochka/', '/dlia-rodyn/', '/rezerv-plus/', '/slovnyk/', '/pro-sait/', '/vidpyska-tck/', '/znyattia-vyklyuchennia/', '/sud/', ...Object.keys(situations.situations).map((i) => `/sytuatsiyi/${i}/`), '/assets/style.css', '/assets/app.js', '/assets/generator.js', '/assets/vnav.js', '/assets/search.js', '/assets/urgent.js', '/assets/zaiava.js', '/assets/search-index.json', '/assets/icon.svg', '/assets/icon-192.png', '/assets/favicon-48.png', '/manifest.webmanifest'];
+const precache = ['/', '/offline/', '/mene-zupynyly/', '/blokpost/', '/povistka/', '/perevirka-povistky/', '/skarha/', '/vidstrochka/', '/zabraly/', '/dopomoha/', '/faq/', '/poshuk/', '/pryvatnist/', '/shtraf/', '/terminovo/', '/zaiava-vidstrochka/', '/dlia-rodyn/', '/rezerv-plus/', '/slovnyk/', '/pro-sait/', '/vidpyska-tck/', '/znyattia-vyklyuchennia/', '/sud/', '/statusy-rezerv/', '/szch/', ...Object.keys(situations.situations).map((i) => `/sytuatsiyi/${i}/`), '/assets/style.css', '/assets/app.js', '/assets/generator.js', '/assets/vnav.js', '/assets/search.js', '/assets/urgent.js', '/assets/zaiava.js', '/assets/search-index.json', '/assets/icon.svg', '/assets/icon-192.png', '/assets/favicon-48.png', '/manifest.webmanifest'];
 for (const u of precache) {
   const f = u.endsWith('/') ? path.join(DIST, u, 'index.html') : path.join(DIST, u);
   if (!fs.existsSync(f)) throw new Error('Немає файлу для precache: ' + u);

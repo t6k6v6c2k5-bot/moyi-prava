@@ -3,7 +3,7 @@
 const { chromium } = require('playwright');
 const BASE = process.env.BASE || 'http://localhost:3000';
 const SHOTS = process.env.SHOTS || '';
-const PAGES = ['/', '/mene-zupynyly/', '/blokpost/', '/povistka/', '/perevirka-povistky/', '/vidstrochka/', '/skarha/', '/shtraf/', '/zabraly/', '/dopomoha/', '/faq/', '/poshuk/', '/pryvatnist/', '/terminovo/', '/sytuatsiyi/politsiya-pokrokovo/', '/sytuatsiyi/blokpost-rozshuk/', '/sytuatsiyi/politsiya-pdr/', '/sytuatsiyi/politsiya-szch/', '/sytuatsiyi/tck-vidstrochka/', '/zaiava-vidstrochka/', '/sytuatsiyi/povistka-poshtoiu/', '/sytuatsiyi/ne-prybuv-u-strok/', '/dlia-rodyn/', '/rezerv-plus/', '/slovnyk/', '/pro-sait/', '/vidpyska-tck/', '/znyattia-vyklyuchennia/', '/sud/'];
+const PAGES = ['/', '/mene-zupynyly/', '/blokpost/', '/povistka/', '/perevirka-povistky/', '/vidstrochka/', '/skarha/', '/shtraf/', '/zabraly/', '/dopomoha/', '/faq/', '/poshuk/', '/pryvatnist/', '/terminovo/', '/sytuatsiyi/politsiya-pokrokovo/', '/sytuatsiyi/blokpost-rozshuk/', '/sytuatsiyi/politsiya-pdr/', '/sytuatsiyi/politsiya-szch/', '/sytuatsiyi/tck-vidstrochka/', '/zaiava-vidstrochka/', '/sytuatsiyi/povistka-poshtoiu/', '/sytuatsiyi/ne-prybuv-u-strok/', '/dlia-rodyn/', '/rezerv-plus/', '/slovnyk/', '/pro-sait/', '/vidpyska-tck/', '/znyattia-vyklyuchennia/', '/sud/', '/statusy-rezerv/', '/szch/'];
 let fail = 0;
 const ok = (c, m) => { if (!c) { fail++; console.log('FAIL', m); } else console.log('ok  ', m); };
 
