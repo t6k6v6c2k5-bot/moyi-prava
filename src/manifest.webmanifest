@@ -3,7 +3,7 @@
   "short_name": "Мої права",
   "description": "Що робити, якщо зупинили, як перевірити повістку, відстрочка й скарги. Працює офлайн.",
   "lang": "uk",
-  "start_url": "/?source=pwa",
+  "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "background_color": "#14213d",
@@ -35,8 +35,8 @@
   ],
   "shortcuts": [
     {
-      "name": "Екстрено: мене зупинили",
-      "short_name": "Екстрено",
+      "name": "Швидка довідка",
+      "short_name": "Довідка",
       "url": "/sos/",
       "icons": [
         {
@@ -46,8 +46,8 @@
       ]
     },
     {
-      "name": "Терміново юристу",
-      "short_name": "Юрист",
+      "name": "Контакти допомоги",
+      "short_name": "Допомога",
       "url": "/terminovo/",
       "icons": [
         {

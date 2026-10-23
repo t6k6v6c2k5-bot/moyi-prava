@@ -35,7 +35,7 @@
   if (lb && /^tel:/.test(lb.getAttribute('href'))) {
     lb.removeAttribute('target');
     lb.removeAttribute('rel');
-    lb.textContent = 'Подзвонити юристу безкоштовно 0 800 213 103';
+    lb.textContent = 'Безоплатна правова допомога: 0 800 213 103';
     lb.classList.add('sos');
   }
 })();

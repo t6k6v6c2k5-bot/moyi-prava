@@ -29,7 +29,7 @@
         : '<p>Нічого не знайдено. Спробуйте інше слово: «повістка», «відстрочка», «скарга».</p>';
     }).catch(function () { box.innerHTML = '<p>Пошук недоступний без з’єднання, поки індекс не збережено.</p>'; });
   }
-  form.addEventListener('submit', function (e) { e.preventDefault(); history.replaceState(null, '', '?q=' + encodeURIComponent(q.value)); run(); });
+  form.addEventListener('submit', function (e) { e.preventDefault(); run(); });
   q.addEventListener('input', run);
   var m = /[?&]q=([^&]*)/.exec(location.search);
   if (m) { try { q.value = decodeURIComponent(m[1].replace(/\+/g, ' ')); run(); } catch (e) {} }

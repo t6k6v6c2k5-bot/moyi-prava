@@ -397,7 +397,7 @@
     var blob = new Blob(['﻿' + out.value], { type: 'text/plain;charset=utf-8' });
     var a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'skarha-' + kind() + '.txt';
+    a.download = 'document.txt';
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
     say('Файл збережено.');

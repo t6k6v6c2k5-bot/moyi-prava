@@ -15,7 +15,7 @@
       "edition": "31.07.2026",
       "expected": "31.07.2026",
       "changed": false,
-      "cached": false
+      "cached": true
     },
     "pkmu560": {
       "title": "ПКМУ № 560 від 16.05.2024 (призов під час мобілізації)",

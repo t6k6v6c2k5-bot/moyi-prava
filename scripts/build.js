@@ -113,7 +113,7 @@ function renderBlocks(blocks) {
         case 'sos':
           return `<div class="sosbox">
 <p class="sos-big">Спокійно.<br>Не чиніть опір.<br>Не тікайте.</p>
-<p><a class="btn sos big" href="tel:0800213103">Подзвонити юристу 0&nbsp;800&nbsp;213&nbsp;103</a></p>
+<p><a class="btn sos big" href="tel:0800213103">Безоплатна правова допомога: 0&nbsp;800&nbsp;213&nbsp;103</a></p>
 <p><a class="btn big amber" href="sms:?&body=%D0%9C%D0%B5%D0%BD%D0%B5%20%D0%B7%D1%83%D0%BF%D0%B8%D0%BD%D0%B8%D0%BB%D0%B8.%20%D0%97%D0%B2%27%D1%8F%D0%B6%D1%96%D1%82%D1%8C%D1%81%D1%8F%20%D0%B7%20%D1%8E%D1%80%D0%B8%D1%81%D1%82%D0%BE%D0%BC%3A%200%20800%20213%20103">Написати рідним</a></p>
 <ol class="sos-steps">
 <li><strong>Запитайте:</strong> «Хто ви? Назвіть П.І.Б., посаду й причину».</li>
@@ -151,7 +151,7 @@ function renderBlocks(blocks) {
           );
         case 'grp': return `<h3 class="grp">${esc(b.x)}</h3>`;
         case 'call':
-          return `<p><a class="btn sos big" href="tel:0800213103">Подзвонити юристу безкоштовно 0&nbsp;800&nbsp;213&nbsp;103</a></p><p><a class="btn big secondary" href="sms:?&body=%D0%A0%D1%96%D0%B4%D0%BD%D1%83%20%D0%BB%D1%8E%D0%B4%D0%B8%D0%BD%D1%83%20%D0%B7%D0%B0%D0%B1%D1%80%D0%B0%D0%BB%D0%B8.%20%D0%AE%D1%80%D0%B8%D1%81%D1%82%20%D0%B1%D0%B5%D0%B7%D0%BE%D0%BF%D0%BB%D0%B0%D1%82%D0%BD%D0%BE%3A%200%20800%20213%20103">Надіслати номер юриста рідним (SMS)</a></p>`;
+          return `<p><a class="btn sos big" href="tel:0800213103">Безоплатна правова допомога: 0&nbsp;800&nbsp;213&nbsp;103</a></p><p><a class="btn big secondary" href="sms:?&body=%D0%A0%D1%96%D0%B4%D0%BD%D1%83%20%D0%BB%D1%8E%D0%B4%D0%B8%D0%BD%D1%83%20%D0%B7%D0%B0%D0%B1%D1%80%D0%B0%D0%BB%D0%B8.%20%D0%AE%D1%80%D0%B8%D1%81%D1%82%20%D0%B1%D0%B5%D0%B7%D0%BE%D0%BF%D0%BB%D0%B0%D1%82%D0%BD%D0%BE%3A%200%20800%20213%20103">Надіслати номер юриста рідним (SMS)</a></p>`;
         case 'urgent_cta':
           return '<p><a class="btn big sos" href="/terminovo/">Терміново: передати справу юристу</a></p><p class="muted">Коротка форма: що сталося → готове повідомлення для адвоката в Telegram. Навіть якщо людину вже забрали в ТЦК.</p>';
         case 'urgent':
@@ -246,13 +246,13 @@ ${jsonld.map((j) => `<script type="application/ld+json">${JSON.stringify(j).repl
 ${body}
 </main>
 <footer class="foot">
-  <p class="disclaimer"><strong>Це довідкова інформація, а не юридична консультація.</strong> Закони змінюються: перевіряйте актуальні редакції та за потреби звертайтесь до юриста.</p>
+  <p class="disclaimer"><strong>Це довідкова інформація, а не юридична консультація.</strong> Сайт не надає правничої допомоги й не створює стосунків «адвокат — клієнт». Закони й практика змінюються: перевіряйте актуальні редакції та за потреби звертайтесь до адвоката. Ми прагнемо точності, але не гарантуємо повноти й відсутності помилок.</p>
   ${sourcesBlock(sourceIds)}
   <p class="foot-links"><a href="/faq/">Часті запитання</a><a href="/pro-sait/">Як ми перевіряємо</a><a href="/pryvatnist/">Конфіденційність</a></p>
   <!--donate--><p class="support"><a class="btn secondary" href="%%DONATE_URL%%" target="_blank" rel="noopener noreferrer">Підтримати проєкт</a> <span class="muted">Сайт безкоштовний, без реклами й трекерів.</span></p><!--/donate-->
-  <p class="muted">Сайт не збирає ваших даних і не містить даних про місця й час роботи ТЦК, блокпостів чи поліції.</p>
+  <p class="muted">Сайт не вимагає персональних даних і не використовує трекери та рекламу; на ньому немає даних про місця й час роботи ТЦК, блокпостів чи поліції. 0 800 213 103 — державна лінія безоплатної правової допомоги, вона не пов’язана з цим сайтом.</p>
 </footer>
-<nav class="bottom" aria-label="Основна навігація">${callbar ? '<a class="callbar" href="tel:0800213103">Юрист безкоштовно · 0&nbsp;800&nbsp;213&nbsp;103</a>' : ''}${bottom}</nav>
+<nav class="bottom" aria-label="Основна навігація">${callbar ? '<a class="callbar" href="tel:0800213103">Безоплатна правова допомога · 0&nbsp;800&nbsp;213&nbsp;103</a>' : ''}${bottom}</nav>
 <script src="/assets/app.js?v=%%BUILD%%" defer></script>
 ${scripts.map((s) => `<script src="/assets/${s}?v=%%BUILD%%" defer></script>`).join('\n')}
 </body>
@@ -382,7 +382,7 @@ ${faq.items.map((i) => `<details class="faq"><summary>${esc(i.q)}</summary><p>${
 <li><a class="row-link" href="/statusy-rezerv/"><span class="ri c-amber">${ICON.search}</span><span class="rt"><strong>Кажуть, що я в розшуку</strong><span>Статуси в Резерв+: як уточнити й оскаржити</span></span><i class="chev"></i></a></li>
 <li><a class="row-link" href="/skarha/"><span class="ri c-violet">${ICON.scale}</span><span class="rt"><strong>Скарга, відписка, суд</strong><span>Готові тексти й строки</span></span><i class="chev"></i></a></li>
 </ul>
-<a class="call-card" href="tel:0800213103">${ICON.phone}<span>Юрист безкоштовно · 0&nbsp;800&nbsp;213&nbsp;103<small>Безоплатна правова допомога, щодня</small></span></a>
+<a class="call-card" href="tel:0800213103">${ICON.phone}<span>Безоплатна правова допомога · 0&nbsp;800&nbsp;213&nbsp;103<small>Безоплатна правова допомога, щодня</small></span></a>
 </section>
 <details class="fold"><summary>Усе інше (повістка, скарга, суд, Резерв+, словник…)</summary>
 <ul class="tiles">${tiles.map((t) => `<li><a class="tile c-${t.c || 'blue'}" href="${t.u}">${ICON[t.i]}<span class="tt">${esc(t.t)}</span><span class="td">${esc(t.d)}</span></a></li>`).join('')}</ul>

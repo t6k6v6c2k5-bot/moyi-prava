@@ -1,7 +1,7 @@
 {
   "name": "moyi-prava",
   "version": "1.0.0",
-  "description": "Навігатор \"Мої права\" для військовозобов’язаних та їхніх родин",
+  "description": "\u041d\u0430\u0432\u0456\u0433\u0430\u0442\u043e\u0440 \"\u041c\u043e\u0457 \u043f\u0440\u0430\u0432\u0430\" \u0434\u043b\u044f \u0432\u0456\u0439\u0441\u044c\u043a\u043e\u0432\u043e\u0437\u043e\u0431\u043e\u0432\u2019\u044f\u0437\u0430\u043d\u0438\u0445 \u0442\u0430 \u0457\u0445\u043d\u0456\u0445 \u0440\u043e\u0434\u0438\u043d",
   "main": "server.js",
   "scripts": {
     "build": "node scripts/build.js",
@@ -24,6 +24,6 @@
   },
   "private": true,
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   }
 }

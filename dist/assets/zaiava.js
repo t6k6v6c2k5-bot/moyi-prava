@@ -61,7 +61,7 @@
   });
   $('z-dl').addEventListener('click', function () {
     var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + out.value], { type: 'text/plain;charset=utf-8' }));
-    a.download = 'zaiava-vidstrochka.txt'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+    a.download = 'document.txt'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
   });
   $('z-print').addEventListener('click', function () {
     var pre = document.getElementById('printable');

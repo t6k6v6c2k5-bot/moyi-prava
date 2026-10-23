@@ -53,14 +53,14 @@ const CSP = [
   "connect-src 'self'",
   "manifest-src 'self'",
   "worker-src 'self'",
-  "frame-ancestors 'none'",
+  "frame-ancestors 'none'; upgrade-insecure-requests",
   "base-uri 'none'",
   "form-action 'self'",
 ].join('; ');
 
 const app = express();
 app.disable('x-powered-by');
-app.set('trust proxy', true);
+app.set('trust proxy', 1);
 app.use(compression());
 app.use((req, res, next) => {
   if (REDIRECT_TO_SITE_URL && SITE_URL && req.hostname !== new URL(SITE_URL).hostname) return res.redirect(301, SITE_URL + req.originalUrl);
@@ -70,12 +70,20 @@ app.use((req, res, next) => {
     'Content-Security-Policy': CSP,
     'X-Content-Type-Options': 'nosniff',
     'Referrer-Policy': 'no-referrer',
-    'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
+    'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()',
+    'Cross-Origin-Opener-Policy': 'same-origin',
+    'Cross-Origin-Resource-Policy': 'same-origin',
+    'X-Frame-Options': 'DENY',
   });
   next();
 });
 
-const origin = (req) => SITE_URL || `${req.protocol}://${req.get('host')}`;
+// Без SITE_URL беремо хост із запиту лише якщо він схожий на справжній (захист від ін’єкції через заголовок Host)
+const origin = (req) => {
+  if (SITE_URL) return SITE_URL;
+  const h = String(req.get('host') || '');
+  return /^[a-z0-9.-]+(:\d+)?$/i.test(h) ? `${req.protocol}://${h}` : 'http://localhost';
+};
 
 function sendHtml(req, res, key, status = 200) {
   let html = htmlCache.get(key)
@@ -86,7 +94,7 @@ function sendHtml(req, res, key, status = 200) {
     .replace(/<p class="muted" data-disc><\/p>/g, '')
     .replace(/%%ROBOTS_INDEX%%/g, ROBOTS_INDEX);
   html = DONATE_URL ? html.replace(/%%DONATE_URL%%/g, DONATE_URL) : html.replace(/<!--donate-->[\s\S]*?<!--\/donate-->/g, '');
-  if (LAWYER_URL.startsWith('tel:')) html = html.replace('Написати адвокату в Telegram', 'Подзвонити юристу безкоштовно 0 800 213 103').replace('Надіслати в Telegram', 'Зателефонувати 0 800 213 103').replace(/ target="_blank" rel="noopener noreferrer">(Подзвонити юристу безкоштовно|Зателефонувати)/g, '>$1');
+  if (LAWYER_URL.startsWith('tel:')) html = html.replace('Написати адвокату в Telegram', 'Безоплатна правова допомога: 0 800 213 103').replace('Надіслати в Telegram', 'Зателефонувати 0 800 213 103').replace(/ target="_blank" rel="noopener noreferrer">(Безоплатна правова допомога: 0 800 213 103|Зателефонувати)/g, '>$1');
   res.status(status).type('html').set('Cache-Control', 'no-cache').send(html);
 }
 
@@ -115,6 +123,7 @@ app.get(/^\/(?:[a-z0-9-]+\/)*$/, (req, res, next) => {
   if (htmlCache.has(req.path)) return sendHtml(req, res, req.path);
   next();
 });
+app.get('/pages.json', (req, res) => res.status(404).end());
 // старі адреси (до об’єднання сторінок) → нові розділи
 let OLD_URLS = {};
 try { OLD_URLS = JSON.parse(fs.readFileSync(path.join(__dirname, 'content', 'redirects.json'), 'utf8')); } catch (e) { /* без перенаправлень */ }
@@ -148,6 +157,10 @@ app.use((req, res) => {
   res.status(404).type('html').set('Cache-Control', 'no-cache').send(
     '<!doctype html><html lang="uk"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Сторінку не знайдено</title><body style="font:18px system-ui;padding:24px"><h1>Сторінку не знайдено</h1><p><a href="/">На головну</a> · <a href="/mene-zupynyly/">Мене зупинили — що робити</a></p></body></html>'
   );
+});
+
+app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
+  res.status(500).type('text/plain').send('Помилка сервера');
 });
 
 app.listen(PORT, () => console.log(`Мої права: http://localhost:${PORT}`));

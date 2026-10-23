@@ -25,7 +25,7 @@ self.addEventListener('fetch', (e) => {
         const cached = await caches.match(req, { ignoreSearch: true });
         const net = fetch(req).then((res) => {
           const copy = res.clone();
-          if (res.ok) caches.open(VERSION).then((c) => c.put(req, copy));
+          if (res.ok && !new URL(req.url).search) caches.open(VERSION).then((c) => c.put(req, copy));
           return res;
         });
         if (!cached) return net.catch(() => caches.match('/offline/'));

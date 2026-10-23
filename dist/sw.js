@@ -1,6 +1,6 @@
 'use strict';
-const VERSION = 'moyi-prava-a145a122';
-const PRECACHE = ["/","/offline/","/mene-zupynyly/","/povistka/","/skarha/","/vidstrochka/","/zabraly/","/dopomoha/","/faq/","/poshuk/","/pryvatnist/","/terminovo/","/zaiava-vidstrochka/","/dlia-rodyn/","/slovnyk/","/pro-sait/","/znyattia-vyklyuchennia/","/sos/","/statusy-rezerv/","/szch/","/assets/style.css?v=a145a122","/assets/app.js?v=a145a122","/assets/generator.js?v=a145a122","/assets/vnav.js?v=a145a122","/assets/search.js?v=a145a122","/assets/urgent.js?v=a145a122","/assets/zaiava.js?v=a145a122","/assets/search-index.json","/assets/icon.svg","/assets/icon-192.png","/assets/favicon-48.png","/manifest.webmanifest"];
+const VERSION = 'moyi-prava-85e8f7b5';
+const PRECACHE = ["/","/offline/","/mene-zupynyly/","/povistka/","/skarha/","/vidstrochka/","/zabraly/","/dopomoha/","/faq/","/poshuk/","/pryvatnist/","/terminovo/","/zaiava-vidstrochka/","/dlia-rodyn/","/slovnyk/","/pro-sait/","/znyattia-vyklyuchennia/","/sos/","/statusy-rezerv/","/szch/","/assets/style.css?v=85e8f7b5","/assets/app.js?v=85e8f7b5","/assets/generator.js?v=85e8f7b5","/assets/vnav.js?v=85e8f7b5","/assets/search.js?v=85e8f7b5","/assets/urgent.js?v=85e8f7b5","/assets/zaiava.js?v=85e8f7b5","/assets/search-index.json","/assets/icon.svg","/assets/icon-192.png","/assets/favicon-48.png","/manifest.webmanifest"];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(VERSION).then((c) => c.addAll(PRECACHE)).then(() => self.skipWaiting()));
@@ -25,7 +25,7 @@ self.addEventListener('fetch', (e) => {
         const cached = await caches.match(req, { ignoreSearch: true });
         const net = fetch(req).then((res) => {
           const copy = res.clone();
-          if (res.ok) caches.open(VERSION).then((c) => c.put(req, copy));
+          if (res.ok && !new URL(req.url).search) caches.open(VERSION).then((c) => c.put(req, copy));
           return res;
         });
         if (!cached) return net.catch(() => caches.match('/offline/'));
