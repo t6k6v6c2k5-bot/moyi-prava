@@ -122,7 +122,7 @@ function listJson(dir) {
   return fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? listJson(path.join(dir, e.name)) : e.name.endsWith('.json') ? [path.join(dir, e.name)] : []));
 }
 const pointSources = ['pkmu560', 'pkmu1455', 'pkmu1456', 'pdr'];
-const articleSources = ['law3543', 'znp', 'voenstan', 'kupap', 'kk'];
+const articleSources = ['law3543', 'znp', 'voenstan', 'kupap', 'kk', 'zvern'];
 const hasPoint = (id, n) => new RegExp('(^|\\n)\\s*' + n.replace('-', '\\-') + '\\.\\s', 'm').test(texts[id].raw);
 const hasArticle = (id, n) => new RegExp('(^|\\n)\\s*Стаття ' + n.replace('.', '\\.') + '\\.\\s', 'm').test(texts[id].raw);
 const stringsOf = (o) => (typeof o === 'string' ? [o] : Array.isArray(o) ? o.flatMap(stringsOf) : o && typeof o === 'object' ? Object.values(o).flatMap(stringsOf) : []);
@@ -153,6 +153,19 @@ for (const f of listJson(path.join(ROOT, 'content'))) {
     if (articlePool.some((s) => hasArticle(s, n))) continue;
     // Конституція, Сімейний кодекс, КПК, ПК тощо поза переліком — повідомляємо як попередження
     results.refs.push({ file: rel, ref: 'ст. ' + n, level: 'warn' });
+  }
+}
+
+// 3a. Лінт посилань у JS-шаблонах (генератори)
+for (const jf of ['generator.js', 'zaiava.js']) {
+  const t = fs.readFileSync(path.join(ROOT, 'src', 'assets', jf), 'utf8');
+  for (const m of t.matchAll(/(?<![A-Za-zА-Яа-яІіЇїЄє])п\.\s*(\d+(?:-\d+)?)/g)) {
+    const ctx = t.slice(Math.max(0, m.index - 28), m.index);
+    if (/(ст\.|ч\.|додатк\S*|підп\.|КК|КУпАП)\s*[\d\s\-–,.чч]*$/i.test(ctx)) continue;
+    if (!pointSources.filter((s) => texts[s]).some((s) => hasPoint(s, m[1]))) { failed++; console.log(`ПОСИЛАННЯ НЕ ІСНУЄ у ${jf}: п. ${m[1]}`); }
+  }
+  for (const m of t.matchAll(/ст\.\s*(\d+(?:-\d+)?)/g)) {
+    if (!articleSources.filter((s) => texts[s]).concat(['zvern']).some((s) => texts[s] && hasArticle(s, m[1]))) { failed++; console.log(`ПОСИЛАННЯ НЕ ІСНУЄ у ${jf}: ст. ${m[1]}`); }
   }
 }
 

@@ -50,7 +50,19 @@
 <select id="f-viol" name="viol"><option value="">не вказувати</option><option value="так">так</option><option value="ні">ні</option></select></div>
 </div>
 <label for="f-ids2">Прикмети, форма, номери автомобілів (за наявності)</label>
-<input id="f-ids2" name="marks" type="text" placeholder="Колір форми, шеврони, номерний знак…"></div>
+<input id="f-ids2" name="marks" type="text" placeholder="Колір форми, шеврони, номерний знак…">
+<label for="f-wt">Хто діяв (категорія)</label>
+<select id="f-wt" name="wt"><option value="">не знаю</option><option value="tck">Представники ТЦК</option><option value="police">Поліцейські</option><option value="mil">Військові на блокпосту</option></select>
+<div class="checks" role="group" aria-label="Що порушено">
+<p class="muted"><strong>Що, на вашу думку, порушено</strong> — від цього залежать норми, на які посилатиметься текст:</p>
+<label class="opt"><input type="checkbox" name="v2" value="docs"> <span>Вимагали документи чи огляд речей без належної підстави</span></label>
+<label class="opt"><input type="checkbox" name="v2" value="detain"> <span>Затримали або доставили без достатніх підстав</span></label>
+<label class="opt"><input type="checkbox" name="v2" value="hours3"> <span>Затримання тривало понад 3 години</span></label>
+<label class="opt"><input type="checkbox" name="v2" value="relatives"> <span>Рідних не повідомили, де я перебуваю</span></label>
+<label class="opt"><input type="checkbox" name="v2" value="povistka"> <span>Повістку вручили з порушенням порядку</span></label>
+<label class="opt"><input type="checkbox" name="v2" value="vidstr"> <span>Не врахували відстрочку або подану заяву про неї</span></label>
+<label class="opt"><input type="checkbox" name="v2" value="vlk"> <span>Відмовили в направленні на ВЛК при обласному ТЦК</span></label>
+</div></div>
 <label for="f-wit">Свідки (ПІБ, контакти — лише з їх згоди)</label>
 <input id="f-wit" name="wit" type="text">
 <div class="checks" role="group" aria-label="Наявні докази">
@@ -69,6 +81,13 @@
 <input id="f-pdate" name="pdate" type="date">
 <label for="f-porg">Хто виніс постанову (орган / посадова особа)</label>
 <input id="f-porg" name="porg" type="text">
+<div class="checks" role="group" aria-label="Підстави оскарження" id="gr-box"><p class="muted"><strong>Підстави (позначте, що підходить)</strong> — вони будуть вписані з посиланнями на норми:</p>
+<label class="opt"><input type="checkbox" name="gr" value="nopov"> <span>Повістку мені не вручали / я її не отримував(ла)</span></label>
+<label class="opt"><input type="checkbox" name="gr" value="noact"> <span>Акт відмови не складали або не оголошували</span></label>
+<label class="opt"><input type="checkbox" name="gr" value="reg"> <span>Мої дані доступні ТЦК з реєстрів (електронна взаємодія)</span></label>
+<label class="opt"><input type="checkbox" name="gr" value="pov"> <span>Були поважні причини неявки, підтверджені документами</span></label>
+<label class="opt"><input type="checkbox" name="gr" value="vid"> <span>Є підстава для відстрочки / подано заяву</span></label>
+</div>
 <label for="f-pgr">Чому не погоджуєтесь (по пунктах)</label>
 <textarea id="f-pgr" name="pgr" rows="5" placeholder="Напр.: повістку не вручали; не було поважності…"></textarea>
 </fieldset>

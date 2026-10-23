@@ -71,6 +71,22 @@ const ok = (c, m) => { if (!c) { fail++; console.log('FAIL', m); } else console.
   const ls = await page.evaluate(() => Object.keys(localStorage).concat(Object.keys(sessionStorage)));
   ok(ls.every((k) => k === 'theme'), 'генератор: у сховищі тільки тема: ' + JSON.stringify(ls));
 
+  // 3a2. правове обґрунтування у скарзі
+  await page.goto(BASE + '/skarha/');
+  await page.fill('#f-name', 'Тест'); await page.fill('#f-contact', 'м. Київ'); await page.fill('#f-desc', 'Опис');
+  await page.selectOption('#f-intro', 'ні'); await page.selectOption('#f-wt', 'tck');
+  await page.check('input[name=v2][value=detain]'); await page.check('input[name=v2][value=hours3]'); await page.check('input[name=v2][value=relatives]');
+  await page.click('#make');
+  const lt = await page.inputValue('#out');
+  ok(lt.includes('Правове обґрунтування:') && lt.includes('Пунктом 54') && lt.includes('статей 261 і 262') && lt.includes('ч. 1 ст. 263') && lt.includes('ст. 261') && !lt.includes('статті 18'), 'скарга: норми за обраними порушеннями (ТЦК)');
+  await page.selectOption('#f-wt', 'police'); await page.click('#make');
+  ok((await page.inputValue('#out')).includes('статті 18 Закону України «Про Національну поліцію»'), 'скарга: для поліції — ст. 18 ЗНП');
+  await page.selectOption('#f-intro', ''); await page.uncheck('input[name=v2][value=detain]'); await page.uncheck('input[name=v2][value=hours3]'); await page.uncheck('input[name=v2][value=relatives]'); await page.click('#make');
+  ok((await page.innerText('#status')).includes('що порушено'), 'скарга: підказка, якщо порушення не обрано');
+  await page.check('input[name=kind][value=appeal]'); await page.check('input[name=gr][value=nopov]'); await page.check('input[name=gr][value=reg]'); await page.click('#make');
+  const at = await page.inputValue('#out');
+  ok(at.includes('Обґрунтування:') && at.includes('п. 41') && at.includes('приміткою до ст. 210'), 'оскарження: підстави з нормами');
+
   // 3b. швидка заявка юристу
   await page.goto(BASE + '/terminovo/');
   await page.check('input[name=who][value=rel]');
