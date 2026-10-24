@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-23",
+  "date": "2026-10-24",
   "total": 172,
   "ok": 172,
   "editionChanged": 0,
@@ -106,8 +106,8 @@
     "kas": {
       "title": "КАС України № 2747-IV",
       "url": "https://zakon.rada.gov.ua/laws/show/2747-15",
-      "edition": "01.01.2026",
-      "expected": "01.01.2026",
+      "edition": "23.10.2026",
+      "expected": "23.10.2026",
       "changed": false,
       "cached": false
     },
