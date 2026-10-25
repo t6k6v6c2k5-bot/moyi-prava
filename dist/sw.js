@@ -1,6 +1,6 @@
 'use strict';
-const VERSION = 'moyi-prava-7fe2db88';
-const PRECACHE = ["/","/offline/","/mene-zupynyly/","/povistka/","/skarha/","/vidstrochka/","/zabraly/","/dopomoha/","/faq/","/poshuk/","/pryvatnist/","/terminovo/","/zaiava-vidstrochka/","/dlia-rodyn/","/slovnyk/","/pro-sait/","/znyattia-vyklyuchennia/","/sos/","/statusy-rezerv/","/szch/","/assets/style.css?v=7fe2db88","/assets/app.js?v=7fe2db88","/assets/generator.js?v=7fe2db88","/assets/vnav.js?v=7fe2db88","/assets/search.js?v=7fe2db88","/assets/urgent.js?v=7fe2db88","/assets/zaiava.js?v=7fe2db88","/assets/search-index.json?v=7fe2db88","/assets/icon.svg","/assets/icon-192.png","/assets/favicon-48.png","/manifest.webmanifest"];
+const VERSION = 'moyi-prava-09299f25';
+const PRECACHE = ["/","/offline/","/mene-zupynyly/","/povistka/","/skarha/","/vidstrochka/","/zabraly/","/dopomoha/","/faq/","/poshuk/","/pryvatnist/","/terminovo/","/zaiava-vidstrochka/","/dlia-rodyn/","/slovnyk/","/pro-sait/","/znyattia-vyklyuchennia/","/sos/","/statusy-rezerv/","/szch/","/assets/style.css?v=09299f25","/assets/app.js?v=09299f25","/assets/generator.js?v=09299f25","/assets/vnav.js?v=09299f25","/assets/search.js?v=09299f25","/assets/urgent.js?v=09299f25","/assets/zaiava.js?v=09299f25","/assets/search-index.json?v=09299f25","/assets/icon.svg","/assets/icon-192.png","/assets/favicon-48.png","/manifest.webmanifest"];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(VERSION).then((c) => c.addAll(PRECACHE)).then(() => self.skipWaiting()));
